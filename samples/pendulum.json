@@ -1,0 +1,42 @@
+{
+  "version": 2,
+  "app": {
+    "workbook": {
+      "activeSheetId": "sheet-1",
+      "sheets": [
+        {
+          "id": "sheet-1",
+          "name": "pendulum",
+          "data": [
+            ["length_m", "sqrt_length_m", "period_s", "period_err_s"],
+            ["0.20", "0.447", "0.91", "0.03"],
+            ["0.30", "0.548", "1.09", "0.03"],
+            ["0.40", "0.632", "1.25", "0.04"],
+            ["0.50", "0.707", "1.40", "0.04"],
+            ["0.60", "0.775", "1.54", "0.04"],
+            ["0.70", "0.837", "1.66", "0.05"],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""]
+          ]
+        }
+      ]
+    },
+    "script": "df <- get.input()\nfit <- lm(period_s ~ sqrt_length_m, data = df)\nplot(df$sqrt_length_m, df$period_s,\n  pch = 19, col = \"firebrick\", cex = 1.6,\n  xlab = \"sqrt(length_m)\", ylab = \"period_s\",\n  main = \"Simple Pendulum\"\n)\narrows(df$sqrt_length_m, df$period_s - df$period_err_s,\n  df$sqrt_length_m, df$period_s + df$period_err_s,\n  angle = 90, code = 3, length = 0.05\n)\nabline(fit, col = \"navy\", lwd = 2)\nsummary(fit)",
+    "ui": {
+      "currentPage": "workspace",
+      "outputTab": "graph",
+      "selectedCell": { "row": 1, "col": 0 },
+      "restoreBanner": "",
+      "sheetStatus": "単振り子サンプル",
+      "runtimeStatus": { "text": "サンプルを読み込みました", "tone": "warning" }
+    },
+    "console": {
+      "entries": [],
+      "history": []
+    }
+  }
+}

@@ -1,0 +1,34 @@
+{
+  "samples": [
+    {
+      "id": "pendulum",
+      "title": "単振り子",
+      "description": "周期と長さの関係を、誤差棒付き散布図と回帰直線で確認します。",
+      "file": "pendulum.json"
+    },
+    {
+      "id": "ohms-law",
+      "title": "オームの法則",
+      "description": "電流と電圧の比例関係をプロットし、抵抗値を近似します。",
+      "file": "ohms-law.json"
+    },
+    {
+      "id": "velocity-time",
+      "title": "v-t グラフ",
+      "description": "等加速度運動の速度-時間グラフから加速度を読み取ります。",
+      "file": "velocity-time.json"
+    },
+    {
+      "id": "hookes-law",
+      "title": "フックの法則",
+      "description": "ばねの伸びと力の比例関係を整理し、ばね定数を求めます。",
+      "file": "hookes-law.json"
+    },
+    {
+      "id": "free-fall",
+      "title": "自由落下",
+      "description": "落下距離と時間の二乗の関係から重力加速度を見積もります。",
+      "file": "free-fall.json"
+    }
+  ]
+}

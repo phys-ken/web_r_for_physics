@@ -1,0 +1,42 @@
+{
+  "version": 2,
+  "app": {
+    "workbook": {
+      "activeSheetId": "sheet-1",
+      "sheets": [
+        {
+          "id": "sheet-1",
+          "name": "ohms_law",
+          "data": [
+            ["current_A", "voltage_V", "voltage_err_V"],
+            ["0.05", "1.01", "0.03"],
+            ["0.10", "2.03", "0.03"],
+            ["0.15", "3.01", "0.04"],
+            ["0.20", "4.05", "0.04"],
+            ["0.25", "5.03", "0.05"],
+            ["0.30", "6.08", "0.05"],
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""]
+          ]
+        }
+      ]
+    },
+    "script": "df <- get.input()\nfit <- lm(voltage_V ~ 0 + current_A, data = df)\nplot(df$current_A, df$voltage_V,\n  pch = 19, col = \"darkgreen\", cex = 1.6,\n  xlab = \"current_A\", ylab = \"voltage_V\",\n  main = \"Ohm's Law\"\n)\narrows(df$current_A, df$voltage_V - df$voltage_err_V,\n  df$current_A, df$voltage_V + df$voltage_err_V,\n  angle = 90, code = 3, length = 0.05\n)\nabline(a = 0, b = coef(fit)[1], col = \"navy\", lwd = 2)\ncat(sprintf(\"Estimated resistance: %.2f ohm\\n\", coef(fit)[1]))",
+    "ui": {
+      "currentPage": "workspace",
+      "outputTab": "graph",
+      "selectedCell": { "row": 1, "col": 0 },
+      "restoreBanner": "",
+      "sheetStatus": "オームの法則サンプル",
+      "runtimeStatus": { "text": "サンプルを読み込みました", "tone": "warning" }
+    },
+    "console": {
+      "entries": [],
+      "history": []
+    }
+  }
+}

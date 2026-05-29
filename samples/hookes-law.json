@@ -1,0 +1,42 @@
+{
+  "version": 2,
+  "app": {
+    "workbook": {
+      "activeSheetId": "sheet-1",
+      "sheets": [
+        {
+          "id": "sheet-1",
+          "name": "hookes_law",
+          "data": [
+            ["extension_m", "force_N", "force_err_N"],
+            ["0.010", "0.48", "0.02"],
+            ["0.020", "0.97", "0.02"],
+            ["0.030", "1.45", "0.03"],
+            ["0.040", "1.93", "0.03"],
+            ["0.050", "2.43", "0.03"],
+            ["0.060", "2.91", "0.04"],
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""]
+          ]
+        }
+      ]
+    },
+    "script": "df <- get.input()\nfit <- lm(force_N ~ 0 + extension_m, data = df)\nplot(df$extension_m, df$force_N,\n  pch = 19, col = \"sienna\", cex = 1.6,\n  xlab = \"extension_m\", ylab = \"force_N\",\n  main = \"Hooke's Law\"\n)\narrows(df$extension_m, df$force_N - df$force_err_N,\n  df$extension_m, df$force_N + df$force_err_N,\n  angle = 90, code = 3, length = 0.05\n)\nabline(a = 0, b = coef(fit)[1], col = \"navy\", lwd = 2)\ncat(sprintf(\"Estimated spring constant: %.1f N/m\\n\", coef(fit)[1]))",
+    "ui": {
+      "currentPage": "workspace",
+      "outputTab": "graph",
+      "selectedCell": { "row": 1, "col": 0 },
+      "restoreBanner": "",
+      "sheetStatus": "フックの法則サンプル",
+      "runtimeStatus": { "text": "サンプルを読み込みました", "tone": "warning" }
+    },
+    "console": {
+      "entries": [],
+      "history": []
+    }
+  }
+}

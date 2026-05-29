@@ -1,0 +1,42 @@
+{
+  "version": 2,
+  "app": {
+    "workbook": {
+      "activeSheetId": "sheet-1",
+      "sheets": [
+        {
+          "id": "sheet-1",
+          "name": "velocity_time",
+          "data": [
+            ["time_s", "velocity_m_s", "velocity_err_m_s"],
+            ["0.0", "0.12", "0.05"],
+            ["0.5", "1.02", "0.06"],
+            ["1.0", "1.94", "0.06"],
+            ["1.5", "2.88", "0.07"],
+            ["2.0", "3.82", "0.07"],
+            ["2.5", "4.79", "0.08"],
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""],
+            ["", "", ""]
+          ]
+        }
+      ]
+    },
+    "script": "df <- get.input()\nfit <- lm(velocity_m_s ~ time_s, data = df)\nplot(df$time_s, df$velocity_m_s,\n  pch = 19, col = \"purple\", cex = 1.6,\n  xlab = \"time_s\", ylab = \"velocity_m_s\",\n  main = \"Velocity-Time Graph\"\n)\narrows(df$time_s, df$velocity_m_s - df$velocity_err_m_s,\n  df$time_s, df$velocity_m_s + df$velocity_err_m_s,\n  angle = 90, code = 3, length = 0.05\n)\nabline(fit, col = \"navy\", lwd = 2)\ncat(sprintf(\"Estimated acceleration: %.2f m/s^2\\n\", coef(fit)[2]))",
+    "ui": {
+      "currentPage": "workspace",
+      "outputTab": "graph",
+      "selectedCell": { "row": 1, "col": 0 },
+      "restoreBanner": "",
+      "sheetStatus": "v-t グラフサンプル",
+      "runtimeStatus": { "text": "サンプルを読み込みました", "tone": "warning" }
+    },
+    "console": {
+      "entries": [],
+      "history": []
+    }
+  }
+}

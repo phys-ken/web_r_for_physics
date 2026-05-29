@@ -233,6 +233,91 @@
       line-height: 1.25;
     }
 
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding:
+        max(12px, env(safe-area-inset-top))
+        max(12px, env(safe-area-inset-right))
+        max(12px, env(safe-area-inset-bottom))
+        max(12px, env(safe-area-inset-left));
+      background: rgba(24, 33, 46, 0.36);
+    }
+
+    .modal-card {
+      width: min(720px, 100%);
+      max-height: min(82vh, 82dvh);
+      display: flex;
+      flex-direction: column;
+      background: var(--panel);
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius);
+      overflow: hidden;
+    }
+
+    .modal-body {
+      min-height: 0;
+      padding: 10px;
+      display: grid;
+      gap: 10px;
+      overflow: auto;
+      background: #f7f9fc;
+    }
+
+    .modal-section {
+      padding: 9px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--panel);
+      display: grid;
+      gap: 8px;
+    }
+
+    .modal-section strong {
+      font-size: 0.84rem;
+    }
+
+    .modal-section p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.75rem;
+      line-height: 1.4;
+    }
+
+    .sample-list {
+      display: grid;
+      gap: 6px;
+    }
+
+    .sample-card {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: #fbfcfe;
+      display: grid;
+      gap: 3px;
+      text-align: left;
+    }
+
+    .sample-card:hover:enabled {
+      background: #eef4fd;
+    }
+
+    .sample-card strong {
+      font-size: 0.8rem;
+    }
+
+    .sample-card span {
+      color: var(--muted);
+      font-size: 0.73rem;
+      line-height: 1.35;
+    }
+
     .workspace {
       flex: 1;
       min-height: 0;
@@ -768,7 +853,7 @@
                     <button id="runScriptButton" class="primary" type="button">コード実行</button>
                   </div>
                 </div>
-                <textarea id="scriptEditor" class="script-editor" spellcheck="false"></textarea>
+                <textarea id="scriptEditor" class="script-editor" spellcheck="false" placeholder="ここに R コードを入力します"></textarea>
               </div>
 
               <div class="output-section">
@@ -868,17 +953,8 @@
           </ul>
           <p>ただし、R ランタイム内部のオブジェクトそのものは保存されません。JSON を読み込んだ後は、必要に応じてスクリプトを再実行してください。</p>
 
-          <h2>コード例</h2>
-          <pre><code>df &lt;- get.input()
-summary(df)
-
-plot(
-  df$time_s,
-  df$distance_m,
-  pch = 19,
-  xlab = "time_s",
-  ylab = "distance_m"
-)</code></pre>
+          <h2>サンプルの読み込み</h2>
+          <p>初期画面は空です。「設定読込 (JSON)」を押すと、自分の JSON ファイルを開くか、授業用サンプルを選べます。サンプルは GitHub 上の個別 JSON として管理しているため、今後の追加や差し替えも簡単です。</p>
 
           <h2>補足</h2>
           <ul>
@@ -894,6 +970,32 @@ plot(
 
   <input id="importFileInput" class="hidden" type="file" accept="application/json,.json">
 
+  <div id="importModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="importModalTitle">
+    <div class="modal-card">
+      <div class="panel-header">
+        <div class="panel-title">
+          <strong id="importModalTitle">設定読込</strong>
+          <span>ファイル読込または授業用サンプルの展開</span>
+        </div>
+        <button id="closeImportModalButton" type="button">閉じる</button>
+      </div>
+      <div class="modal-body">
+        <section class="modal-section">
+          <strong>自分の JSON を開く</strong>
+          <p>保存済みの <code>experiment_setup.json</code> を読み込み、表とスクリプトを復元します。</p>
+          <div class="toolbar-group">
+            <button id="pickImportFileButton" class="primary" type="button">ファイルを選ぶ</button>
+          </div>
+        </section>
+        <section class="modal-section">
+          <strong>物理実験サンプルを開く</strong>
+          <p id="sampleCatalogStatus">サンプル一覧を準備しています。</p>
+          <div id="sampleList" class="sample-list" aria-live="polite"></div>
+        </section>
+      </div>
+    </div>
+  </div>
+
   <div id="loadingOverlay" class="loading-overlay">
     <div class="loading-card">
       <div class="spinner" aria-hidden="true"></div>
@@ -908,10 +1010,12 @@ plot(
     const APP_VERSION = 2;
     const DEFAULT_ROW_COUNT = 12;
     const DEFAULT_COL_COUNT = 6;
-    const DEFAULT_SHEET_NAME = "Measurements";
+    const DEFAULT_SHEET_NAME = "Sheet1";
     const JSON_FILE_NAME = "experiment_setup.json";
     const GRAPH_SCALE = 2;
     const WEBR_BASE_URL = "https://webr.r-wasm.org/v0.6.0/";
+    const SAMPLE_MANIFEST_URL = new URL("./samples/manifest.json", window.location.href);
+    const SAMPLE_BASE_URL = new URL("./samples/", window.location.href);
     const MAX_CONSOLE_ENTRIES = 300;
     const MAX_HISTORY_ENTRIES = 100;
     const SELF_TEST_MODE = new URLSearchParams(window.location.search).get("selftest") === "1";
@@ -922,48 +1026,12 @@ plot(
         {
           id: "sheet-1",
           name: DEFAULT_SHEET_NAME,
-          data: [
-            ["trial", "distance_m", "time_s", "distance_err_m", "time_err_s", "note"],
-            ["1", "0.52", "0.81", "0.01", "0.02", "group_a"],
-            ["2", "0.77", "1.10", "0.01", "0.02", "group_a"],
-            ["3", "1.01", "1.37", "0.02", "0.03", "group_b"],
-            ["4", "1.28", "1.65", "0.02", "0.03", "group_b"],
-            ...Array.from({ length: 8 }, () => Array(DEFAULT_COL_COUNT).fill("")),
-          ],
+          data: createBlankSheetData(),
         },
       ],
     };
 
-    const defaultScript = `df <- get.input()
-df$velocity_m_s <- df$distance_m / df$time_s
-print(df)
-
-plot(
-  df$time_s,
-  df$distance_m,
-  pch = 19,
-  xlab = "time_s",
-  ylab = "distance_m",
-  main = "Distance vs Time"
-)
-arrows(
-  df$time_s - df$time_err_s,
-  df$distance_m,
-  df$time_s + df$time_err_s,
-  df$distance_m,
-  angle = 90,
-  code = 3,
-  length = 0.05
-)
-arrows(
-  df$time_s,
-  df$distance_m - df$distance_err_m,
-  df$time_s,
-  df$distance_m + df$distance_err_m,
-  angle = 90,
-  code = 3,
-  length = 0.05
-)`;
+    const defaultScript = "";
 
     const initialAppState = {
       workbook: structuredClone(initialWorkbook),
@@ -993,6 +1061,12 @@ arrows(
       graphHasImage: false,
       plotSize: { width: 504, height: 360 },
       historyIndex: 0,
+      sampleCatalog: {
+        loaded: false,
+        loading: false,
+        error: "",
+        items: [],
+      },
     };
 
     const elements = {
@@ -1005,6 +1079,11 @@ arrows(
       importButton: document.getElementById("importButton"),
       exportButton: document.getElementById("exportButton"),
       importFileInput: document.getElementById("importFileInput"),
+      importModal: document.getElementById("importModal"),
+      closeImportModalButton: document.getElementById("closeImportModalButton"),
+      pickImportFileButton: document.getElementById("pickImportFileButton"),
+      sampleCatalogStatus: document.getElementById("sampleCatalogStatus"),
+      sampleList: document.getElementById("sampleList"),
       addRowButton: document.getElementById("addRowButton"),
       addColumnButton: document.getElementById("addColumnButton"),
       renameSheetButton: document.getElementById("renameSheetButton"),
@@ -1044,9 +1123,14 @@ arrows(
         button.addEventListener("click", () => setCurrentPage(button.dataset.page));
       });
 
-      elements.importButton.addEventListener("click", () => elements.importFileInput.click());
+      elements.importButton.addEventListener("click", () => {
+        openImportModal().catch((error) => appendSystemLine(`サンプル一覧の準備に失敗しました: ${error.message}`, true));
+      });
       elements.exportButton.addEventListener("click", exportSetup);
       elements.importFileInput.addEventListener("change", handleImportFile);
+      elements.closeImportModalButton.addEventListener("click", closeImportModal);
+      elements.pickImportFileButton.addEventListener("click", () => elements.importFileInput.click());
+      elements.sampleList.addEventListener("click", handleSampleListClick);
       elements.addRowButton.addEventListener("click", addRow);
       elements.addColumnButton.addEventListener("click", addColumn);
       elements.renameSheetButton.addEventListener("click", renameActiveSheet);
@@ -1083,6 +1167,16 @@ arrows(
         button.addEventListener("click", () => setOutputTab(button.dataset.tab));
       });
       elements.downloadGraphButton.addEventListener("click", downloadGraph);
+      elements.importModal.addEventListener("click", (event) => {
+        if (event.target === elements.importModal) {
+          closeImportModal();
+        }
+      });
+      window.addEventListener("keydown", (event) => {
+        if (event.key === "Escape" && !elements.importModal.classList.contains("hidden")) {
+          closeImportModal();
+        }
+      });
       window.addEventListener("resize", () => {
         updateGraphCanvasMetrics();
         syncPlotSizeToR().catch((error) => appendSystemLine(`plot device resize failed: ${error.message}`, true));
@@ -1846,6 +1940,126 @@ arrows(
       };
     }
 
+    async function openImportModal() {
+      elements.importModal.classList.remove("hidden");
+      renderSampleCatalog();
+      if (!state.sampleCatalog.loaded && !state.sampleCatalog.loading) {
+        await loadSampleCatalog();
+      }
+    }
+
+    function closeImportModal() {
+      elements.importModal.classList.add("hidden");
+    }
+
+    async function loadSampleCatalog() {
+      state.sampleCatalog.loading = true;
+      state.sampleCatalog.error = "";
+      renderSampleCatalog();
+      try {
+        const response = await fetch(SAMPLE_MANIFEST_URL, { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const payload = await response.json();
+        if (!payload || !Array.isArray(payload.samples)) {
+          throw new Error("manifest.json の samples が不正です。");
+        }
+        state.sampleCatalog.items = payload.samples.map((sample, index) => {
+          if (!sample || typeof sample !== "object") {
+            throw new Error(`sample ${index + 1} の形式が不正です。`);
+          }
+          return {
+            id: String(sample.id ?? ""),
+            title: String(sample.title ?? ""),
+            description: String(sample.description ?? ""),
+            file: String(sample.file ?? ""),
+          };
+        }).filter((sample) => sample.id && sample.title && sample.file);
+        state.sampleCatalog.loaded = true;
+      } catch (error) {
+        state.sampleCatalog.error = `サンプル一覧を取得できませんでした: ${error.message}`;
+        appendSystemLine(state.sampleCatalog.error, true);
+      } finally {
+        state.sampleCatalog.loading = false;
+        renderSampleCatalog();
+      }
+    }
+
+    function renderSampleCatalog() {
+      if (state.sampleCatalog.loading) {
+        elements.sampleCatalogStatus.textContent = "サンプル一覧を読み込んでいます。";
+        elements.sampleList.replaceChildren();
+        return;
+      }
+
+      if (state.sampleCatalog.error) {
+        elements.sampleCatalogStatus.textContent = state.sampleCatalog.error;
+        elements.sampleList.replaceChildren();
+        return;
+      }
+
+      if (!state.sampleCatalog.items.length) {
+        elements.sampleCatalogStatus.textContent = "利用できるサンプルはまだありません。";
+        elements.sampleList.replaceChildren();
+        return;
+      }
+
+      elements.sampleCatalogStatus.textContent = "選ぶと、そのサンプルの表と R スクリプトを展開します。";
+      const fragment = document.createDocumentFragment();
+      state.sampleCatalog.items.forEach((sample) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "sample-card";
+        button.dataset.sampleId = sample.id;
+
+        const title = document.createElement("strong");
+        title.textContent = sample.title;
+        const description = document.createElement("span");
+        description.textContent = sample.description;
+
+        button.append(title, description);
+        fragment.append(button);
+      });
+      elements.sampleList.replaceChildren(fragment);
+    }
+
+    async function handleSampleListClick(event) {
+      const button = event.target.closest("[data-sample-id]");
+      if (!button) {
+        return;
+      }
+      await loadSampleById(button.dataset.sampleId);
+    }
+
+    async function loadSampleById(sampleId) {
+      const sample = state.sampleCatalog.items.find((entry) => entry.id === sampleId);
+      if (!sample) {
+        appendSystemLine("選択したサンプルが見つかりません。", true);
+        return;
+      }
+
+      try {
+        setBusy(true);
+        const response = await fetch(new URL(sample.file, SAMPLE_BASE_URL), { cache: "no-store" });
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}`);
+        }
+        const payload = await response.json();
+        await applyImportedPayload(payload, {
+          restoreBanner: `サンプル「${sample.title}」を読み込みました。必要に応じてそのままコード実行してください。`,
+          sheetStatus: `サンプル「${sample.title}」を展開しました`,
+          runtimeStatus: { text: `サンプル「${sample.title}」を読み込みました`, tone: "warning" },
+          consoleMessage: `Sample loaded: ${sample.title}`,
+        });
+        closeImportModal();
+      } catch (error) {
+        appendSystemLine(`サンプル読込に失敗しました: ${error.message}`, true);
+      } finally {
+        setBusy(false);
+      }
+    }
+
     function exportSetup() {
       const payload = buildExportPayload();
       const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
@@ -1864,18 +2078,44 @@ arrows(
       }
       try {
         const parsed = JSON.parse(await file.text());
-        state.app = normaliseImportedPayload(parsed);
-        ensureWorkbookShape();
-        applyStateToUi();
-        if (state.ready) {
-          await syncWorkbookToR();
-        }
-        setSheetStatus("設定を読み込みました");
-        appendSystemLine("JSON setup restored. Re-run your script if you need to rebuild the R workspace.");
+        await applyImportedPayload(parsed, {
+          restoreBanner: "前回の画面状態とコンソール出力を復元しました。R 環境そのものは再現されないため、必要ならコードを再実行してください。",
+          sheetStatus: "設定を読み込みました",
+          runtimeStatus: { text: "JSON を読み込みました", tone: "warning" },
+          consoleMessage: "JSON setup restored. Re-run your script if you need to rebuild the R workspace.",
+        });
+        closeImportModal();
       } catch (error) {
         appendSystemLine(`設定読込に失敗しました: ${error.message}`, true);
       } finally {
         event.target.value = "";
+      }
+    }
+
+    async function applyImportedPayload(payload, { restoreBanner, sheetStatus, runtimeStatus, consoleMessage } = {}) {
+      state.app = normaliseImportedPayload(payload);
+      if (typeof restoreBanner === "string") {
+        state.app.ui.restoreBanner = restoreBanner;
+      }
+      if (typeof sheetStatus === "string") {
+        state.app.ui.sheetStatus = sheetStatus;
+      }
+      if (runtimeStatus && typeof runtimeStatus === "object") {
+        state.app.ui.runtimeStatus = {
+          text: String(runtimeStatus.text ?? "JSON を読み込みました"),
+          tone: runtimeStatus.tone === "error" ? "error" : runtimeStatus.tone === "success" ? "success" : runtimeStatus.tone === "warning" ? "warning" : "neutral",
+        };
+      }
+      ensureWorkbookShape();
+      applyStateToUi();
+      if (state.ready) {
+        await syncWorkbookToR();
+      }
+      if (typeof sheetStatus === "string") {
+        setSheetStatus(sheetStatus);
+      }
+      if (consoleMessage) {
+        appendSystemLine(consoleMessage);
       }
     }
 
@@ -1889,7 +2129,7 @@ arrows(
             currentPage: payload.app.ui?.currentPage === "manual" ? "manual" : "workspace",
             outputTab: payload.app.ui?.outputTab === "graph" ? "graph" : "console",
             selectedCell: normaliseSelectedCell(payload.app.ui?.selectedCell),
-            restoreBanner: "前回の画面状態とコンソール出力を復元しました。R 環境そのものは再現されないため、必要ならコードを再実行してください。",
+            restoreBanner: "",
             sheetStatus: "設定を読み込みました",
             runtimeStatus: { text: "JSON を読み込みました", tone: "warning" },
           },
@@ -1914,7 +2154,7 @@ arrows(
             currentPage: "workspace",
             outputTab: "console",
             selectedCell: { row: 0, col: 0 },
-            restoreBanner: "旧形式の JSON を読み込みました。追加の状態情報は既定値で補っています。",
+            restoreBanner: "",
             sheetStatus: "旧形式の設定を読み込みました",
             runtimeStatus: { text: "旧形式 JSON を読み込みました", tone: "warning" },
           },
