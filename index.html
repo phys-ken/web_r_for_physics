@@ -607,57 +607,20 @@
       font-size: 0.8rem;
     }
 
-    .graph-settings {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 0 0 6px;
-      flex-wrap: wrap;
-      font-size: 0.75rem;
-    }
-
-    .graph-settings label,
-    .graph-settings span {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-    }
-
-    .graph-settings input[type="number"] {
-      width: 68px;
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      padding: 0.18rem 0.26rem;
-      font-size: 0.76rem;
-    }
-
-    .graph-settings input[type="color"] {
-      width: 24px;
-      height: 20px;
-      padding: 0;
-      border: 1px solid var(--border);
-      border-radius: 2px;
-      background: transparent;
-    }
-
-    .graph-settings .status-pill {
-      margin-left: auto;
-    }
-
     .graph-shell {
       position: relative;
       flex: 1;
       min-height: 0;
       border: 1px solid var(--border);
       border-radius: 2px;
-      overflow: auto;
+      overflow: hidden;
       background: #fff;
     }
 
     .graph-canvas {
+      width: 100%;
+      height: 100%;
       display: block;
-      max-width: none;
-      max-height: none;
       background: transparent;
     }
 
@@ -932,15 +895,6 @@
                     </div>
                   </div>
                   <div class="output-panel" data-panel="graph">
-                    <div class="graph-settings">
-                      <label><input id="graphUsePaneSizeCheckbox" type="checkbox" checked>ペインサイズ</label>
-                      <label>W<input id="graphWidthInput" type="number" min="160" step="20" value="720"></label>
-                      <label>H<input id="graphHeightInput" type="number" min="120" step="20" value="480"></label>
-                      <label>背景<input id="graphBgInput" type="color" value="#ffffff"></label>
-                      <label>色<input id="graphAccentInput" type="color" value="#1d4ed8"></label>
-                      <button id="applyGraphSettingsButton" type="button">反映</button>
-                      <span id="graphSizeStatus" class="status-pill">出力 720 × 480</span>
-                    </div>
                     <div class="graph-shell">
                       <canvas id="graphCanvas" class="graph-canvas"></canvas>
                       <div id="graphEmptyState" class="graph-empty">
@@ -1095,20 +1049,12 @@
     const DEFAULT_COL_COUNT = 6;
     const DEFAULT_SHEET_NAME = "Sheet1";
     const JSON_FILE_NAME = "experiment_setup.json";
-    const GRAPH_SCALE = 2;
     const WEBR_BASE_URL = "https://webr.r-wasm.org/v0.6.0/";
     const SAMPLE_MANIFEST_URL = new URL("./samples/manifest.json", window.location.href);
     const SAMPLE_BASE_URL = new URL("./samples/", window.location.href);
     const MAX_CONSOLE_ENTRIES = 300;
     const MAX_HISTORY_ENTRIES = 100;
     const SELF_TEST_MODE = new URLSearchParams(window.location.search).get("selftest") === "1";
-    const DEFAULT_GRAPH_SETTINGS = {
-      usePaneSize: true,
-      width: 720,
-      height: 480,
-      bg: "#ffffff",
-      accent: "#1d4ed8",
-    };
 
     const initialWorkbook = {
       activeSheetId: "sheet-1",
@@ -1126,7 +1072,6 @@
     const initialAppState = {
       workbook: structuredClone(initialWorkbook),
       script: defaultScript,
-      graph: structuredClone(DEFAULT_GRAPH_SETTINGS),
       ui: {
         currentPage: "workspace",
         outputTab: "console",
@@ -1151,7 +1096,6 @@
       busy: false,
       graphHasImage: false,
       plotSize: { width: 504, height: 360 },
-      graphPanelSize: { width: 504, height: 360 },
       historyIndex: 0,
       sampleCatalog: {
         loaded: false,
@@ -1178,13 +1122,6 @@
       pickImportFileButton: document.getElementById("pickImportFileButton"),
       sampleCatalogStatus: document.getElementById("sampleCatalogStatus"),
       sampleList: document.getElementById("sampleList"),
-      graphUsePaneSizeCheckbox: document.getElementById("graphUsePaneSizeCheckbox"),
-      graphWidthInput: document.getElementById("graphWidthInput"),
-      graphHeightInput: document.getElementById("graphHeightInput"),
-      graphBgInput: document.getElementById("graphBgInput"),
-      graphAccentInput: document.getElementById("graphAccentInput"),
-      applyGraphSettingsButton: document.getElementById("applyGraphSettingsButton"),
-      graphSizeStatus: document.getElementById("graphSizeStatus"),
       addRowButton: document.getElementById("addRowButton"),
       addColumnButton: document.getElementById("addColumnButton"),
       renameSheetButton: document.getElementById("renameSheetButton"),
@@ -1238,7 +1175,6 @@
       elements.closeImportModalButton.addEventListener("click", closeImportModal);
       elements.pickImportFileButton.addEventListener("click", () => elements.importFileInput.click());
       elements.sampleList.addEventListener("click", handleSampleListClick);
-      elements.applyGraphSettingsButton.addEventListener("click", applyGraphSettings);
       elements.openGraphViewerButton.addEventListener("click", openGraphViewer);
       elements.closeGraphViewerButton.addEventListener("click", closeGraphViewer);
       elements.addRowButton.addEventListener("click", addRow);
@@ -1297,10 +1233,8 @@
         }
       });
       window.addEventListener("resize", () => {
-        updateGraphCanvasMetrics({ clearGraphIfPaneSized: true });
-        if (state.app.graph.usePaneSize) {
-          syncPlotSizeToR().catch((error) => appendSystemLine(`plot device resize failed: ${error.message}`, true));
-        }
+        updateGraphCanvasMetrics({ clearGraphOnResize: true });
+        syncPlotSizeToR().catch((error) => appendSystemLine(`plot device resize failed: ${error.message}`, true));
       });
     }
 
@@ -1378,7 +1312,6 @@
       renderRestoreBanner();
       renderWorkbook();
       renderConsoleEntries();
-      renderGraphSettings();
       setCurrentPage(state.app.ui.currentPage, { persist: false });
       setOutputTab(state.app.ui.outputTab, { persist: false });
       setSheetStatus(state.app.ui.sheetStatus);
@@ -1509,28 +1442,10 @@
 
     async function executeRSource(code, { printEval = false } = {}) {
       const escapedCode = escapeRString(code);
-      const theme = getGraphTheme();
       const shelter = await new state.webR.Shelter();
       try {
         const capture = await shelter.captureR(
           `
-          .webr_graph_defaults <- list(
-            bg = ${escapeRString(theme.bg)},
-            fg = ${escapeRString(theme.fg)},
-            accent = ${escapeRString(theme.accent)}
-          )
-          get.graph.settings <- function() .webr_graph_defaults
-          .webr_old_par <- par(no.readonly = TRUE)
-          on.exit(par(.webr_old_par), add = TRUE)
-          par(
-            bg = .webr_graph_defaults$bg,
-            fg = .webr_graph_defaults$fg,
-            col.axis = .webr_graph_defaults$fg,
-            col.lab = .webr_graph_defaults$fg,
-            col.main = .webr_graph_defaults$fg,
-            col.sub = .webr_graph_defaults$fg,
-            col = .webr_graph_defaults$accent
-          )
           tryCatch(
             source(
               textConnection(${escapedCode}),
@@ -1550,7 +1465,7 @@
             captureGraphics: {
               width: state.plotSize.width,
               height: state.plotSize.height,
-              bg: theme.bg,
+              bg: "white",
             },
           },
         );
@@ -1582,7 +1497,6 @@
         roundTrip.script !== state.app.script
         || roundTrip.workbook.sheets.length !== state.app.workbook.sheets.length
         || roundTrip.ui.outputTab !== state.app.ui.outputTab
-        || roundTrip.graph.bg !== state.app.graph.bg
       ) {
         throw new Error("SELFTEST failed during JSON round-trip.");
       }
@@ -2009,31 +1923,22 @@
       });
     }
 
-    function updateGraphCanvasMetrics({ clearGraphIfPaneSized = false } = {}) {
+    function updateGraphCanvasMetrics({ clearGraphOnResize = false } = {}) {
       const rect = elements.graphShell.getBoundingClientRect();
-      state.graphPanelSize = {
+      const nextPlotSize = {
         width: Math.max(320, Math.floor(rect.width || 640)),
         height: Math.max(220, Math.floor(rect.height || 360)),
       };
-
-      const nextPlotSize = state.app.graph.usePaneSize
-        ? { ...state.graphPanelSize }
-        : {
-            width: Math.max(160, state.app.graph.width),
-            height: Math.max(120, state.app.graph.height),
-          };
       const sizeChanged = nextPlotSize.width !== state.plotSize.width || nextPlotSize.height !== state.plotSize.height;
       state.plotSize = nextPlotSize;
 
       elements.graphCanvas.width = state.plotSize.width;
       elements.graphCanvas.height = state.plotSize.height;
-      elements.graphCanvas.style.width = `${state.plotSize.width}px`;
-      elements.graphCanvas.style.height = `${state.plotSize.height}px`;
-      elements.graphCanvas.style.background = state.app.graph.bg;
-      elements.graphShell.style.background = state.app.graph.bg;
-      elements.graphSizeStatus.textContent = `出力 ${state.plotSize.width} × ${state.plotSize.height}`;
+      elements.graphCanvas.style.width = "100%";
+      elements.graphCanvas.style.height = "100%";
+      elements.graphShell.style.background = "#fff";
 
-      if (clearGraphIfPaneSized && sizeChanged && state.graphHasImage && state.app.graph.usePaneSize) {
+      if (clearGraphOnResize && sizeChanged && state.graphHasImage) {
         clearGraphPreview("グラフサイズを更新しました", "画面サイズ変更後は、必要に応じてコードを再実行してください。");
         return;
       }
@@ -2104,51 +2009,6 @@
       elements.graphViewerModal.classList.add("hidden");
     }
 
-    function renderGraphSettings() {
-      elements.graphUsePaneSizeCheckbox.checked = state.app.graph.usePaneSize;
-      elements.graphWidthInput.value = String(state.app.graph.width);
-      elements.graphHeightInput.value = String(state.app.graph.height);
-      elements.graphBgInput.value = state.app.graph.bg;
-      elements.graphAccentInput.value = state.app.graph.accent;
-      elements.graphWidthInput.disabled = state.app.graph.usePaneSize;
-      elements.graphHeightInput.disabled = state.app.graph.usePaneSize;
-    }
-
-    function applyGraphSettings() {
-      const nextSettings = normaliseGraphSettings({
-        usePaneSize: elements.graphUsePaneSizeCheckbox.checked,
-        width: elements.graphWidthInput.value,
-        height: elements.graphHeightInput.value,
-        bg: elements.graphBgInput.value,
-        accent: elements.graphAccentInput.value,
-      });
-      const changed = JSON.stringify(nextSettings) !== JSON.stringify(state.app.graph);
-      state.app.graph = nextSettings;
-      renderGraphSettings();
-      updateGraphCanvasMetrics();
-      if (changed) {
-        clearGraphPreview("グラフ設定を変更しました", "反映するにはコードを再実行してください。");
-        setRuntimeStatus("グラフ設定を更新しました", "warning");
-      }
-    }
-
-    function getGraphTheme() {
-      return {
-        bg: state.app.graph.bg,
-        accent: state.app.graph.accent,
-        fg: getReadableTextColor(state.app.graph.bg),
-      };
-    }
-
-    function getReadableTextColor(hex) {
-      const value = sanitizeHexColor(hex, "#ffffff").slice(1);
-      const red = parseInt(value.slice(0, 2), 16) / 255;
-      const green = parseInt(value.slice(2, 4), 16) / 255;
-      const blue = parseInt(value.slice(4, 6), 16) / 255;
-      const luminance = (0.2126 * red) + (0.7152 * green) + (0.0722 * blue);
-      return luminance < 0.55 ? "#f8fafc" : "#1f2937";
-    }
-
     function buildExportPayload() {
       return {
         version: APP_VERSION,
@@ -2156,7 +2016,6 @@
         app: {
           workbook: structuredClone(state.app.workbook),
           script: state.app.script,
-          graph: structuredClone(state.app.graph),
           ui: {
             currentPage: state.app.ui.currentPage,
             outputTab: state.app.ui.outputTab,
@@ -2358,7 +2217,6 @@
         return {
           workbook: payload.app.workbook,
           script: String(payload.app.script ?? ""),
-          graph: normaliseGraphSettings(payload.app.graph),
           ui: {
             currentPage: payload.app.ui?.currentPage === "manual" ? "manual" : "workspace",
             outputTab: payload.app.ui?.outputTab === "graph" ? "graph" : "console",
@@ -2384,7 +2242,6 @@
         return {
           workbook: payload.workbook,
           script: String(payload.script ?? ""),
-          graph: structuredClone(DEFAULT_GRAPH_SETTINGS),
           ui: {
             currentPage: "workspace",
             outputTab: "console",
@@ -2424,20 +2281,6 @@
       return { row, col };
     }
 
-    function normaliseGraphSettings(value) {
-      return {
-        usePaneSize: value?.usePaneSize !== false,
-        width: Math.max(160, Number.parseInt(value?.width, 10) || DEFAULT_GRAPH_SETTINGS.width),
-        height: Math.max(120, Number.parseInt(value?.height, 10) || DEFAULT_GRAPH_SETTINGS.height),
-        bg: sanitizeHexColor(value?.bg, DEFAULT_GRAPH_SETTINGS.bg),
-        accent: sanitizeHexColor(value?.accent, DEFAULT_GRAPH_SETTINGS.accent),
-      };
-    }
-
-    function sanitizeHexColor(value, fallback) {
-      const text = String(value ?? "").trim();
-      return /^#[0-9a-fA-F]{6}$/.test(text) ? text.toLowerCase() : fallback;
-    }
 
     function ensureWorkbookShape() {
       if (!state.app.workbook.sheets.length) {
