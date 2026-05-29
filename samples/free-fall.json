@@ -25,7 +25,14 @@
         }
       ]
     },
-    "script": "df <- subset(get.input(), !is.na(height_m))\ndf$time_mean_s <- rowMeans(df[c(\"time_1_s\", \"time_2_s\", \"time_3_s\")], na.rm = TRUE)\ndf$time_sd_s <- apply(df[c(\"time_1_s\", \"time_2_s\", \"time_3_s\")], 1, sd, na.rm = TRUE)\ndf$time_sq_s2 <- df$time_mean_s^2\nfit <- lm(height_m ~ 0 + time_sq_s2, data = df)\nplot(df$time_sq_s2, df$height_m,\n  pch = 19, col = \"steelblue\", cex = 1.6,\n  xlab = \"mean time^2_s2\", ylab = \"height_m\",\n  main = \"Free Fall\"\n)\narrows(df$time_sq_s2 - 2 * df$time_mean_s * df$time_sd_s, df$height_m,\n  df$time_sq_s2 + 2 * df$time_mean_s * df$time_sd_s, df$height_m,\n  angle = 90, code = 3, length = 0.05\n)\nabline(a = 0, b = coef(fit)[1], col = \"navy\", lwd = 2)\nprint(df[c(\"height_m\", \"time_mean_s\", \"time_sd_s\", \"time_sq_s2\")])\ncat(sprintf(\"Estimated g: %.2f m/s^2\\n\", 2 * coef(fit)[1]))",
+    "graph": {
+      "usePaneSize": false,
+      "width": 840,
+      "height": 480,
+      "bg": "#f5fbff",
+      "accent": "#0369a1"
+    },
+    "script": "df <- subset(get.input(), !is.na(height_m))\ndf$time_mean_s <- rowMeans(df[c(\"time_1_s\", \"time_2_s\", \"time_3_s\")], na.rm = TRUE)\ndf$time_sd_s <- apply(df[c(\"time_1_s\", \"time_2_s\", \"time_3_s\")], 1, sd, na.rm = TRUE)\ndf$time_sq_s2 <- df$time_mean_s^2\nfit <- lm(height_m ~ 0 + time_sq_s2, data = df)\ntheme <- get.graph.settings()\nplot(df$time_sq_s2, df$height_m,\n  pch = 19, col = theme$accent, cex = 1.6,\n  xlab = \"mean time^2_s2\", ylab = \"height_m\",\n  main = \"Free Fall\"\n)\narrows(df$time_sq_s2 - 2 * df$time_mean_s * df$time_sd_s, df$height_m,\n  df$time_sq_s2 + 2 * df$time_mean_s * df$time_sd_s, df$height_m,\n  angle = 90, code = 3, length = 0.05\n)\nabline(a = 0, b = coef(fit)[1], col = theme$fg, lwd = 2)\nprint(df[c(\"height_m\", \"time_mean_s\", \"time_sd_s\", \"time_sq_s2\")])\ncat(sprintf(\"Estimated g: %.2f m/s^2\\n\", 2 * coef(fit)[1]))",
     "ui": {
       "currentPage": "workspace",
       "outputTab": "graph",

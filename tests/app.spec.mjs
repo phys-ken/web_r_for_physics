@@ -22,10 +22,16 @@ test("manual navigation, webR execution, graph render, and JSON round-trip", asy
   await page.getByRole("button", { name: "単振り子" }).click();
   await expect(page.locator("#scriptEditor")).toHaveValue(/Simple Pendulum/, { timeout: 30000 });
   await expect(page.locator("#sheetTabs")).toContainText("pendulum");
+  await expect(page.locator("#graphWidthInput")).toHaveValue("820");
+  await expect(page.locator("#graphHeightInput")).toHaveValue("520");
+  await expect(page.locator("#graphBgInput")).toHaveValue("#fffdf7");
 
   await page.getByRole("button", { name: "グラフ", exact: true }).click();
   await page.getByRole("button", { name: "コード実行" }).click();
   await expect(page.locator("#graphEmptyState")).toBeHidden({ timeout: 30000 });
+  await expect(page.locator("#graphCanvas")).toHaveJSProperty("width", 820);
+  await expect(page.locator("#graphCanvas")).toHaveJSProperty("height", 520);
+  await expect(page.locator("#graphSizeStatus")).toContainText("820 × 520");
   const pixelStats = await page.evaluate(() => {
     const canvas = document.getElementById("graphCanvas");
     const ctx = canvas.getContext("2d");
@@ -51,6 +57,11 @@ test("manual navigation, webR execution, graph render, and JSON round-trip", asy
   });
   expect(pixelStats.nonWhitePixels).toBeGreaterThan(1500);
   expect(pixelStats.darkPixels).toBeGreaterThan(400);
+
+  await page.getByRole("button", { name: "全体表示" }).click();
+  await expect(page.getByRole("dialog", { name: "グラフ全体表示" })).toBeVisible();
+  await expect(page.locator("#graphViewerMeta")).toContainText("820 × 520");
+  await page.getByRole("button", { name: "閉じる" }).click();
 
   const downloadPromise = page.waitForEvent("download");
   await page.getByRole("button", { name: "設定保存 (JSON)" }).click();

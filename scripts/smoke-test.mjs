@@ -19,6 +19,8 @@ assert.match(html, /console:\s*\{\s*entries:/);
 assert.match(html, /normaliseImportedPayload/);
 assert.match(html, /height: 100dvh/);
 assert.match(html, /物理実験サンプルを開く/);
+assert.match(html, /graphUsePaneSizeCheckbox/);
+assert.match(html, /graphViewerModal/);
 assert.equal(manifest.samples.length, 5);
 
 console.log("Smoke test passed: index.html and sample manifest contain the expected app scaffolding.");

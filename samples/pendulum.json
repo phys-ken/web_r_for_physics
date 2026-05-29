@@ -25,7 +25,14 @@
         }
       ]
     },
-    "script": "df <- subset(get.input(), !is.na(length_m))\ndf$sqrt_length_m <- sqrt(df$length_m)\ndf$period_mean_s <- rowMeans(df[c(\"period_1_s\", \"period_2_s\", \"period_3_s\")], na.rm = TRUE)\ndf$period_sd_s <- apply(df[c(\"period_1_s\", \"period_2_s\", \"period_3_s\")], 1, sd, na.rm = TRUE)\nfit <- lm(period_mean_s ~ sqrt_length_m, data = df)\nplot(df$sqrt_length_m, df$period_mean_s,\n  pch = 19, col = \"firebrick\", cex = 1.6,\n  xlab = \"sqrt(length_m)\", ylab = \"mean period_s\",\n  main = \"Simple Pendulum\"\n)\narrows(df$sqrt_length_m, df$period_mean_s - df$period_sd_s,\n  df$sqrt_length_m, df$period_mean_s + df$period_sd_s,\n  angle = 90, code = 3, length = 0.05\n)\nabline(fit, col = \"navy\", lwd = 2)\nprint(df[c(\"length_m\", \"period_mean_s\", \"period_sd_s\")])\nsummary(fit)",
+    "graph": {
+      "usePaneSize": false,
+      "width": 820,
+      "height": 520,
+      "bg": "#fffdf7",
+      "accent": "#b91c1c"
+    },
+    "script": "df <- subset(get.input(), !is.na(length_m))\ndf$sqrt_length_m <- sqrt(df$length_m)\ndf$period_mean_s <- rowMeans(df[c(\"period_1_s\", \"period_2_s\", \"period_3_s\")], na.rm = TRUE)\ndf$period_sd_s <- apply(df[c(\"period_1_s\", \"period_2_s\", \"period_3_s\")], 1, sd, na.rm = TRUE)\nfit <- lm(period_mean_s ~ sqrt_length_m, data = df)\ntheme <- get.graph.settings()\nplot(df$sqrt_length_m, df$period_mean_s,\n  pch = 19, col = theme$accent, cex = 1.6,\n  xlab = \"sqrt(length_m)\", ylab = \"mean period_s\",\n  main = \"Simple Pendulum\"\n)\narrows(df$sqrt_length_m, df$period_mean_s - df$period_sd_s,\n  df$sqrt_length_m, df$period_mean_s + df$period_sd_s,\n  angle = 90, code = 3, length = 0.05\n)\nabline(fit, col = theme$fg, lwd = 2)\nprint(df[c(\"length_m\", \"period_mean_s\", \"period_sd_s\")])\nsummary(fit)",
     "ui": {
       "currentPage": "workspace",
       "outputTab": "graph",
