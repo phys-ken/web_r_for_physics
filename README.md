@@ -2,6 +2,8 @@
 
 高校の理科実験向けに作った、**単一 `index.html` 完結** の webR データ解析ツールです。GitHub Pages にそのまま配置でき、iPad の Safari / Chrome でも使えるように、RStudio 風の 2 ペイン UI と軽量な表入力を 1 画面に収めています。
 
+公開サイト: https://phys-ken.github.io/web_r_for_physics/
+
 ## できること
 
 - 左ペインで複数シートの測定データを入力
