@@ -1219,7 +1219,6 @@ arrows(
       }
 
       if (data.event === "canvasImage" && data.image) {
-        graphContext.clearRect(0, 0, elements.graphCanvas.width, elements.graphCanvas.height);
         graphContext.drawImage(data.image, 0, 0, elements.graphCanvas.width, elements.graphCanvas.height);
         state.graphHasImage = true;
         elements.graphEmptyState.classList.add("hidden");
