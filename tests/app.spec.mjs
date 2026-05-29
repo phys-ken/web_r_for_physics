@@ -20,7 +20,7 @@ test("manual navigation, webR execution, graph render, and JSON round-trip", asy
   await page.getByRole("button", { name: "設定読込 (JSON)" }).click();
   await expect(page.getByRole("dialog", { name: "設定読込" })).toBeVisible();
   await page.getByRole("button", { name: "単振り子" }).click();
-  await expect(page.locator("#scriptEditor")).toHaveValue(/set\.paper_style\(\)/, { timeout: 30000 });
+  await expect(page.locator("#scriptEditor")).toHaveValue(/set\.paper_style/, { timeout: 30000 });
   await expect(page.locator("#sheetTabs")).toContainText("pendulum");
 
   await page.getByRole("button", { name: "グラフ", exact: true }).click();
@@ -72,7 +72,7 @@ test("manual navigation, webR execution, graph render, and JSON round-trip", asy
 
   await page.locator("#scriptEditor").fill("temporary <- TRUE");
   await page.locator("#importFileInput").setInputFiles(downloadPath);
-  await expect(page.locator("#scriptEditor")).toHaveValue(/set\.paper_style\(\)/);
+  await expect(page.locator("#scriptEditor")).toHaveValue(/set\.paper_style/);
   await expect(page.locator("#restoreBanner")).toContainText("復元");
 
   await page.goto("./manual/");

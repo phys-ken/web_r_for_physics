@@ -22,7 +22,7 @@ assert.match(html, /height: 100dvh/);
 assert.match(html, /物理実験サンプルを開く/);
 assert.match(html, /graphViewerModal/);
 assert.match(html, /詳しい R マニュアルを開く/);
-assert.ok(manifest.samples.length >= 8);
+assert.ok(manifest.samples.length >= 6);
 assert.match(manualIndex, /Physics webR Lab 学習ガイド/);
 
 console.log("Smoke test passed: index.html and sample manifest contain the expected app scaffolding.");

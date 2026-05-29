@@ -1281,7 +1281,7 @@
           stop("sheet must be NULL, a sheet name, or a 1-based sheet index.")
         }
         set.paper_style <- function(
-          mar = c(3.8, 4.1, 0.9, 0.6),
+          mar = c(4.1, 4.1, 1.8, 0.8),
           mgp = c(2.3, 0.7, 0),
           cex = 0.95,
           tcl = -0.25,
@@ -1301,6 +1301,23 @@
             xaxs = "r",
             yaxs = "r"
           )
+        }
+        add.paper_guides <- function(
+          show_grid = TRUE,
+          show_top_axis = FALSE,
+          show_right_axis = FALSE,
+          grid_col = "#e5e7eb"
+        ) {
+          if (show_grid) {
+            grid(col = grid_col, lty = 1, lwd = 0.8)
+          }
+          if (show_top_axis) {
+            axis(3, at = axTicks(1), labels = FALSE, tcl = -0.15)
+          }
+          if (show_right_axis) {
+            axis(4, at = axTicks(2), labels = FALSE, tcl = -0.15)
+          }
+          box(bty = "l")
         }
       `);
       elements.loadingMessage.textContent = "入力シートを R に同期しています。";

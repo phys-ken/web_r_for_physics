@@ -44,7 +44,7 @@
         }
       ]
     },
-    "script": "df <- subset(get.input(), !is.na(time_s))\nset.paper_style(mar = c(3.8, 4.1, 0.7, 0.6))\nplot(df$time_s, df$position_m,\n  type = \"l\", lwd = 2, col = \"#1f77b4\",\n  xlab = \"Time / s\", ylab = \"Position / m\"\n)\npoints(df$time_s[c(TRUE, FALSE, FALSE)], df$position_m[c(TRUE, FALSE, FALSE)], pch = 16, cex = 0.65, col = \"#1f77b4\")\ncat(sprintf(\"Logger rows: %d\\n\", nrow(df)))\ncat(sprintf(\"Position range: %.3f to %.3f m\\n\", min(df$position_m), max(df$position_m)))",
+    "script": "df <- subset(get.input(), !is.na(time_s))\nset.paper_style(mar = c(4.0, 4.1, 2.0, 0.8))\nplot(df$time_s, df$position_m,\n  type = \"l\", lwd = 2, col = \"#1f77b4\",\n  xlab = \"Time / s\", ylab = \"Position / m\",\n  main = \"Damped oscillation from motion sensor\"\n)\nadd.paper_guides(show_grid = TRUE, show_top_axis = TRUE)\npoints(df$time_s[c(TRUE, FALSE, FALSE)], df$position_m[c(TRUE, FALSE, FALSE)], pch = 16, cex = 0.65, col = \"#1f77b4\")\ncat(sprintf(\"Logger rows: %d\\n\", nrow(df)))\ncat(sprintf(\"Position range: %.3f to %.3f m\\n\", min(df$position_m), max(df$position_m)))",
     "ui": {
       "currentPage": "workspace",
       "outputTab": "graph",

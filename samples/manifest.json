@@ -7,21 +7,15 @@
       "file": "pendulum.json"
     },
     {
-      "id": "ohms-law",
-      "title": "オームの法則",
-      "description": "電流と電圧の比例関係をプロットし、抵抗値を近似します。",
-      "file": "ohms-law.json"
-    },
-    {
       "id": "velocity-time",
       "title": "v-t グラフ",
-      "description": "等加速度運動の速度-時間グラフから加速度を読み取ります。",
+      "description": "速度-時間の散布図に補助 grid と回帰直線を重ね、加速度を読み取ります。",
       "file": "velocity-time.json"
     },
     {
       "id": "hookes-law",
       "title": "フックの法則",
-      "description": "ばねの伸びと力の比例関係を整理し、ばね定数を求めます。",
+      "description": "ばねの伸びと力の関係を、上・右の補助軸付き散布図で整理します。",
       "file": "hookes-law.json"
     },
     {
@@ -33,13 +27,13 @@
     {
       "id": "position-time",
       "title": "等加速度直線運動の x-t グラフ",
-      "description": "位置と時刻の散布図から、2次近似で等加速度運動を読み取ります。",
+      "description": "位置と時刻の散布図に 2 次近似と grid を重ね、等加速度運動を読み取ります。",
       "file": "position-time.json"
     },
     {
       "id": "logger-oscillation",
       "title": "データロガー時系列",
-      "description": "運動センサーで取った減衰振動の時系列を線グラフで確認します。",
+      "description": "運動センサーで取った減衰振動を、タイトル付き線グラフで確認します。",
       "file": "logger-oscillation.json"
     },
     {
