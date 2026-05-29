@@ -655,6 +655,160 @@
       margin-bottom: 6px;
     }
 
+    .dataframe-layout {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      grid-template-columns: minmax(180px, 220px) minmax(0, 1fr);
+      gap: 6px;
+    }
+
+    .dataframe-sidebar,
+    .dataframe-preview {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .dataframe-sidebar-meta,
+    .dataframe-preview-meta {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      padding: 0.28rem 0.45rem;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: #f7f9fc;
+      color: var(--muted);
+      font-size: 0.74rem;
+    }
+
+    .dataframe-list {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      display: grid;
+      align-content: start;
+      gap: 4px;
+      padding: 4px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: #fff;
+    }
+
+    .dataframe-item {
+      width: 100%;
+      padding: 0.42rem 0.5rem;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: #fff;
+      display: grid;
+      gap: 2px;
+      text-align: left;
+    }
+
+    .dataframe-item.active {
+      background: #e9f1ff;
+      border-color: var(--accent);
+      color: var(--accent);
+    }
+
+    .dataframe-item strong {
+      font-size: 0.78rem;
+      font-weight: 650;
+    }
+
+    .dataframe-item span {
+      color: var(--muted);
+      font-size: 0.72rem;
+    }
+
+    .dataframe-table-wrap {
+      flex: 1;
+      min-height: 0;
+      overflow: auto;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: #fff;
+    }
+
+    .dataframe-empty {
+      flex: 1;
+      min-height: 0;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: 2px;
+      background: linear-gradient(180deg, #fbfdff, #f4f8ff);
+      color: var(--muted);
+    }
+
+    .dataframe-empty strong {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--text);
+    }
+
+    .dataframe-placeholder {
+      padding: 0.5rem;
+      color: var(--muted);
+      font-size: 0.74rem;
+    }
+
+    table.dataframe-table {
+      width: max-content;
+      min-width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 0.78rem;
+    }
+
+    .dataframe-table th,
+    .dataframe-table td {
+      border: 1px solid var(--border);
+      min-width: 88px;
+      padding: 0.28rem 0.38rem;
+      text-align: left;
+      vertical-align: top;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .dataframe-table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #eef4fd;
+      font-weight: 650;
+    }
+
+    .dataframe-table .dataframe-row-label {
+      position: sticky;
+      left: 0;
+      z-index: 1;
+      min-width: 52px;
+      background: #f7f9fc;
+      color: var(--muted);
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .dataframe-table thead .dataframe-row-label {
+      z-index: 3;
+    }
+
+    .dataframe-column-note {
+      display: block;
+      margin-top: 0.15rem;
+      color: var(--muted);
+      font-size: 0.68rem;
+      font-weight: 500;
+    }
+
     .manual-page {
       min-height: 0;
       padding: 0;
@@ -826,6 +980,13 @@
         grid-template-columns: 1fr;
       }
     }
+
+    @media (max-width: 900px) {
+      .dataframe-layout {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(120px, auto) minmax(0, 1fr);
+      }
+    }
   </style>
 </head>
 <body>
@@ -894,6 +1055,7 @@
                   <div class="output-tabs">
                     <button class="output-tab active" type="button" data-tab="console">コンソール</button>
                     <button class="output-tab" type="button" data-tab="graph">グラフ</button>
+                    <button class="output-tab" type="button" data-tab="dataframe">データフレーム</button>
                   </div>
                   <div class="toolbar-group">
                     <button id="openGraphViewerButton" type="button">全体表示</button>
@@ -919,6 +1081,24 @@
                       </div>
                     </div>
                   </div>
+                  <div class="output-panel" data-panel="dataframe">
+                    <div class="dataframe-layout">
+                      <div class="dataframe-sidebar">
+                        <div id="dataframeListMeta" class="dataframe-sidebar-meta">R セッション内の data.frame 一覧</div>
+                        <div id="dataframeList" class="dataframe-list" aria-live="polite"></div>
+                      </div>
+                      <div class="dataframe-preview">
+                        <div id="dataframePreviewMeta" class="dataframe-preview-meta">プレビューはここに表示されます</div>
+                        <div id="dataframeEmptyState" class="dataframe-empty">
+                          <div>
+                            <strong id="dataframeEmptyTitle">まだ data.frame がありません</strong>
+                            <div id="dataframeEmptyMessage">コード実行後に .GlobalEnv 内の data.frame をここへ一覧表示します。</div>
+                          </div>
+                        </div>
+                        <div id="dataframeTableWrap" class="dataframe-table-wrap hidden"></div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
@@ -938,7 +1118,7 @@
                 <li>左側の表に測定値を入力します。</li>
                 <li>1 行目は列名です。日本語や記号を入れても R 互換名へ自動調整されます。</li>
                 <li>右上のエディタに R コードを書いて「コード実行」を押します。</li>
-                <li>結果は右下の「コンソール」または「グラフ」で確認します。</li>
+                <li>結果は右下の「コンソール」「グラフ」「データフレーム」で確認します。</li>
               </ol>
             </section>
             <section class="manual-box">
@@ -967,6 +1147,9 @@
           <ul>
             <li>Ctrl / Command + Enter でスクリプト実行できます。</li>
             <li>コンソール入力欄では上下キーで実行履歴をたどれます。</li>
+            <li>スクリプト実行では <code>head(df)</code> や <code>summary(df)</code> などの結果もコンソールへ表示されます。</li>
+            <li>右下の「データフレーム」タブでは、R セッション内の <code>data.frame</code> 一覧と先頭行プレビューを確認できます。</li>
+            <li>左側シートは TSV をそのまま複数セルへ貼り付けできます。</li>
             <li><code>ggplot2</code> を使うときは初回のみ読み込みが少し長くなることがあります。</li>
             <li>細かい作図調整は、R コード側で <code>par()</code> や <code>set.paper_style()</code> を使って設定してください。</li>
           </ul>
@@ -1039,6 +1222,14 @@
     const WEBR_BASE_URL = "https://webr.r-wasm.org/v0.6.0/";
     const SAMPLE_MANIFEST_URL = new URL("./samples/manifest.json", window.location.href);
     const SAMPLE_BASE_URL = new URL("./samples/", window.location.href);
+    const OUTPUT_TABS = ["console", "graph", "dataframe"];
+    const DATAFRAME_PREVIEW_ROWS = 100;
+    const DATAFRAME_LIST_START = "__WEBR_DF_LIST_START__";
+    const DATAFRAME_LIST_END = "__WEBR_DF_LIST_END__";
+    const DATAFRAME_PREVIEW_START = "__WEBR_DF_PREVIEW_START__";
+    const DATAFRAME_PREVIEW_END = "__WEBR_DF_PREVIEW_END__";
+    const DATAFRAME_FIELD_SEP = "__WEBR_DF_FIELD__";
+    const DATAFRAME_RECORD_SEP = "__WEBR_DF_RECORD__";
     const MAX_CONSOLE_ENTRIES = 300;
     const MAX_HISTORY_ENTRIES = 100;
     const SELF_TEST_MODE = new URLSearchParams(window.location.search).get("selftest") === "1";
@@ -1071,6 +1262,7 @@
         entries: [],
         history: [],
       },
+      dataframes: createEmptyDataFrameState(),
       runtime: {
         ggplot2Ready: false,
       },
@@ -1127,6 +1319,13 @@
       graphEmptyState: document.getElementById("graphEmptyState"),
       graphEmptyTitle: document.getElementById("graphEmptyTitle"),
       graphEmptyMessage: document.getElementById("graphEmptyMessage"),
+      dataframeListMeta: document.getElementById("dataframeListMeta"),
+      dataframeList: document.getElementById("dataframeList"),
+      dataframePreviewMeta: document.getElementById("dataframePreviewMeta"),
+      dataframeEmptyState: document.getElementById("dataframeEmptyState"),
+      dataframeEmptyTitle: document.getElementById("dataframeEmptyTitle"),
+      dataframeEmptyMessage: document.getElementById("dataframeEmptyMessage"),
+      dataframeTableWrap: document.getElementById("dataframeTableWrap"),
       downloadGraphButton: document.getElementById("downloadGraphButton"),
       graphShell: document.querySelector(".graph-shell"),
       openGraphViewerButton: document.getElementById("openGraphViewerButton"),
@@ -1198,6 +1397,13 @@
       });
       elements.outputTabs.forEach((button) => {
         button.addEventListener("click", () => setOutputTab(button.dataset.tab));
+      });
+      elements.dataframeList.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-dataframe-name]");
+        if (!button || state.busy) {
+          return;
+        }
+        void selectDataFrame(button.dataset.dataframeName);
       });
       elements.downloadGraphButton.addEventListener("click", downloadGraph);
       elements.importModal.addEventListener("click", (event) => {
@@ -1338,6 +1544,7 @@
       renderRestoreBanner();
       renderWorkbook();
       renderConsoleEntries();
+      renderDataFramePanel();
       setCurrentPage(state.app.ui.currentPage, { persist: false });
       setOutputTab(state.app.ui.outputTab, { persist: false });
       setSheetStatus(state.app.ui.sheetStatus);
@@ -1392,7 +1599,7 @@
     }
 
     async function runScript(code) {
-      await runRCode(code, { echoLabel: "# Run editor script", printEval: false });
+      await runRCode(code, { echoLabel: "# Run editor script", printEval: true });
     }
 
     async function runConsoleLine() {
@@ -1447,6 +1654,7 @@
         await syncWorkbookToR();
         await ensureGgplot2IfNeeded(code);
         const result = await executeRSource(code, { printEval });
+        await refreshDataFrameState();
         if (result.output) {
           appendOutput(result.output, "stdout");
         }
@@ -1663,16 +1871,17 @@
     }
 
     function setOutputTab(tab, { persist = true } = {}) {
+      const nextTab = normaliseOutputTab(tab);
       if (persist) {
-        state.app.ui.outputTab = tab;
+        state.app.ui.outputTab = nextTab;
       }
       elements.outputTabs.forEach((button) => {
-        button.classList.toggle("active", button.dataset.tab === tab);
+        button.classList.toggle("active", button.dataset.tab === nextTab);
       });
       elements.outputPanels.forEach((panel) => {
-        panel.classList.toggle("active", panel.dataset.panel === tab);
+        panel.classList.toggle("active", panel.dataset.panel === nextTab);
       });
-      if (tab === "graph") {
+      if (nextTab === "graph") {
         updateGraphCanvasMetrics();
       }
     }
@@ -2009,6 +2218,136 @@
       renderGraphPreviewFromBuffer();
     }
 
+    function renderDataFramePanel() {
+      renderDataFrameList();
+      renderDataFramePreview();
+    }
+
+    function renderDataFrameList() {
+      const items = state.app.dataframes.items;
+      elements.dataframeListMeta.textContent = items.length
+        ? `${items.length} 個の data.frame を検出`
+        : "R セッション内の data.frame 一覧";
+
+      if (!items.length) {
+        const placeholder = document.createElement("div");
+        placeholder.className = "dataframe-placeholder";
+        placeholder.textContent = "まだ候補がありません。コード実行後に一覧が更新されます。";
+        elements.dataframeList.replaceChildren(placeholder);
+        return;
+      }
+
+      const fragment = document.createDocumentFragment();
+      items.forEach((item) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `dataframe-item${item.name === state.app.dataframes.selectedName ? " active" : ""}`;
+        button.dataset.dataframeName = item.name;
+
+        const title = document.createElement("strong");
+        title.textContent = item.name;
+        const detail = document.createElement("span");
+        detail.textContent = `${item.rowCount} 行 × ${item.columnCount} 列`;
+
+        button.append(title, detail);
+        fragment.appendChild(button);
+      });
+      elements.dataframeList.replaceChildren(fragment);
+    }
+
+    function renderDataFramePreview() {
+      const { items, selectedName, loading, error, preview } = state.app.dataframes;
+      if (!items.length) {
+        elements.dataframePreviewMeta.textContent = "プレビューはここに表示されます";
+        setDataFrameEmptyState(
+          "まだ data.frame がありません",
+          "コード実行後に .GlobalEnv 内の data.frame をここへ一覧表示します。",
+        );
+        elements.dataframeTableWrap.classList.add("hidden");
+        elements.dataframeTableWrap.replaceChildren();
+        return;
+      }
+
+      if (error) {
+        elements.dataframePreviewMeta.textContent = "データフレーム取得エラー";
+        setDataFrameEmptyState("読み込みに失敗しました", error);
+        elements.dataframeTableWrap.classList.add("hidden");
+        elements.dataframeTableWrap.replaceChildren();
+        return;
+      }
+
+      if (loading || !preview || preview.name !== selectedName) {
+        elements.dataframePreviewMeta.textContent = selectedName
+          ? `${selectedName} を読み込み中…`
+          : "一覧から data.frame を選んでください";
+        setDataFrameEmptyState(
+          selectedName ? "プレビューを取得中です" : "一覧から data.frame を選んでください",
+          selectedName ? "先頭行の内容を読み込んでいます。" : "左の一覧から確認したい data.frame を選択します。",
+        );
+        elements.dataframeTableWrap.classList.add("hidden");
+        elements.dataframeTableWrap.replaceChildren();
+        return;
+      }
+
+      elements.dataframePreviewMeta.textContent = `${preview.name}: ${preview.rowCount} 行 × ${preview.columnCount} 列（先頭 ${preview.previewRowCount} 行を表示）`;
+      elements.dataframeEmptyState.classList.add("hidden");
+      elements.dataframeTableWrap.classList.remove("hidden");
+      elements.dataframeTableWrap.replaceChildren(buildDataFrameTable(preview));
+    }
+
+    function setDataFrameEmptyState(title, message) {
+      elements.dataframeEmptyTitle.textContent = title;
+      elements.dataframeEmptyMessage.textContent = message;
+      elements.dataframeEmptyState.classList.remove("hidden");
+    }
+
+    function buildDataFrameTable(preview) {
+      const table = document.createElement("table");
+      table.className = "dataframe-table";
+
+      const thead = document.createElement("thead");
+      const headRow = document.createElement("tr");
+      const rowLabel = document.createElement("th");
+      rowLabel.className = "dataframe-row-label";
+      rowLabel.textContent = "#";
+      headRow.appendChild(rowLabel);
+
+      preview.columns.forEach((column) => {
+        const th = document.createElement("th");
+        th.textContent = column.name;
+        if (column.className) {
+          const note = document.createElement("span");
+          note.className = "dataframe-column-note";
+          note.textContent = column.className;
+          th.appendChild(note);
+        }
+        headRow.appendChild(th);
+      });
+
+      thead.appendChild(headRow);
+      table.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+      preview.rows.forEach((row, rowIndex) => {
+        const tr = document.createElement("tr");
+        const label = document.createElement("th");
+        label.className = "dataframe-row-label";
+        label.scope = "row";
+        label.textContent = preview.rowLabels[rowIndex] ?? String(rowIndex + 1);
+        tr.appendChild(label);
+
+        row.forEach((value) => {
+          const td = document.createElement("td");
+          td.textContent = value;
+          tr.appendChild(td);
+        });
+        tbody.appendChild(tr);
+      });
+
+      table.appendChild(tbody);
+      return table;
+    }
+
     function downloadGraph() {
       if (!state.graphHasImage) {
         appendSystemLine("まだグラフがありません。plot() か ggplot2 を実行してください。", true);
@@ -2245,7 +2584,7 @@
           script: String(payload.app.script ?? ""),
           ui: {
             currentPage: payload.app.ui?.currentPage === "manual" ? "manual" : "workspace",
-            outputTab: payload.app.ui?.outputTab === "graph" ? "graph" : "console",
+            outputTab: normaliseOutputTab(payload.app.ui?.outputTab),
             selectedCell: normaliseSelectedCell(payload.app.ui?.selectedCell),
             restoreBanner: "",
             sheetStatus: "設定を読み込みました",
@@ -2255,6 +2594,7 @@
             entries: Array.isArray(payload.app.console?.entries) ? payload.app.console.entries.slice(-MAX_CONSOLE_ENTRIES) : [],
             history: Array.isArray(payload.app.console?.history) ? payload.app.console.history.slice(-MAX_HISTORY_ENTRIES) : [],
           },
+          dataframes: createEmptyDataFrameState(),
           runtime: {
             ggplot2Ready: Boolean(payload.app.runtime?.ggplot2Ready),
           },
@@ -2277,6 +2617,7 @@
             runtimeStatus: { text: "旧形式 JSON を読み込みました", tone: "warning" },
           },
           console: { entries: [], history: [] },
+          dataframes: createEmptyDataFrameState(),
           runtime: { ggplot2Ready: false },
         };
       }
@@ -2397,6 +2738,290 @@
 
     function normaliseCell(value) {
       return String(value ?? "").replace(/\u00a0/g, " ").trim();
+    }
+
+    function normaliseOutputTab(value) {
+      return OUTPUT_TABS.includes(value) ? value : "console";
+    }
+
+    function createEmptyDataFrameState() {
+      return {
+        items: [],
+        selectedName: "",
+        preview: null,
+        loading: false,
+        error: "",
+      };
+    }
+
+    async function refreshDataFrameState() {
+      if (!state.ready || !state.webR) {
+        return;
+      }
+
+      try {
+        const items = await listDataFramesInR();
+        const previousSelected = state.app.dataframes.selectedName;
+        state.app.dataframes.items = items;
+        state.app.dataframes.error = "";
+
+        if (!items.length) {
+          state.app.dataframes.selectedName = "";
+          state.app.dataframes.preview = null;
+          state.app.dataframes.loading = false;
+          renderDataFramePanel();
+          return;
+        }
+
+        const nextSelected = items.some((item) => item.name === previousSelected)
+          ? previousSelected
+          : items[0].name;
+        state.app.dataframes.selectedName = nextSelected;
+        renderDataFramePanel();
+        await selectDataFrame(nextSelected, { preserveCurrentSelection: true });
+      } catch (error) {
+        state.app.dataframes = {
+          ...state.app.dataframes,
+          error: `data.frame 一覧の取得に失敗しました: ${error.message}`,
+          loading: false,
+          preview: null,
+        };
+        renderDataFramePanel();
+        appendSystemLine(`data.frame 一覧の取得に失敗しました: ${error.message}`, true);
+      }
+    }
+
+    async function selectDataFrame(name, { preserveCurrentSelection = false } = {}) {
+      if (!name || !state.ready || !state.webR) {
+        return;
+      }
+      if (!preserveCurrentSelection) {
+        state.app.dataframes.selectedName = name;
+      }
+      state.app.dataframes.loading = true;
+      state.app.dataframes.error = "";
+      renderDataFramePanel();
+      try {
+        state.app.dataframes.preview = await readDataFramePreviewFromR(name);
+      } catch (error) {
+        state.app.dataframes.preview = null;
+        state.app.dataframes.error = `data.frame「${name}」の取得に失敗しました: ${error.message}`;
+        appendSystemLine(`data.frame「${name}」の取得に失敗しました: ${error.message}`, true);
+      } finally {
+        state.app.dataframes.loading = false;
+        renderDataFramePanel();
+      }
+    }
+
+    async function listDataFramesInR() {
+      const output = await captureRText(`
+        local({
+          encode_field <- function(value) {
+            paste(sprintf("%02x", as.integer(charToRaw(enc2utf8(as.character(value))))), collapse = "")
+          }
+          object_names <- ls(envir = .GlobalEnv, all.names = FALSE)
+          df_names <- object_names[vapply(
+            object_names,
+            function(name) is.data.frame(get(name, envir = .GlobalEnv, inherits = FALSE)),
+            logical(1)
+          )]
+          cat(${escapeRString(DATAFRAME_LIST_START)})
+          if (length(df_names)) {
+            for (name in df_names) {
+              df <- get(name, envir = .GlobalEnv, inherits = FALSE)
+              cat(
+                encode_field(name),
+                ${escapeRString(DATAFRAME_FIELD_SEP)},
+                nrow(df),
+                ${escapeRString(DATAFRAME_FIELD_SEP)},
+                ncol(df),
+                ${escapeRString(DATAFRAME_RECORD_SEP)},
+                sep = ""
+              )
+            }
+          }
+          cat(${escapeRString(DATAFRAME_LIST_END)})
+        })
+      `);
+      return parseDataFrameListOutput(output);
+    }
+
+    async function readDataFramePreviewFromR(name) {
+      const output = await captureRText(`
+        local({
+          encode_field <- function(value) {
+            paste(sprintf("%02x", as.integer(charToRaw(enc2utf8(as.character(value))))), collapse = "")
+          }
+          format_cell <- function(column, index) {
+            if (is.list(column)) {
+              value <- column[[index]]
+              if (is.null(value)) {
+                return("NULL")
+              }
+              return(paste(capture.output(str(value)), collapse = " "))
+            }
+            value <- column[index]
+            if (!length(value) || is.na(value[[1]])) {
+              return("NA")
+            }
+            as.character(value[[1]])
+          }
+          df <- get(${escapeRString(name)}, envir = .GlobalEnv, inherits = FALSE)
+          preview <- utils::head(df, ${DATAFRAME_PREVIEW_ROWS}L)
+          row_labels <- rownames(preview)
+          if (is.null(row_labels)) {
+            row_labels <- as.character(seq_len(nrow(preview)))
+          }
+          cat(${escapeRString(DATAFRAME_PREVIEW_START)})
+          cat(
+            encode_field(${escapeRString(name)}),
+            ${escapeRString(DATAFRAME_FIELD_SEP)},
+            nrow(df),
+            ${escapeRString(DATAFRAME_FIELD_SEP)},
+            ncol(df),
+            ${escapeRString(DATAFRAME_RECORD_SEP)},
+            sep = ""
+          )
+          cat(
+            paste(vapply(names(df), encode_field, character(1)), collapse = ${escapeRString(DATAFRAME_FIELD_SEP)}),
+            ${escapeRString(DATAFRAME_RECORD_SEP)},
+            sep = ""
+          )
+          cat(
+            paste(vapply(df, function(column) encode_field(paste(class(column), collapse = \"/\")), character(1)), collapse = ${escapeRString(DATAFRAME_FIELD_SEP)}),
+            ${escapeRString(DATAFRAME_RECORD_SEP)},
+            sep = ""
+          )
+          if (nrow(preview)) {
+            for (row_index in seq_len(nrow(preview))) {
+              row_values <- vapply(preview, format_cell, character(1), index = row_index)
+              cat(
+                paste(
+                  c(encode_field(row_labels[row_index]), vapply(row_values, encode_field, character(1))),
+                  collapse = ${escapeRString(DATAFRAME_FIELD_SEP)}
+                ),
+                ${escapeRString(DATAFRAME_RECORD_SEP)},
+                sep = ""
+              )
+            }
+          }
+          cat(${escapeRString(DATAFRAME_PREVIEW_END)})
+        })
+      `);
+      return parseDataFramePreviewOutput(output, name);
+    }
+
+    async function captureRText(code) {
+      const shelter = await new state.webR.Shelter();
+      try {
+        const capture = await shelter.captureR(
+          `
+          tryCatch(
+            {
+              ${code}
+            },
+            error = function(e) {
+              cat(conditionMessage(e), file = stderr())
+              invisible(NULL)
+            }
+          )
+          `,
+          { captureConditions: false },
+        );
+        const output = capture.output
+          .filter((entry) => entry.type === "stdout")
+          .map((entry) => entry.data)
+          .join("");
+        const error = capture.output
+          .filter((entry) => entry.type === "stderr")
+          .map((entry) => entry.data)
+          .join("")
+          .trim();
+        if (error) {
+          throw new Error(error);
+        }
+        return output;
+      } finally {
+        await shelter.purge();
+      }
+    }
+
+    function parseDataFrameListOutput(output) {
+      return extractMarkedRecords(output, DATAFRAME_LIST_START, DATAFRAME_LIST_END)
+        .filter((line) => line.trim())
+        .map((line) => {
+          const [nameHex = "", rowCount = "0", columnCount = "0"] = line.split(DATAFRAME_FIELD_SEP);
+          return {
+            name: decodeHexString(nameHex),
+            rowCount: Number(rowCount || 0),
+            columnCount: Number(columnCount || 0),
+          };
+        })
+        .filter((item) => item.name);
+    }
+
+    function parseDataFramePreviewOutput(output, fallbackName) {
+      const lines = extractMarkedRecords(output, DATAFRAME_PREVIEW_START, DATAFRAME_PREVIEW_END);
+      const [metaLine = "", columnLine = "", classLine = "", ...rowLines] = lines;
+      const [nameHex = "", rowCount = "0", columnCount = "0"] = metaLine.split(DATAFRAME_FIELD_SEP);
+      const columnNames = decodeHexLine(columnLine);
+      const columnClasses = decodeHexLine(classLine);
+      const rows = rowLines
+        .filter((line) => line.length > 0)
+        .map((line) => {
+          const [rowLabelHex = "", ...cellsHex] = line.split(DATAFRAME_FIELD_SEP);
+          return {
+            rowLabel: decodeHexString(rowLabelHex),
+            values: cellsHex.map((cell) => decodeHexString(cell)),
+          };
+        });
+      return {
+        name: decodeHexString(nameHex) || fallbackName,
+        rowCount: Number(rowCount || 0),
+        columnCount: Number(columnCount || columnNames.length),
+        previewRowCount: rows.length,
+        rowLabels: rows.map((row, index) => row.rowLabel || String(index + 1)),
+        columns: columnNames.map((columnName, index) => ({
+          name: columnName,
+          className: columnClasses[index] ?? "",
+        })),
+        rows: rows.map((row) => row.values),
+      };
+    }
+
+    function extractMarkedRecords(output, startMarker, endMarker) {
+      const startIndex = output.indexOf(startMarker);
+      const endIndex = output.indexOf(endMarker);
+      if (startIndex === -1 || endIndex === -1 || endIndex < startIndex) {
+        return [];
+      }
+      const block = output.slice(startIndex + startMarker.length, endIndex);
+      return block ? block.split(DATAFRAME_RECORD_SEP).filter(Boolean) : [];
+    }
+
+    function decodeHexLine(line) {
+      return line ? line.split(DATAFRAME_FIELD_SEP).map((entry) => decodeHexString(entry)) : [];
+    }
+
+    function decodeHexString(value) {
+      if (!value) {
+        return "";
+      }
+      const bytes = value.match(/.{1,2}/g)?.map((pair) => Number.parseInt(pair, 16)) ?? [];
+      return new TextDecoder().decode(Uint8Array.from(bytes));
+    }
+
+    function formatDataFrameCell(value) {
+      if (value === null || typeof value === "undefined") {
+        return "NA";
+      }
+      if (typeof value === "number" && Number.isNaN(value)) {
+        return "NaN";
+      }
+      if (typeof value === "object") {
+        return JSON.stringify(value);
+      }
+      return String(value);
     }
 
     function renderConsoleEntries() {

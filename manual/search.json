@@ -21,6 +21,13 @@
     "text": "まず最初の 3 ステップ\n\n左側の表に、実験で測った値だけを入力します。\n右上のエディタで df &lt;- get.input() を実行してデータを取得します。\n平均・標準偏差・回帰・グラフ描画は R コード側で計算します。"
   },
   {
+    "objectID": "index.html#画面の見方",
+    "href": "index.html#画面の見方",
+    "title": "Physics webR Lab 学習ガイド",
+    "section": "画面の見方",
+    "text": "画面の見方\n\nhead(df) や summary(df) のような確認用コードは、複数行スクリプト実行でも右下のコンソールに表示されます。\nplot() や ggplot() の結果はグラフタブに出ます。\n作った data.frame の中身を見たいときはデータフレームタブを開くと、R セッション内の data.frame 一覧と先頭行プレビューを確認できます。\n左側の表は TSV をそのまま複数セルへ貼り付けできます。表計算ソフトからのコピペにも使えます。"
+  },
+  {
     "objectID": "index.html#get.input-の基本",
     "href": "index.html#get.input-の基本",
     "title": "Physics webR Lab 学習ガイド",

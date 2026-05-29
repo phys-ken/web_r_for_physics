@@ -153,6 +153,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <ul>
   <li><a href="#このページでわかること" id="toc-このページでわかること" class="nav-link active" data-scroll-target="#このページでわかること">このページでわかること</a></li>
   <li><a href="#まず最初の-3-ステップ" id="toc-まず最初の-3-ステップ" class="nav-link" data-scroll-target="#まず最初の-3-ステップ">まず最初の 3 ステップ</a></li>
+  <li><a href="#画面の見方" id="toc-画面の見方" class="nav-link" data-scroll-target="#画面の見方">画面の見方</a></li>
   <li><a href="#get.input-の基本" id="toc-get.input-の基本" class="nav-link" data-scroll-target="#get.input-の基本"><code>get.input()</code> の基本</a></li>
   <li><a href="#論文レポート寄りの作図の基本" id="toc-論文レポート寄りの作図の基本" class="nav-link" data-scroll-target="#論文レポート寄りの作図の基本">論文・レポート寄りの作図の基本</a>
   <ul class="collapse">
@@ -205,6 +206,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>右上のエディタで <code>df &lt;- get.input()</code> を実行してデータを取得します。</li>
 <li>平均・標準偏差・回帰・グラフ描画は R コード側で計算します。</li>
 </ol>
+</section>
+<section id="画面の見方" class="level2">
+<h2 class="anchored" data-anchor-id="画面の見方">画面の見方</h2>
+<ul>
+<li><code>head(df)</code> や <code>summary(df)</code> のような確認用コードは、複数行スクリプト実行でも右下の<strong>コンソール</strong>に表示されます。</li>
+<li><code>plot()</code> や <code>ggplot()</code> の結果は<strong>グラフ</strong>タブに出ます。</li>
+<li>作った <code>data.frame</code> の中身を見たいときは<strong>データフレーム</strong>タブを開くと、R セッション内の <code>data.frame</code> 一覧と先頭行プレビューを確認できます。</li>
+<li>左側の表は TSV をそのまま複数セルへ貼り付けできます。表計算ソフトからのコピペにも使えます。</li>
+</ul>
 </section>
 <section id="get.input-の基本" class="level2">
 <h2 class="anchored" data-anchor-id="get.input-の基本"><code>get.input()</code> の基本</h2>

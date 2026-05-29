@@ -79,3 +79,44 @@ test("manual navigation, webR execution, graph render, and JSON round-trip", asy
   await expect(page.getByRole("heading", { name: "Physics webR Lab 学習ガイド" })).toBeVisible();
   await expect(page.getByRole("link", { name: "スニペット集" })).toBeVisible();
 });
+
+test("editor execution prints data frames and dataframe tab previews pasted TSV data", async ({ page }) => {
+  await page.goto("./");
+
+  await expect(page.locator("#runtimeStatus")).toHaveText(/webR 準備完了/, { timeout: 180000 });
+
+  const firstDataCell = page.locator('.cell[data-row="1"][data-col="0"]').first();
+  await firstDataCell.click();
+  await page.locator('.cell[data-row="0"][data-col="0"]').fill("x");
+  await page.locator('.cell[data-row="0"][data-col="1"]').fill("y");
+  await firstDataCell.evaluate((cell) => {
+    const dataTransfer = new DataTransfer();
+    dataTransfer.setData("text/plain", "1\t2\n3\t4\n5\t6");
+    const event = new ClipboardEvent("paste", {
+      bubbles: true,
+      cancelable: true,
+      clipboardData: dataTransfer,
+    });
+    cell.dispatchEvent(event);
+  });
+
+  await expect(page.locator('.cell[data-row="2"][data-col="1"]')).toHaveText("4");
+  await expect(page.locator('.cell[data-row="3"][data-col="0"]')).toHaveText("5");
+
+  await page.locator("#scriptEditor").fill(
+    "df <- get.input()\nhead(mtcars)\nprocessed <- transform(df, sum_xy = x + y)\nhead(processed)",
+  );
+  await page.getByRole("button", { name: "コード実行" }).click();
+
+  await expect(page.locator("#consoleOutput")).toContainText("Mazda RX4", { timeout: 30000 });
+  await expect(page.locator("#consoleOutput")).toContainText("sum_xy", { timeout: 30000 });
+
+  await page.getByRole("button", { name: "データフレーム", exact: true }).click();
+  await expect(page.locator("#dataframeList")).toContainText("df", { timeout: 30000 });
+  await expect(page.locator("#dataframeList")).toContainText("processed");
+  await page.getByRole("button", { name: /^processed/ }).click();
+
+  await expect(page.locator("#dataframePreviewMeta")).toContainText("processed", { timeout: 30000 });
+  await expect(page.locator("#dataframeTableWrap")).toContainText("sum_xy");
+  await expect(page.locator("#dataframeTableWrap")).toContainText("7");
+});

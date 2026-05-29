@@ -10,9 +10,12 @@
 - 1 行目の列名を R 互換の名前へ自動調整
 - `get.input()` で現在シート / 名前指定 / 1 始まりの番号指定で R の data.frame を取得
 - 右上で複数行の R スクリプトを実行
+- スクリプト実行でも `head(df)` や `summary(df)` などの結果をコンソールへ表示
 - 右下で 1 行ずつ REPL 風に実行
 - `plot()` や `ggplot2` の結果をキャンバスに描画し、PNG 保存
 - グラフは右下ペインに描画し、必要なら全体表示で確認、PNG 保存
+- 右下の「データフレーム」タブで、R セッション内の `data.frame` 一覧と先頭行プレビューを確認
+- 左ペインのシートへ TSV / 表計算ソフトの複数セルデータをそのまま貼り付け
 - アプリ上部バーからワークスペース / マニュアルを切り替え
 - 表データだけでなく、スクリプト・表示タブ・console 履歴なども含めて `experiment_setup.json` に保存 / 復元
 - 初期状態は空で起動し、「設定読込 (JSON)」から授業用サンプル群を展開
@@ -62,6 +65,8 @@ npx playwright install chromium
 - webR は GitHub Pages と同じ制約で動作確認しやすいよう、`PostMessage` チャネルで起動
 - `get.input()` は JS 側が実行前に全シートを R のグローバル環境へ注入する方式
 - webR は `v0.6.0` に固定して、`latest` 参照による破壊的変更を避けています
+- エディタ実行は `source(..., print.eval = TRUE)` で評価し、対話実行に近い形でトップレベル式の結果も拾います
+- Data Frame タブは `.GlobalEnv` 内の `data.frame` を走査して、一覧と先頭 100 行プレビューを表示します
 - エクスポート JSON は作業中のプログラミング状態も復元できるよう、UI 状態と console 履歴を含む形式に拡張しています
 - 授業用サンプルは `samples/manifest.json` と個別 JSON に分けて管理しています
 - 学習用 manual は `manual-src/` の Quarto ソースから `manual/` へ静的出力します
