@@ -1,0 +1,86 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Physics webR Lab 学習ガイド",
+    "section": "",
+    "text": "get.input() で表データを R に渡す方法\n高校物理でよく使う解析の進め方\n余白や軸を整えた、読みやすいグラフの作り方"
+  },
+  {
+    "objectID": "index.html#このページでわかること",
+    "href": "index.html#このページでわかること",
+    "title": "Physics webR Lab 学習ガイド",
+    "section": "",
+    "text": "get.input() で表データを R に渡す方法\n高校物理でよく使う解析の進め方\n余白や軸を整えた、読みやすいグラフの作り方"
+  },
+  {
+    "objectID": "index.html#まず最初の-3-ステップ",
+    "href": "index.html#まず最初の-3-ステップ",
+    "title": "Physics webR Lab 学習ガイド",
+    "section": "まず最初の 3 ステップ",
+    "text": "まず最初の 3 ステップ\n\n左側の表に、実験で測った値だけを入力します。\n右上のエディタで df &lt;- get.input() を実行してデータを取得します。\n平均・標準偏差・回帰・グラフ描画は R コード側で計算します。"
+  },
+  {
+    "objectID": "index.html#get.input-の基本",
+    "href": "index.html#get.input-の基本",
+    "title": "Physics webR Lab 学習ガイド",
+    "section": "get.input() の基本",
+    "text": "get.input() の基本\ndf &lt;- get.input()\n現在のシートを data.frame として受け取ります。\ndf &lt;- get.input(\"Sheet2\")\nシート名でも取得できます。\ndf &lt;- get.input(2)\n1 始まりの番号でも取得できます。"
+  },
+  {
+    "objectID": "index.html#論文レポート寄りの作図の基本",
+    "href": "index.html#論文レポート寄りの作図の基本",
+    "title": "Physics webR Lab 学習ガイド",
+    "section": "論文・レポート寄りの作図の基本",
+    "text": "論文・レポート寄りの作図の基本\nこのアプリでは、base R の余白や軸を整える helper として set.paper_style() を使えます。\ndf &lt;- get.input()\nset.paper_style()\nplot(df$time_s, df$distance_m,\n  pch = 19, cex = 1.1,\n  xlab = \"Time / s\",\n  ylab = \"Distance / m\"\n)\n\nまず意識したいポイント\n\nタイトルを大きく入れすぎず、軸ラベルに単位を書く\n余白を詰めすぎず、でも広すぎないようにする\n点・線・誤差棒は、印刷しても見分けやすい太さにする\n棒グラフは、カテゴリ比較が本当に必要な場合だけ使う"
+  },
+  {
+    "objectID": "index.html#よくある解析の型",
+    "href": "index.html#よくある解析の型",
+    "title": "Physics webR Lab 学習ガイド",
+    "section": "よくある解析の型",
+    "text": "よくある解析の型\n\n繰り返し測定の平均とばらつき\ndf &lt;- get.input()\ndf$period_mean_s &lt;- rowMeans(df[c(\"period_1_s\", \"period_2_s\", \"period_3_s\")], na.rm = TRUE)\ndf$period_sd_s &lt;- apply(df[c(\"period_1_s\", \"period_2_s\", \"period_3_s\")], 1, sd, na.rm = TRUE)\n\n\n誤差棒付き散布図\nset.paper_style()\nplot(df$time_s, df$velocity_mean_m_s,\n  pch = 19, cex = 1.1,\n  xlab = \"Time / s\",\n  ylab = \"Velocity / m s^-1\"\n)\narrows(\n  df$time_s, df$velocity_mean_m_s - df$velocity_sd_m_s,\n  df$time_s, df$velocity_mean_m_s + df$velocity_sd_m_s,\n  angle = 90, code = 3, length = 0.04\n)\n\n\n回帰直線\nfit &lt;- lm(voltage_mean_V ~ 0 + current_A, data = df)\nabline(a = 0, b = coef(fit)[1], col = \"#374151\", lwd = 2)\nsummary(fit)"
+  },
+  {
+    "objectID": "index.html#サンプルの見方",
+    "href": "index.html#サンプルの見方",
+    "title": "Physics webR Lab 学習ガイド",
+    "section": "サンプルの見方",
+    "text": "サンプルの見方\nアプリの「設定読込 (JSON)」には、次のような代表例を入れています。\n\n等加速度直線運動の位置-時刻\nデータロガー時系列\nオームの法則\n単振り子\n自由落下\n材質ごとの抵抗比較\n\nまずは sample を開いて、そのまま実行し、コードを少しずつ書き換えるのが近道です。"
+  },
+  {
+    "objectID": "snippets.html",
+    "href": "snippets.html",
+    "title": "Physics webR Lab スニペット集",
+    "section": "",
+    "text": "df &lt;- subset(get.input(), !is.na(time_s))\ndf$position_mean_m &lt;- rowMeans(df[c(\"position_1_m\", \"position_2_m\", \"position_3_m\")], na.rm = TRUE)\ndf$position_sd_m &lt;- apply(df[c(\"position_1_m\", \"position_2_m\", \"position_3_m\")], 1, sd, na.rm = TRUE)\n\nset.paper_style()\nfit &lt;- lm(position_mean_m ~ time_s + I(time_s^2), data = df)\ntime_grid &lt;- seq(min(df$time_s), max(df$time_s), length.out = 200)\n\nplot(df$time_s, df$position_mean_m,\n  pch = 19, cex = 1.1,\n  xlab = \"Time / s\",\n  ylab = \"Position / m\"\n)\narrows(\n  df$time_s, df$position_mean_m - df$position_sd_m,\n  df$time_s, df$position_mean_m + df$position_sd_m,\n  angle = 90, code = 3, length = 0.04\n)\nlines(time_grid, predict(fit, newdata = data.frame(time_s = time_grid)),\n  col = \"#374151\", lwd = 2\n)"
+  },
+  {
+    "objectID": "snippets.html#位置-時刻データの-2-次近似",
+    "href": "snippets.html#位置-時刻データの-2-次近似",
+    "title": "Physics webR Lab スニペット集",
+    "section": "",
+    "text": "df &lt;- subset(get.input(), !is.na(time_s))\ndf$position_mean_m &lt;- rowMeans(df[c(\"position_1_m\", \"position_2_m\", \"position_3_m\")], na.rm = TRUE)\ndf$position_sd_m &lt;- apply(df[c(\"position_1_m\", \"position_2_m\", \"position_3_m\")], 1, sd, na.rm = TRUE)\n\nset.paper_style()\nfit &lt;- lm(position_mean_m ~ time_s + I(time_s^2), data = df)\ntime_grid &lt;- seq(min(df$time_s), max(df$time_s), length.out = 200)\n\nplot(df$time_s, df$position_mean_m,\n  pch = 19, cex = 1.1,\n  xlab = \"Time / s\",\n  ylab = \"Position / m\"\n)\narrows(\n  df$time_s, df$position_mean_m - df$position_sd_m,\n  df$time_s, df$position_mean_m + df$position_sd_m,\n  angle = 90, code = 3, length = 0.04\n)\nlines(time_grid, predict(fit, newdata = data.frame(time_s = time_grid)),\n  col = \"#374151\", lwd = 2\n)"
+  },
+  {
+    "objectID": "snippets.html#データロガーの時系列を線グラフで描く",
+    "href": "snippets.html#データロガーの時系列を線グラフで描く",
+    "title": "Physics webR Lab スニペット集",
+    "section": "データロガーの時系列を線グラフで描く",
+    "text": "データロガーの時系列を線グラフで描く\ndf &lt;- subset(get.input(), !is.na(time_s))\nset.paper_style(mar = c(3.8, 4.1, 0.7, 0.6))\nplot(df$time_s, df$position_m,\n  type = \"l\", lwd = 2, col = \"#1f77b4\",\n  xlab = \"Time / s\",\n  ylab = \"Position / m\"\n)"
+  },
+  {
+    "objectID": "snippets.html#棒グラフが適切な場合",
+    "href": "snippets.html#棒グラフが適切な場合",
+    "title": "Physics webR Lab スニペット集",
+    "section": "棒グラフが適切な場合",
+    "text": "棒グラフが適切な場合\nカテゴリ比較なら、棒グラフでも意味があります。\ndf &lt;- subset(get.input(), material != \"\")\ndf$resistance_mean_ohm &lt;- rowMeans(df[c(\"resistance_1_ohm\", \"resistance_2_ohm\", \"resistance_3_ohm\")], na.rm = TRUE)\ndf$resistance_sd_ohm &lt;- apply(df[c(\"resistance_1_ohm\", \"resistance_2_ohm\", \"resistance_3_ohm\")], 1, sd, na.rm = TRUE)\n\nset.paper_style(mar = c(4.6, 4.1, 0.6, 0.6), las = 1)\nbar_x &lt;- barplot(df$resistance_mean_ohm,\n  names.arg = df$material,\n  col = \"#cbd5e1\", border = \"#475569\",\n  ylim = c(0, max(df$resistance_mean_ohm + df$resistance_sd_ohm) * 1.15),\n  xlab = \"Material\",\n  ylab = \"Resistance / ohm\"\n)\narrows(\n  bar_x, df$resistance_mean_ohm - df$resistance_sd_ohm,\n  bar_x, df$resistance_mean_ohm + df$resistance_sd_ohm,\n  angle = 90, code = 3, length = 0.04\n)"
+  },
+  {
+    "objectID": "snippets.html#ばね振り子などの誤差棒付き散布図",
+    "href": "snippets.html#ばね振り子などの誤差棒付き散布図",
+    "title": "Physics webR Lab スニペット集",
+    "section": "ばね・振り子などの誤差棒付き散布図",
+    "text": "ばね・振り子などの誤差棒付き散布図\nset.paper_style()\nplot(df$x_value, df$y_value,\n  pch = 19, cex = 1.1,\n  xlab = \"X / unit\",\n  ylab = \"Y / unit\"\n)\narrows(\n  df$x_value, df$y_value - df$y_sd,\n  df$x_value, df$y_value + df$y_sd,\n  angle = 90, code = 3, length = 0.04\n)"
+  }
+]

@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 
 const html = await readFile(new URL("../index.html", import.meta.url), "utf8");
 const manifest = JSON.parse(await readFile(new URL("../samples/manifest.json", import.meta.url), "utf8"));
+const manualIndex = await readFile(new URL("../manual/index.html", import.meta.url), "utf8");
 
 assert.match(html, /<title>Physics webR Lab<\/title>/);
 assert.match(html, /webr\.r-wasm\.org\/v0\.6\.0\/webr\.mjs/);
@@ -20,6 +21,8 @@ assert.match(html, /normaliseImportedPayload/);
 assert.match(html, /height: 100dvh/);
 assert.match(html, /物理実験サンプルを開く/);
 assert.match(html, /graphViewerModal/);
-assert.equal(manifest.samples.length, 5);
+assert.match(html, /詳しい R マニュアルを開く/);
+assert.ok(manifest.samples.length >= 8);
+assert.match(manualIndex, /Physics webR Lab 学習ガイド/);
 
 console.log("Smoke test passed: index.html and sample manifest contain the expected app scaffolding.");

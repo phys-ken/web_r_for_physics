@@ -1,0 +1,103 @@
+---
+title: "Physics webR Lab 学習ガイド"
+---
+
+## このページでわかること
+
+- `get.input()` で表データを R に渡す方法
+- 高校物理でよく使う解析の進め方
+- 余白や軸を整えた、読みやすいグラフの作り方
+
+## まず最初の 3 ステップ
+
+1. 左側の表に、**実験で測った値だけ**を入力します。
+2. 右上のエディタで `df <- get.input()` を実行してデータを取得します。
+3. 平均・標準偏差・回帰・グラフ描画は R コード側で計算します。
+
+## `get.input()` の基本
+
+```r
+df <- get.input()
+```
+
+現在のシートを `data.frame` として受け取ります。
+
+```r
+df <- get.input("Sheet2")
+```
+
+シート名でも取得できます。
+
+```r
+df <- get.input(2)
+```
+
+1 始まりの番号でも取得できます。
+
+## 論文・レポート寄りの作図の基本
+
+このアプリでは、base R の余白や軸を整える helper として `set.paper_style()` を使えます。
+
+```r
+df <- get.input()
+set.paper_style()
+plot(df$time_s, df$distance_m,
+  pch = 19, cex = 1.1,
+  xlab = "Time / s",
+  ylab = "Distance / m"
+)
+```
+
+### まず意識したいポイント
+
+- タイトルを大きく入れすぎず、**軸ラベルに単位を書く**
+- 余白を詰めすぎず、でも広すぎないようにする
+- 点・線・誤差棒は、印刷しても見分けやすい太さにする
+- 棒グラフは、**カテゴリ比較が本当に必要な場合だけ**使う
+
+## よくある解析の型
+
+### 繰り返し測定の平均とばらつき
+
+```r
+df <- get.input()
+df$period_mean_s <- rowMeans(df[c("period_1_s", "period_2_s", "period_3_s")], na.rm = TRUE)
+df$period_sd_s <- apply(df[c("period_1_s", "period_2_s", "period_3_s")], 1, sd, na.rm = TRUE)
+```
+
+### 誤差棒付き散布図
+
+```r
+set.paper_style()
+plot(df$time_s, df$velocity_mean_m_s,
+  pch = 19, cex = 1.1,
+  xlab = "Time / s",
+  ylab = "Velocity / m s^-1"
+)
+arrows(
+  df$time_s, df$velocity_mean_m_s - df$velocity_sd_m_s,
+  df$time_s, df$velocity_mean_m_s + df$velocity_sd_m_s,
+  angle = 90, code = 3, length = 0.04
+)
+```
+
+### 回帰直線
+
+```r
+fit <- lm(voltage_mean_V ~ 0 + current_A, data = df)
+abline(a = 0, b = coef(fit)[1], col = "#374151", lwd = 2)
+summary(fit)
+```
+
+## サンプルの見方
+
+アプリの「設定読込 (JSON)」には、次のような代表例を入れています。
+
+- 等加速度直線運動の位置-時刻
+- データロガー時系列
+- オームの法則
+- 単振り子
+- 自由落下
+- 材質ごとの抵抗比較
+
+まずは sample を開いて、そのまま実行し、コードを少しずつ書き換えるのが近道です。

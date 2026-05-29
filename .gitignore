@@ -4,4 +4,6 @@ playwright-report/
 .env
 dist/
 .cache/
+.quarto/
+manual-src/_site/
 DEV_GUIDE.md

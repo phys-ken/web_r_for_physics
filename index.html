@@ -723,6 +723,20 @@
       font-size: 0.82rem;
     }
 
+    .manual-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0.38rem 0.6rem;
+      border: 1px solid var(--border-strong);
+      border-radius: var(--radius-sm);
+      background: #eef4fd;
+      color: var(--accent-dark);
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
     .manual-card code,
     .manual-card pre {
       font-family: var(--font-mono);
@@ -938,50 +952,23 @@
             </section>
           </div>
 
-          <h2><code>get.input()</code> の使い方</h2>
-          <table>
-            <thead>
-              <tr>
-                <th>書き方</th>
-                <th>意味</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td><code>df &lt;- get.input()</code></td>
-                <td>現在のアクティブシートを <code>data.frame</code> として取得します。</td>
-              </tr>
-              <tr>
-                <td><code>df &lt;- get.input("Sheet2")</code></td>
-                <td>シート名を指定して取得します。</td>
-              </tr>
-              <tr>
-                <td><code>df &lt;- get.input(2)</code></td>
-                <td>1 始まりのシート番号で取得します。</td>
-              </tr>
-            </tbody>
-          </table>
-
-          <h2>JSON 保存と復元</h2>
-          <p>「設定保存 (JSON)」は、単なる表データだけではなく、できるだけ作業中の状態も保存します。たとえば次の情報を含みます。</p>
+          <h2>保存と読込</h2>
           <ul>
-            <li>すべてのシート内容とアクティブシート</li>
-            <li>右上のスクリプトエディタ内容</li>
-            <li>現在表示中のページ（ワークスペース / マニュアル）</li>
-            <li>コンソール / グラフの選択状態</li>
-            <li>コンソール出力履歴と REPL 履歴</li>
+            <li>「設定保存 (JSON)」でシート内容・スクリプト・履歴をまとめて保存できます。</li>
+            <li>「設定読込 (JSON)」では自分の JSON か授業用サンプルを選べます。</li>
+            <li>JSON 読込後は、必要に応じてコードを再実行してください。</li>
           </ul>
-          <p>ただし、R ランタイム内部のオブジェクトそのものは保存されません。JSON を読み込んだ後は、必要に応じてスクリプトを再実行してください。</p>
 
-          <h2>サンプルの読み込み</h2>
-          <p>初期画面は空です。「設定読込 (JSON)」を押すと、自分の JSON ファイルを開くか、授業用サンプルを選べます。サンプルは GitHub 上の個別 JSON として管理しているため、今後の追加や差し替えも簡単です。</p>
+          <h2>詳しい学習用ガイド</h2>
+          <p>R の書き方、<code>get.input()</code>、よいグラフの作り方、便利スニペットは別ページにまとめます。</p>
+          <p><a class="manual-link" href="./manual/">詳しい R マニュアルを開く</a></p>
 
-          <h2>補足</h2>
+          <h2>補足の操作</h2>
           <ul>
             <li>Ctrl / Command + Enter でスクリプト実行できます。</li>
             <li>コンソール入力欄では上下キーで実行履歴をたどれます。</li>
             <li><code>ggplot2</code> を使うときは初回のみ読み込みが少し長くなることがあります。</li>
-            <li>画面サイズを大きく変えた後は、必要に応じてコードを再実行するとグラフが最新サイズに更新されます。</li>
+            <li>細かい作図調整は、R コード側で <code>par()</code> や <code>set.paper_style()</code> を使って設定してください。</li>
           </ul>
         </article>
       </section>
@@ -1292,6 +1279,28 @@
           }
 
           stop("sheet must be NULL, a sheet name, or a 1-based sheet index.")
+        }
+        set.paper_style <- function(
+          mar = c(3.8, 4.1, 0.9, 0.6),
+          mgp = c(2.3, 0.7, 0),
+          cex = 0.95,
+          tcl = -0.25,
+          las = 1
+        ) {
+          par(
+            mar = mar,
+            mgp = mgp,
+            cex.axis = cex,
+            cex.lab = cex,
+            cex.main = 0.95,
+            tcl = tcl,
+            las = las,
+            bty = "l",
+            lend = "square",
+            ljoin = "mitre",
+            xaxs = "r",
+            yaxs = "r"
+          )
         }
       `);
       elements.loadingMessage.textContent = "入力シートを R に同期しています。";

@@ -1,0 +1,61 @@
+{
+  "version": 2,
+  "app": {
+    "workbook": {
+      "activeSheetId": "sheet-1",
+      "sheets": [
+        {
+          "id": "sheet-1",
+          "name": "logger_oscillation",
+          "data": [
+            ["time_s", "position_m"],
+            ["0.0", "0.290"],
+            ["0.1", "0.322"],
+            ["0.2", "0.343"],
+            ["0.3", "0.347"],
+            ["0.4", "0.332"],
+            ["0.5", "0.303"],
+            ["0.6", "0.268"],
+            ["0.7", "0.236"],
+            ["0.8", "0.219"],
+            ["0.9", "0.221"],
+            ["1.0", "0.241"],
+            ["1.1", "0.271"],
+            ["1.2", "0.301"],
+            ["1.3", "0.321"],
+            ["1.4", "0.325"],
+            ["1.5", "0.313"],
+            ["1.6", "0.289"],
+            ["1.7", "0.261"],
+            ["1.8", "0.237"],
+            ["1.9", "0.226"],
+            ["2.0", "0.230"],
+            ["2.1", "0.247"],
+            ["2.2", "0.270"],
+            ["2.3", "0.293"],
+            ["2.4", "0.308"],
+            ["2.5", "0.311"],
+            ["2.6", "0.301"],
+            ["2.7", "0.282"],
+            ["2.8", "0.259"],
+            ["2.9", "0.242"],
+            ["3.0", "0.233"]
+          ]
+        }
+      ]
+    },
+    "script": "df <- subset(get.input(), !is.na(time_s))\nset.paper_style(mar = c(3.8, 4.1, 0.7, 0.6))\nplot(df$time_s, df$position_m,\n  type = \"l\", lwd = 2, col = \"#1f77b4\",\n  xlab = \"Time / s\", ylab = \"Position / m\"\n)\npoints(df$time_s[c(TRUE, FALSE, FALSE)], df$position_m[c(TRUE, FALSE, FALSE)], pch = 16, cex = 0.65, col = \"#1f77b4\")\ncat(sprintf(\"Logger rows: %d\\n\", nrow(df)))\ncat(sprintf(\"Position range: %.3f to %.3f m\\n\", min(df$position_m), max(df$position_m)))",
+    "ui": {
+      "currentPage": "workspace",
+      "outputTab": "graph",
+      "selectedCell": { "row": 1, "col": 0 },
+      "restoreBanner": "",
+      "sheetStatus": "データロガー時系列サンプル",
+      "runtimeStatus": { "text": "サンプルを読み込みました", "tone": "warning" }
+    },
+    "console": {
+      "entries": [],
+      "history": []
+    }
+  }
+}

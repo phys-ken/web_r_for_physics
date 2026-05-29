@@ -29,6 +29,24 @@
       "title": "自由落下",
       "description": "落下距離と時間の二乗の関係から重力加速度を見積もります。",
       "file": "free-fall.json"
+    },
+    {
+      "id": "position-time",
+      "title": "等加速度直線運動の x-t グラフ",
+      "description": "位置と時刻の散布図から、2次近似で等加速度運動を読み取ります。",
+      "file": "position-time.json"
+    },
+    {
+      "id": "logger-oscillation",
+      "title": "データロガー時系列",
+      "description": "運動センサーで取った減衰振動の時系列を線グラフで確認します。",
+      "file": "logger-oscillation.json"
+    },
+    {
+      "id": "material-resistance",
+      "title": "材質ごとの抵抗比較",
+      "description": "カテゴリ比較が適切な題材として、材質別の抵抗値を棒グラフで比べます。",
+      "file": "material-resistance.json"
     }
   ]
 }

@@ -4,6 +4,7 @@
   "description": "Single-file webR data analysis tool for school physics experiments",
   "scripts": {
     "start": "python3 -m http.server 4173",
+    "manual:render": "quarto render manual-src && rm -rf manual && cp -a manual-src/_site manual",
     "test:static": "node scripts/smoke-test.mjs",
     "test:browser": "playwright test",
     "test": "npm run test:static && npm run test:browser"

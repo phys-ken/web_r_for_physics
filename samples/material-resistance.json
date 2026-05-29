@@ -1,0 +1,42 @@
+{
+  "version": 2,
+  "app": {
+    "workbook": {
+      "activeSheetId": "sheet-1",
+      "sheets": [
+        {
+          "id": "sheet-1",
+          "name": "material_resistance",
+          "data": [
+            ["material", "resistance_1_ohm", "resistance_2_ohm", "resistance_3_ohm"],
+            ["copper", "1.21", "1.18", "1.20"],
+            ["constantan", "4.86", "4.91", "4.88"],
+            ["nichrome", "6.28", "6.34", "6.31"],
+            ["carbon", "8.44", "8.51", "8.47"],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""],
+            ["", "", "", ""]
+          ]
+        }
+      ]
+    },
+    "script": "df <- subset(get.input(), material != \"\")\ndf$resistance_mean_ohm <- rowMeans(df[c(\"resistance_1_ohm\", \"resistance_2_ohm\", \"resistance_3_ohm\")], na.rm = TRUE)\ndf$resistance_sd_ohm <- apply(df[c(\"resistance_1_ohm\", \"resistance_2_ohm\", \"resistance_3_ohm\")], 1, sd, na.rm = TRUE)\nset.paper_style(mar = c(4.6, 4.1, 0.6, 0.6), las = 1)\nbar_x <- barplot(df$resistance_mean_ohm,\n  names.arg = df$material,\n  col = \"#cbd5e1\", border = \"#475569\",\n  ylim = c(0, max(df$resistance_mean_ohm + df$resistance_sd_ohm) * 1.15),\n  xlab = \"Material\", ylab = \"Resistance / ohm\"\n)\narrows(bar_x, df$resistance_mean_ohm - df$resistance_sd_ohm,\n  bar_x, df$resistance_mean_ohm + df$resistance_sd_ohm,\n  angle = 90, code = 3, length = 0.04\n)\nprint(df[c(\"material\", \"resistance_mean_ohm\", \"resistance_sd_ohm\")])",
+    "ui": {
+      "currentPage": "workspace",
+      "outputTab": "graph",
+      "selectedCell": { "row": 1, "col": 0 },
+      "restoreBanner": "",
+      "sheetStatus": "材質比較サンプル",
+      "runtimeStatus": { "text": "サンプルを読み込みました", "tone": "warning" }
+    },
+    "console": {
+      "entries": [],
+      "history": []
+    }
+  }
+}

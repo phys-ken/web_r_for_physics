@@ -1,0 +1,11 @@
+body {
+  line-height: 1.7;
+}
+
+.navbar-brand {
+  font-weight: 700;
+}
+
+pre code {
+  font-size: 0.92rem;
+}

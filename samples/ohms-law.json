@@ -25,7 +25,7 @@
         }
       ]
     },
-    "script": "df <- subset(get.input(), !is.na(current_A))\ndf$voltage_mean_V <- rowMeans(df[c(\"voltage_1_V\", \"voltage_2_V\", \"voltage_3_V\")], na.rm = TRUE)\ndf$voltage_sd_V <- apply(df[c(\"voltage_1_V\", \"voltage_2_V\", \"voltage_3_V\")], 1, sd, na.rm = TRUE)\nfit <- lm(voltage_mean_V ~ 0 + current_A, data = df)\nplot(df$current_A, df$voltage_mean_V,\n  pch = 19, col = \"darkgreen\", cex = 1.6,\n  xlab = \"current_A\", ylab = \"mean voltage_V\",\n  main = \"Ohm's Law\"\n)\narrows(df$current_A, df$voltage_mean_V - df$voltage_sd_V,\n  df$current_A, df$voltage_mean_V + df$voltage_sd_V,\n  angle = 90, code = 3, length = 0.05\n)\nabline(a = 0, b = coef(fit)[1], col = \"navy\", lwd = 2)\nprint(df[c(\"current_A\", \"voltage_mean_V\", \"voltage_sd_V\")])\ncat(sprintf(\"Estimated resistance: %.2f ohm\\n\", coef(fit)[1]))",
+    "script": "df <- subset(get.input(), !is.na(current_A))\ndf$voltage_mean_V <- rowMeans(df[c(\"voltage_1_V\", \"voltage_2_V\", \"voltage_3_V\")], na.rm = TRUE)\ndf$voltage_sd_V <- apply(df[c(\"voltage_1_V\", \"voltage_2_V\", \"voltage_3_V\")], 1, sd, na.rm = TRUE)\nfit <- lm(voltage_mean_V ~ 0 + current_A, data = df)\nset.paper_style()\nplot(df$current_A, df$voltage_mean_V,\n  pch = 19, col = \"#1f7a1f\", cex = 1.15,\n  xlab = \"Current / A\", ylab = \"Mean voltage / V\"\n)\narrows(df$current_A, df$voltage_mean_V - df$voltage_sd_V,\n  df$current_A, df$voltage_mean_V + df$voltage_sd_V,\n  angle = 90, code = 3, length = 0.04\n)\nabline(a = 0, b = coef(fit)[1], col = \"#374151\", lwd = 2)\nprint(df[c(\"current_A\", \"voltage_mean_V\", \"voltage_sd_V\")])\ncat(sprintf(\"Estimated resistance: %.2f ohm\\n\", coef(fit)[1]))",
     "ui": {
       "currentPage": "workspace",
       "outputTab": "graph",

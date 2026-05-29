@@ -1,0 +1,81 @@
+---
+title: "Physics webR Lab スニペット集"
+---
+
+## 位置-時刻データの 2 次近似
+
+```r
+df <- subset(get.input(), !is.na(time_s))
+df$position_mean_m <- rowMeans(df[c("position_1_m", "position_2_m", "position_3_m")], na.rm = TRUE)
+df$position_sd_m <- apply(df[c("position_1_m", "position_2_m", "position_3_m")], 1, sd, na.rm = TRUE)
+
+set.paper_style()
+fit <- lm(position_mean_m ~ time_s + I(time_s^2), data = df)
+time_grid <- seq(min(df$time_s), max(df$time_s), length.out = 200)
+
+plot(df$time_s, df$position_mean_m,
+  pch = 19, cex = 1.1,
+  xlab = "Time / s",
+  ylab = "Position / m"
+)
+arrows(
+  df$time_s, df$position_mean_m - df$position_sd_m,
+  df$time_s, df$position_mean_m + df$position_sd_m,
+  angle = 90, code = 3, length = 0.04
+)
+lines(time_grid, predict(fit, newdata = data.frame(time_s = time_grid)),
+  col = "#374151", lwd = 2
+)
+```
+
+## データロガーの時系列を線グラフで描く
+
+```r
+df <- subset(get.input(), !is.na(time_s))
+set.paper_style(mar = c(3.8, 4.1, 0.7, 0.6))
+plot(df$time_s, df$position_m,
+  type = "l", lwd = 2, col = "#1f77b4",
+  xlab = "Time / s",
+  ylab = "Position / m"
+)
+```
+
+## 棒グラフが適切な場合
+
+カテゴリ比較なら、棒グラフでも意味があります。
+
+```r
+df <- subset(get.input(), material != "")
+df$resistance_mean_ohm <- rowMeans(df[c("resistance_1_ohm", "resistance_2_ohm", "resistance_3_ohm")], na.rm = TRUE)
+df$resistance_sd_ohm <- apply(df[c("resistance_1_ohm", "resistance_2_ohm", "resistance_3_ohm")], 1, sd, na.rm = TRUE)
+
+set.paper_style(mar = c(4.6, 4.1, 0.6, 0.6), las = 1)
+bar_x <- barplot(df$resistance_mean_ohm,
+  names.arg = df$material,
+  col = "#cbd5e1", border = "#475569",
+  ylim = c(0, max(df$resistance_mean_ohm + df$resistance_sd_ohm) * 1.15),
+  xlab = "Material",
+  ylab = "Resistance / ohm"
+)
+arrows(
+  bar_x, df$resistance_mean_ohm - df$resistance_sd_ohm,
+  bar_x, df$resistance_mean_ohm + df$resistance_sd_ohm,
+  angle = 90, code = 3, length = 0.04
+)
+```
+
+## ばね・振り子などの誤差棒付き散布図
+
+```r
+set.paper_style()
+plot(df$x_value, df$y_value,
+  pch = 19, cex = 1.1,
+  xlab = "X / unit",
+  ylab = "Y / unit"
+)
+arrows(
+  df$x_value, df$y_value - df$y_sd,
+  df$x_value, df$y_value + df$y_sd,
+  angle = 90, code = 3, length = 0.04
+)
+```
