@@ -1210,19 +1210,9 @@ arrows(
     }
 
     function handleCanvasMessage(data) {
-      if (data.event === "canvasNewPage") {
-        graphContext.clearRect(0, 0, elements.graphCanvas.width, elements.graphCanvas.height);
-        state.graphHasImage = false;
-        setGraphEmptyState("ここに R のグラフが表示されます", "plot() や ggplot2 を実行すると、このキャンバスに描画されます。");
-        elements.graphEmptyState.classList.remove("hidden");
-        return;
-      }
-
-      if (data.event === "canvasImage" && data.image) {
-        graphContext.drawImage(data.image, 0, 0, elements.graphCanvas.width, elements.graphCanvas.height);
-        state.graphHasImage = true;
-        elements.graphEmptyState.classList.add("hidden");
-      }
+      // Runtime stream canvas patches are unreliable for complex incremental plots.
+      // The app renders graphs from captureR() so the final bitmap is consistent.
+      void data;
     }
 
     async function runScript(code) {
@@ -1302,32 +1292,51 @@ arrows(
 
     async function executeRSource(code, { printEval = false } = {}) {
       const escapedCode = escapeRString(code);
-      await state.webR.evalRVoid(`
-        .webr_last_output <- ""
-        .webr_last_error <- NULL
-        .webr_last_output <- paste(
-          capture.output(
-            tryCatch(
-              source(
-                textConnection(${escapedCode}),
-                echo = FALSE,
-                print.eval = ${printEval ? "TRUE" : "FALSE"},
-                max.deparse.length = Inf,
-                local = .GlobalEnv
-              ),
-              error = function(e) {
-                .webr_last_error <<- conditionMessage(e)
-                invisible(NULL)
-              }
+      const shelter = await new state.webR.Shelter();
+      try {
+        const capture = await shelter.captureR(
+          `
+          tryCatch(
+            source(
+              textConnection(${escapedCode}),
+              echo = FALSE,
+              print.eval = ${printEval ? "TRUE" : "FALSE"},
+              max.deparse.length = Inf,
+              local = .GlobalEnv
             ),
-            type = "output"
-          ),
-          collapse = "\\n"
-        )
-      `);
-      const output = await state.webR.evalRString(`if (nzchar(.webr_last_output)) .webr_last_output else ""`);
-      const error = await state.webR.evalRString(`if (is.null(.webr_last_error)) "" else .webr_last_error`);
-      return { output, error };
+            error = function(e) {
+              cat(conditionMessage(e), file = stderr())
+              invisible(NULL)
+            }
+          )
+          `,
+          {
+            captureConditions: false,
+            captureGraphics: {
+              width: elements.graphCanvas.width,
+              height: elements.graphCanvas.height,
+              bg: "white",
+            },
+          },
+        );
+
+        const output = capture.output
+          .filter((entry) => entry.type === "stdout")
+          .map((entry) => entry.data)
+          .join("");
+        const error = capture.output
+          .filter((entry) => entry.type === "stderr")
+          .map((entry) => entry.data)
+          .join("");
+
+        if (capture.images.length > 0) {
+          renderCapturedImage(capture.images[capture.images.length - 1]);
+        }
+
+        return { output, error };
+      } finally {
+        shelter.purge();
+      }
     }
 
     async function runSelfTest() {
@@ -1794,6 +1803,13 @@ arrows(
     function setGraphEmptyState(title, message) {
       elements.graphEmptyTitle.textContent = title;
       elements.graphEmptyMessage.textContent = message;
+    }
+
+    function renderCapturedImage(image) {
+      graphContext.clearRect(0, 0, elements.graphCanvas.width, elements.graphCanvas.height);
+      graphContext.drawImage(image, 0, 0, image.width, image.height, 0, 0, elements.graphCanvas.width, elements.graphCanvas.height);
+      state.graphHasImage = true;
+      elements.graphEmptyState.classList.add("hidden");
     }
 
     function downloadGraph() {
