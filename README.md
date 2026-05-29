@@ -1,0 +1,43 @@
+# web_r_for_physics
+
+高校の理科実験向けに作った、**単一 `index.html` 完結** の webR データ解析ツールです。GitHub Pages にそのまま配置でき、iPad の Safari / Chrome でも使えるように、RStudio 風の 2 ペイン UI と軽量な表入力を 1 画面に収めています。
+
+## できること
+
+- 左ペインで複数シートの測定データを入力
+- 1 行目の列名を R 互換の名前へ自動調整
+- `get.input()` で現在シート / 名前指定 / 1 始まりの番号指定で R の data.frame を取得
+- 右上で複数行の R スクリプトを実行
+- 右下で 1 行ずつ REPL 風に実行
+- `plot()` や `ggplot2` の結果をキャンバスに描画し、PNG 保存
+- 表データとスクリプトをまとめて `experiment_setup.json` に保存 / 復元
+
+## ローカル起動
+
+```bash
+npm start
+```
+
+起動後に `http://127.0.0.1:4173/` を開いてください。
+
+## テスト
+
+```bash
+npm test
+```
+
+これは `index.html` に必要な UI・webR 連携コード・公開前提の設定が入っていることを確認する軽いスモークテストです。
+
+## GitHub Pages 公開
+
+このリポジトリはビルド不要です。`index.html` と `.nojekyll` をそのまま公開できます。
+
+1. デフォルトブランチへ push
+2. GitHub Pages の公開元を `master` ブランチの `/ (root)` に設定
+3. 数分待つと Pages URL で配信開始
+
+## 実装メモ
+
+- webR は GitHub Pages と同じ制約で動作確認しやすいよう、`PostMessage` チャネルで起動
+- `get.input()` は JS 側が実行前に全シートを R のグローバル環境へ注入する方式
+- webR は `v0.6.0` に固定して、`latest` 参照による破壊的変更を避けています

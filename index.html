@@ -1,0 +1,1512 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Physics webR Lab</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #edf1f5;
+      --panel: #ffffff;
+      --panel-soft: #f7f9fc;
+      --border: #d6dde8;
+      --border-strong: #b8c2cf;
+      --text: #233243;
+      --muted: #607286;
+      --accent: #2b6de4;
+      --accent-soft: #e8f0ff;
+      --success: #127a46;
+      --danger: #b33c2f;
+      --shadow: 0 10px 24px rgba(38, 62, 89, 0.08);
+      --radius: 12px;
+      --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      --font-mono: "SFMono-Regular", SFMono-Regular, ui-monospace, Menlo, Consolas, monospace;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+      background: var(--bg);
+      color: var(--text);
+      font-family: var(--font-ui);
+    }
+
+    body {
+      overflow: hidden;
+    }
+
+    button,
+    input,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--panel);
+      color: var(--text);
+      padding: 0.55rem 0.9rem;
+      cursor: pointer;
+      transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
+      white-space: nowrap;
+    }
+
+    button:hover:enabled {
+      background: #f1f5fb;
+      border-color: var(--border-strong);
+    }
+
+    button:active:enabled {
+      transform: translateY(1px);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: wait;
+    }
+
+    button.primary {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+
+    button.primary:hover:enabled {
+      background: #1e5fd1;
+      border-color: #1e5fd1;
+    }
+
+    button.ghost {
+      background: transparent;
+    }
+
+    .app-shell {
+      height: 100vh;
+      height: 100dvh;
+      padding:
+        max(12px, env(safe-area-inset-top))
+        max(12px, env(safe-area-inset-right))
+        max(12px, env(safe-area-inset-bottom))
+        max(12px, env(safe-area-inset-left));
+      overflow: hidden;
+    }
+
+    .workspace {
+      height: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+      gap: 12px;
+    }
+
+    .panel {
+      min-width: 0;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, #fbfcfe, #f5f8fc);
+    }
+
+    .panel-title {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .panel-title strong {
+      font-size: 0.96rem;
+      font-weight: 650;
+    }
+
+    .panel-title span {
+      color: var(--muted);
+      font-size: 0.8rem;
+    }
+
+    .toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel-soft);
+      flex-wrap: wrap;
+    }
+
+    .toolbar-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      min-width: 0;
+    }
+
+    .status-pill {
+      max-width: 100%;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0.38rem 0.7rem;
+      border-radius: 999px;
+      background: #eef3fa;
+      color: var(--muted);
+      font-size: 0.8rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .left-panel-body {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .sheet-wrap {
+      min-height: 0;
+      flex: 1;
+      overflow: auto;
+      background: #fff;
+    }
+
+    table.sheet-table {
+      width: max(100%, 720px);
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 0.92rem;
+    }
+
+    .sheet-table th,
+    .sheet-table td {
+      border: 1px solid var(--border);
+      min-width: 84px;
+    }
+
+    .sheet-table thead th {
+      position: sticky;
+      top: 0;
+      z-index: 2;
+      background: #eef4fd;
+      color: var(--muted);
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-align: center;
+      padding: 0.45rem 0.35rem;
+    }
+
+    .row-label {
+      position: sticky;
+      left: 0;
+      z-index: 1;
+      background: #f7f9fc;
+      color: var(--muted);
+      width: 44px;
+      min-width: 44px;
+      text-align: center;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 0.45rem 0.25rem;
+    }
+
+    .sheet-table tbody tr:first-child .row-label {
+      background: #e8f0ff;
+    }
+
+    .sheet-table tbody tr:first-child td {
+      background: #f4f8ff;
+      font-weight: 600;
+    }
+
+    .cell {
+      min-height: 38px;
+      padding: 0.45rem 0.55rem;
+      outline: none;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .cell:focus {
+      background: #fffceb;
+      box-shadow: inset 0 0 0 2px rgba(43, 109, 228, 0.2);
+    }
+
+    .cell.selected {
+      background: #fff7d6;
+    }
+
+    .sheet-tabs {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 12px;
+      border-top: 1px solid var(--border);
+      background: #fbfcfe;
+      overflow-x: auto;
+      flex-shrink: 0;
+    }
+
+    .sheet-tab {
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 0.45rem 0.85rem;
+      background: #fff;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+
+    .sheet-tab.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: #bdd0f7;
+      font-weight: 650;
+    }
+
+    .right-grid {
+      height: 100%;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+    }
+
+    .script-section,
+    .output-section {
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .script-section {
+      border-bottom: 1px solid var(--border);
+    }
+
+    .script-editor {
+      flex: 1;
+      min-height: 0;
+      width: 100%;
+      border: 0;
+      resize: none;
+      padding: 14px;
+      font-family: var(--font-mono);
+      font-size: 0.92rem;
+      line-height: 1.5;
+      color: var(--text);
+      background: #fdfefe;
+      outline: none;
+    }
+
+    .output-tabs {
+      display: flex;
+      gap: 8px;
+    }
+
+    .output-tab {
+      border: 1px solid transparent;
+      border-radius: 999px;
+      padding: 0.35rem 0.85rem;
+      background: transparent;
+      color: var(--muted);
+    }
+
+    .output-tab.active {
+      background: var(--accent-soft);
+      color: var(--accent);
+      border-color: #bdd0f7;
+      font-weight: 650;
+    }
+
+    .output-panels {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      background: #fff;
+    }
+
+    .output-panel {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+      padding: 12px;
+      opacity: 0;
+      pointer-events: none;
+      visibility: hidden;
+      transition: opacity 0.15s ease;
+    }
+
+    .output-panel.active {
+      opacity: 1;
+      pointer-events: auto;
+      visibility: visible;
+    }
+
+    .console-output {
+      flex: 1;
+      min-height: 0;
+      margin: 0;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #18212c;
+      color: #e9f1fb;
+      font-family: var(--font-mono);
+      font-size: 0.86rem;
+      line-height: 1.45;
+      overflow: auto;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .console-output .stderr {
+      color: #ffb9a8;
+    }
+
+    .console-output .system {
+      color: #9dccff;
+    }
+
+    .console-input-row {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 8px;
+      padding-top: 10px;
+    }
+
+    .console-input {
+      width: 100%;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 0.65rem 0.8rem;
+      background: #fff;
+      color: var(--text);
+    }
+
+    .graph-shell {
+      position: relative;
+      flex: 1;
+      min-height: 0;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      background: linear-gradient(180deg, #fbfdff, #f0f5fb);
+    }
+
+    .graph-canvas {
+      width: 100%;
+      height: 100%;
+      display: block;
+      background: #fff;
+    }
+
+    .graph-empty {
+      position: absolute;
+      inset: 0;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 18px;
+      color: var(--muted);
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.86), rgba(255,255,255,0.9)),
+        repeating-linear-gradient(
+          90deg,
+          rgba(95, 125, 160, 0.05) 0,
+          rgba(95, 125, 160, 0.05) 1px,
+          transparent 1px,
+          transparent 48px
+        ),
+        repeating-linear-gradient(
+          0deg,
+          rgba(95, 125, 160, 0.05) 0,
+          rgba(95, 125, 160, 0.05) 1px,
+          transparent 1px,
+          transparent 48px
+        );
+    }
+
+    .loading-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 30;
+      display: grid;
+      place-items: center;
+      background: rgba(236, 241, 246, 0.92);
+      backdrop-filter: blur(6px);
+    }
+
+    .loading-card {
+      width: min(420px, calc(100vw - 32px));
+      padding: 20px 22px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      background: #fff;
+      box-shadow: var(--shadow);
+    }
+
+    .loading-card strong {
+      display: block;
+      font-size: 1rem;
+      margin-bottom: 6px;
+    }
+
+    .loading-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .spinner {
+      width: 28px;
+      height: 28px;
+      border: 3px solid #d8e4f9;
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 14px;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 960px) {
+      .workspace {
+        grid-template-columns: 1fr;
+        grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-shell">
+    <div class="workspace">
+      <section class="panel">
+        <div class="panel-header">
+          <div class="panel-title">
+            <strong>データ入力</strong>
+            <span>複数シートの測定値をそのまま R に渡せます</span>
+          </div>
+          <div class="toolbar-group">
+            <button id="importButton" type="button">設定読込 (JSON)</button>
+            <button id="exportButton" type="button">設定保存 (JSON)</button>
+          </div>
+        </div>
+        <div class="left-panel-body">
+          <div class="toolbar">
+            <div class="toolbar-group">
+              <button id="addRowButton" type="button">行を追加</button>
+              <button id="addColumnButton" type="button">列を追加</button>
+            </div>
+            <div id="sheetStatus" class="status-pill">1行目は R 互換の列名へ自動調整されます</div>
+          </div>
+          <div id="sheetWrap" class="sheet-wrap"></div>
+          <div class="sheet-tabs" id="sheetTabs"></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="right-grid">
+          <div class="script-section">
+            <div class="panel-header">
+              <div class="panel-title">
+                <strong>R スクリプト</strong>
+                <span>Ctrl/Command + Enter でも実行できます</span>
+              </div>
+              <div class="toolbar-group">
+                <button id="runScriptButton" class="primary" type="button">コード実行</button>
+              </div>
+            </div>
+            <textarea id="scriptEditor" class="script-editor" spellcheck="false"></textarea>
+          </div>
+
+          <div class="output-section">
+            <div class="panel-header">
+              <div class="output-tabs">
+                <button class="output-tab active" type="button" data-tab="console">コンソール</button>
+                <button class="output-tab" type="button" data-tab="graph">グラフ</button>
+              </div>
+              <div class="toolbar-group">
+                <span id="runtimeStatus" class="status-pill">webR を初期化中…</span>
+                <button id="downloadGraphButton" type="button">グラフをダウンロード</button>
+              </div>
+            </div>
+            <div class="output-panels">
+              <div class="output-panel active" data-panel="console">
+                <pre id="consoleOutput" class="console-output" aria-live="polite"></pre>
+                <div class="console-input-row">
+                  <input id="consoleInput" class="console-input" type="text" placeholder="例: summary(get.input())" autocomplete="off" spellcheck="false">
+                  <button id="runConsoleButton" type="button">1行実行</button>
+                </div>
+              </div>
+              <div class="output-panel" data-panel="graph">
+                <div class="graph-shell">
+                  <canvas id="graphCanvas" class="graph-canvas"></canvas>
+                  <div id="graphEmptyState" class="graph-empty">
+                    <div>
+                      <strong>ここに R のグラフが表示されます</strong>
+                      <div>plot() や ggplot2 を実行すると、このキャンバスに描画されます。</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <input id="importFileInput" class="hidden" type="file" accept="application/json,.json">
+
+  <div id="loadingOverlay" class="loading-overlay">
+    <div class="loading-card">
+      <div class="spinner" aria-hidden="true"></div>
+      <strong>webR を起動しています</strong>
+      <p id="loadingMessage">ブラウザ上で R 本体を準備しています。最初の読み込みは少し時間がかかります。</p>
+    </div>
+  </div>
+
+  <script type="module">
+    import { WebR } from "https://webr.r-wasm.org/v0.6.0/webr.mjs";
+
+    const DEFAULT_ROW_COUNT = 12;
+    const DEFAULT_COL_COUNT = 6;
+    const DEFAULT_SHEET_NAME = "Measurements";
+    const JSON_FILE_NAME = "experiment_setup.json";
+    const GRAPH_SCALE = 2;
+    const WEBR_BASE_URL = "https://webr.r-wasm.org/v0.6.0/";
+    const SELF_TEST_MODE = new URLSearchParams(window.location.search).get("selftest") === "1";
+
+    const initialWorkbook = {
+      version: 1,
+      activeSheetId: "sheet-1",
+      sheets: [
+        {
+          id: "sheet-1",
+          name: DEFAULT_SHEET_NAME,
+          data: [
+            ["trial", "distance_m", "time_s", "distance_err_m", "time_err_s", "note"],
+            ["1", "0.52", "0.81", "0.01", "0.02", "group_a"],
+            ["2", "0.77", "1.10", "0.01", "0.02", "group_a"],
+            ["3", "1.01", "1.37", "0.02", "0.03", "group_b"],
+            ["4", "1.28", "1.65", "0.02", "0.03", "group_b"],
+            ...Array.from({ length: 8 }, () => Array(DEFAULT_COL_COUNT).fill("")),
+          ],
+        },
+      ],
+    };
+
+    const defaultScript = `df <- get.input()
+df$velocity_m_s <- df$distance_m / df$time_s
+print(df)
+
+plot(
+  df$time_s,
+  df$distance_m,
+  pch = 19,
+  xlab = "time_s",
+  ylab = "distance_m",
+  main = "Distance vs Time"
+)
+arrows(
+  df$time_s - df$time_err_s,
+  df$distance_m,
+  df$time_s + df$time_err_s,
+  df$distance_m,
+  angle = 90,
+  code = 3,
+  length = 0.05
+)
+arrows(
+  df$time_s,
+  df$distance_m - df$distance_err_m,
+  df$time_s,
+  df$distance_m + df$distance_err_m,
+  angle = 90,
+  code = 3,
+  length = 0.05
+)`;
+
+    const state = {
+      workbook: structuredClone(initialWorkbook),
+      selectedCell: { row: 0, col: 0 },
+      outputTab: "console",
+      webR: null,
+      ready: false,
+      busy: false,
+      ggplot2Ready: false,
+      graphHasImage: false,
+      plotSize: { width: 504, height: 360 },
+    };
+
+    const elements = {
+      importButton: document.getElementById("importButton"),
+      exportButton: document.getElementById("exportButton"),
+      importFileInput: document.getElementById("importFileInput"),
+      addRowButton: document.getElementById("addRowButton"),
+      addColumnButton: document.getElementById("addColumnButton"),
+      sheetWrap: document.getElementById("sheetWrap"),
+      sheetTabs: document.getElementById("sheetTabs"),
+      sheetStatus: document.getElementById("sheetStatus"),
+      scriptEditor: document.getElementById("scriptEditor"),
+      runScriptButton: document.getElementById("runScriptButton"),
+      consoleOutput: document.getElementById("consoleOutput"),
+      consoleInput: document.getElementById("consoleInput"),
+      runConsoleButton: document.getElementById("runConsoleButton"),
+      runtimeStatus: document.getElementById("runtimeStatus"),
+      outputTabs: Array.from(document.querySelectorAll(".output-tab")),
+      outputPanels: Array.from(document.querySelectorAll(".output-panel")),
+      graphCanvas: document.getElementById("graphCanvas"),
+      graphEmptyState: document.getElementById("graphEmptyState"),
+      downloadGraphButton: document.getElementById("downloadGraphButton"),
+      loadingOverlay: document.getElementById("loadingOverlay"),
+      loadingMessage: document.getElementById("loadingMessage"),
+    };
+
+    const graphContext = elements.graphCanvas.getContext("2d");
+
+    elements.scriptEditor.value = defaultScript;
+    ensureWorkbookShape();
+    renderWorkbook();
+    setOutputTab("console");
+
+    elements.importButton.addEventListener("click", () => elements.importFileInput.click());
+    elements.importFileInput.addEventListener("change", handleImportFile);
+    elements.exportButton.addEventListener("click", exportSetup);
+    elements.addRowButton.addEventListener("click", addRow);
+    elements.addColumnButton.addEventListener("click", addColumn);
+    elements.runScriptButton.addEventListener("click", () => runScript(elements.scriptEditor.value));
+    elements.runConsoleButton.addEventListener("click", () => runConsoleLine());
+    elements.consoleInput.addEventListener("keydown", (event) => {
+      if (event.key === "Enter") {
+        event.preventDefault();
+        runConsoleLine();
+      }
+    });
+    elements.scriptEditor.addEventListener("keydown", (event) => {
+      const withModifier = event.metaKey || event.ctrlKey;
+      if (withModifier && event.key === "Enter") {
+        event.preventDefault();
+        runScript(elements.scriptEditor.value);
+      }
+    });
+    elements.outputTabs.forEach((button) => {
+      button.addEventListener("click", () => setOutputTab(button.dataset.tab));
+    });
+    elements.downloadGraphButton.addEventListener("click", downloadGraph);
+    window.addEventListener("resize", () => {
+      updateGraphCanvasMetrics();
+      syncPlotSizeToR().catch((error) => appendSystemLine(`plot device resize failed: ${error.message}`, true));
+    });
+
+    boot().catch((error) => {
+      appendSystemLine(`webR initialisation failed: ${error.message}`, true);
+      setRuntimeStatus("webR 起動に失敗しました", true);
+      elements.loadingMessage.textContent = "webR の起動に失敗しました。ネットワークやブラウザ設定を確認してください。";
+    });
+
+    async function boot() {
+      setBusy(true);
+      setRuntimeStatus("webR を初期化中…");
+      appendSystemLine("Starting webR in PostMessage mode to match GitHub Pages.");
+      state.webR = new WebR({ channelType: "PostMessage", baseUrl: WEBR_BASE_URL });
+      elements.loadingMessage.textContent = "R ランタイムを読み込んでいます。最初の起動は少し時間がかかります。";
+      await state.webR.init();
+      startOutputReader(state.webR);
+      elements.loadingMessage.textContent = "R の初期設定とグラフ描画デバイスを準備しています。";
+      setRuntimeStatus("R の初期設定中…");
+      updateGraphCanvasMetrics();
+      await state.webR.evalRVoid(`
+        options(stringsAsFactors = FALSE)
+        .webr_plot_width <- ${state.plotSize.width}L
+        .webr_plot_height <- ${state.plotSize.height}L
+        options(
+          device = function(...) {
+            webr::canvas(
+              width = get(".webr_plot_width", envir = .GlobalEnv, inherits = FALSE),
+              height = get(".webr_plot_height", envir = .GlobalEnv, inherits = FALSE),
+              ...
+            )
+          }
+        )
+        .webr_input_sheets <- list()
+        .webr_active_sheet_index <- 1L
+        get.input <- function(sheet = NULL) {
+          sheets <- get(".webr_input_sheets", envir = .GlobalEnv, inherits = FALSE)
+          active_index <- get(".webr_active_sheet_index", envir = .GlobalEnv, inherits = FALSE)
+
+          if (!length(sheets)) {
+            stop("No sheet data is available.")
+          }
+
+          if (is.null(sheet)) {
+            return(sheets[[active_index]])
+          }
+
+          if (is.character(sheet)) {
+            if (!sheet %in% names(sheets)) {
+              stop(sprintf("Sheet '%s' was not found.", sheet))
+            }
+            return(sheets[[sheet]])
+          }
+
+          if (is.numeric(sheet)) {
+            index <- as.integer(sheet[[1]])
+            if (is.na(index) || index < 1 || index > length(sheets)) {
+              stop("Sheet index is out of range.")
+            }
+            return(sheets[[index]])
+          }
+
+          stop("sheet must be NULL, a sheet name, or a 1-based sheet index.")
+        }
+      `);
+      elements.loadingMessage.textContent = "入力シートを R に同期しています。";
+      await syncWorkbookToR();
+      state.ready = true;
+      setRuntimeStatus("webR 準備完了");
+      appendSystemLine(`webR is ready. crossOriginIsolated=${String(window.crossOriginIsolated)}.`);
+      elements.loadingOverlay.classList.add("hidden");
+      setBusy(false);
+      if (SELF_TEST_MODE) {
+        await runSelfTest();
+      }
+    }
+
+    function startOutputReader(webR) {
+      (async () => {
+        for await (const output of webR.stream()) {
+          switch (output.type) {
+            case "stdout":
+              appendOutput(output.data, "stdout");
+              break;
+            case "stderr":
+              appendOutput(output.data, "stderr");
+              break;
+            case "prompt":
+              appendOutput(output.data, "system");
+              break;
+            case "canvas":
+              handleCanvasMessage(output.data);
+              break;
+            default:
+              break;
+          }
+        }
+      })().catch((error) => {
+        appendSystemLine(`output stream closed unexpectedly: ${error.message}`, true);
+      });
+    }
+
+    function handleCanvasMessage(data) {
+      if (data.event === "canvasNewPage") {
+        graphContext.clearRect(0, 0, elements.graphCanvas.width, elements.graphCanvas.height);
+        state.graphHasImage = false;
+        elements.graphEmptyState.classList.remove("hidden");
+        return;
+      }
+
+      if (data.event === "canvasImage" && data.image) {
+        graphContext.clearRect(0, 0, elements.graphCanvas.width, elements.graphCanvas.height);
+        graphContext.drawImage(data.image, 0, 0, elements.graphCanvas.width, elements.graphCanvas.height);
+        state.graphHasImage = true;
+        elements.graphEmptyState.classList.add("hidden");
+      }
+    }
+
+    async function runScript(code) {
+      await runRCode(code, { echoLabel: "# Run editor script" });
+    }
+
+    async function runConsoleLine() {
+      const code = elements.consoleInput.value.trim();
+      if (!code) {
+        return;
+      }
+      elements.consoleInput.value = "";
+      await runRCode(code, { echoLabel: `> ${code}` });
+    }
+
+    async function runRCode(code, { echoLabel = "" } = {}) {
+      if (!state.ready || state.busy || !code.trim()) {
+        return;
+      }
+
+      setBusy(true);
+      setRuntimeStatus("R コードを実行中…");
+      if (echoLabel) {
+        appendSystemLine(echoLabel);
+      }
+
+      try {
+        updateGraphCanvasMetrics();
+        await syncPlotSizeToR();
+        await syncWorkbookToR();
+        await ensureGgplot2IfNeeded(code);
+        await state.webR.evalRVoid(code);
+        setRuntimeStatus("実行完了");
+      } catch (error) {
+        appendSystemLine(error.message, true);
+        setRuntimeStatus("実行エラー", true);
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    async function runSelfTest() {
+      appendSystemLine("SELFTEST: starting");
+      const payload = buildExportPayload();
+      const roundTrip = JSON.parse(JSON.stringify(payload));
+      if (
+        roundTrip.script !== elements.scriptEditor.value
+        || roundTrip.workbook.sheets.length !== state.workbook.sheets.length
+        || roundTrip.workbook.activeSheetId !== state.workbook.activeSheetId
+      ) {
+        throw new Error("SELFTEST failed during JSON round-trip.");
+      }
+      appendSystemLine("SELFTEST: JSON round-trip ok");
+      setOutputTab("graph");
+      await runRCode(
+        `df <- get.input()
+         stopifnot(all(c("trial", "distance_m", "time_s") %in% names(df)))
+         print(summary(df))
+         plot(df$time_s, df$distance_m, pch = 19, xlab = "time_s", ylab = "distance_m")`,
+        { echoLabel: "# SELFTEST run" },
+      );
+      await waitFor(() => state.graphHasImage, 8000, "SELFTEST graph render timed out.");
+      appendSystemLine("SELFTEST:PASS");
+    }
+
+    async function ensureGgplot2IfNeeded(code) {
+      if (state.ggplot2Ready) {
+        return;
+      }
+      if (!/(ggplot2|ggplot\s*\(|geom_[a-z_]+|aes\s*\()/i.test(code)) {
+        return;
+      }
+
+      appendSystemLine("Installing ggplot2 for webR. This can take a little longer on iPad.");
+      try {
+        await state.webR.installPackages(["ggplot2"]);
+        await state.webR.evalRVoid("suppressPackageStartupMessages(library(ggplot2))");
+        state.ggplot2Ready = true;
+        appendSystemLine("ggplot2 is ready.");
+      } catch (error) {
+        throw new Error(`ggplot2 could not be loaded. Try base R plot() instead. ${error.message}`);
+      }
+    }
+
+    async function syncPlotSizeToR() {
+      if (!state.ready) {
+        return;
+      }
+      await state.webR.evalRVoid(`
+        .webr_plot_width <- ${state.plotSize.width}L
+        .webr_plot_height <- ${state.plotSize.height}L
+      `);
+    }
+
+    async function syncWorkbookToR() {
+      if (!state.webR) {
+        return;
+      }
+      const activeSheetIndex = getActiveSheetIndex() + 1;
+      const rCode = `
+        .webr_active_sheet_index <- ${activeSheetIndex}L
+        .webr_input_sheets <- ${buildWorkbookRLiteral()}
+      `;
+      await state.webR.evalRVoid(rCode);
+    }
+
+    function buildWorkbookRLiteral() {
+      const sheetExpressions = state.workbook.sheets.map((sheet) => {
+        const frame = sheetToFrameModel(sheet);
+        const columnValues = frame.columns.map((column) => buildRVector(column.values, column.type)).join(",\n");
+        const columnNames = `c(${frame.columns.map((column) => escapeRString(column.name)).join(", ")})`;
+        return `as.data.frame(stats::setNames(list(${columnValues}), ${columnNames}), check.names = FALSE, stringsAsFactors = FALSE)`;
+      });
+      const sheetNames = `c(${state.workbook.sheets.map((sheet) => escapeRString(sheet.name)).join(", ")})`;
+      return `stats::setNames(list(\n${sheetExpressions.join(",\n")}\n), ${sheetNames})`;
+    }
+
+    function sheetToFrameModel(sheet) {
+      const data = cloneGrid(sheet.data);
+      const columnCount = Math.max(...data.map((row) => row.length), DEFAULT_COL_COUNT);
+      const headerSeed = [];
+      for (let index = 0; index < columnCount; index += 1) {
+        headerSeed.push((data[0] && data[0][index]) || `column_${index + 1}`);
+      }
+      const headers = sanitizeHeaderList(headerSeed);
+      const bodyRows = data.slice(1).filter((row) => row.some((cell) => String(cell ?? "").trim() !== ""));
+      const columns = headers.map((header, index) => {
+        const values = bodyRows.map((row) => String(row[index] ?? "").trim());
+        return {
+          name: header,
+          type: inferColumnType(values),
+          values,
+        };
+      });
+      return { columns };
+    }
+
+    function inferColumnType(values) {
+      const nonEmpty = values.filter((value) => value !== "");
+      if (nonEmpty.length === 0) {
+        return "character";
+      }
+      const numericPattern = /^[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?$/;
+      const logicalPattern = /^(true|false)$/i;
+      if (nonEmpty.every((value) => numericPattern.test(value))) {
+        return "numeric";
+      }
+      if (nonEmpty.every((value) => logicalPattern.test(value))) {
+        return "logical";
+      }
+      return "character";
+    }
+
+    function buildRVector(values, type) {
+      if (type === "numeric") {
+        if (values.length === 0) {
+          return "numeric(0)";
+        }
+        return `c(${values.map((value) => (value === "" ? "NA_real_" : value)).join(", ")})`;
+      }
+      if (type === "logical") {
+        if (values.length === 0) {
+          return "logical(0)";
+        }
+        return `c(${values.map((value) => {
+          if (value === "") {
+            return "NA";
+          }
+          return /^true$/i.test(value) ? "TRUE" : "FALSE";
+        }).join(", ")})`;
+      }
+      if (values.length === 0) {
+        return "character(0)";
+      }
+      return `c(${values.map((value) => {
+        if (value === "") {
+          return "NA_character_";
+        }
+        return escapeRString(value);
+      }).join(", ")})`;
+    }
+
+    function escapeRString(value) {
+      const escaped = String(value)
+        .replace(/\\/g, "\\\\")
+        .replace(/"/g, '\\"')
+        .replace(/\r/g, "\\r")
+        .replace(/\n/g, "\\n");
+      return `"${escaped}"`;
+    }
+
+    function renderWorkbook() {
+      renderSheetTable();
+      renderSheetTabs();
+      updateSelectedCellMarker();
+    }
+
+    function renderSheetTable() {
+      const sheet = getActiveSheet();
+      const table = document.createElement("table");
+      table.className = "sheet-table";
+
+      const columnCount = Math.max(...sheet.data.map((row) => row.length), DEFAULT_COL_COUNT);
+      const thead = document.createElement("thead");
+      const headRow = document.createElement("tr");
+      const corner = document.createElement("th");
+      corner.className = "row-label";
+      corner.textContent = "#";
+      headRow.appendChild(corner);
+      for (let index = 0; index < columnCount; index += 1) {
+        const th = document.createElement("th");
+        th.textContent = columnLabel(index);
+        headRow.appendChild(th);
+      }
+      thead.appendChild(headRow);
+      table.appendChild(thead);
+
+      const tbody = document.createElement("tbody");
+      sheet.data.forEach((row, rowIndex) => {
+        const tr = document.createElement("tr");
+        const label = document.createElement("th");
+        label.className = "row-label";
+        label.scope = "row";
+        label.textContent = rowIndex === 0 ? "H" : String(rowIndex);
+        tr.appendChild(label);
+
+        for (let colIndex = 0; colIndex < columnCount; colIndex += 1) {
+          const td = document.createElement("td");
+          const cell = document.createElement("div");
+          cell.className = "cell";
+          cell.contentEditable = "true";
+          cell.spellcheck = false;
+          cell.dataset.row = String(rowIndex);
+          cell.dataset.col = String(colIndex);
+          cell.textContent = row[colIndex] ?? "";
+          td.appendChild(cell);
+          tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+      });
+      table.appendChild(tbody);
+
+      elements.sheetWrap.replaceChildren(table);
+
+      table.addEventListener("focusin", (event) => {
+        const cell = event.target.closest(".cell");
+        if (!cell) {
+          return;
+        }
+        state.selectedCell = {
+          row: Number(cell.dataset.row),
+          col: Number(cell.dataset.col),
+        };
+        updateSelectedCellMarker();
+      });
+
+      table.addEventListener("input", (event) => {
+        const cell = event.target.closest(".cell");
+        if (!cell) {
+          return;
+        }
+        updateCellValue(Number(cell.dataset.row), Number(cell.dataset.col), cell.textContent);
+      });
+
+      table.addEventListener("blur", (event) => {
+        const cell = event.target.closest(".cell");
+        if (!cell) {
+          return;
+        }
+        if (Number(cell.dataset.row) === 0) {
+          sanitizeActiveSheetHeaders();
+        }
+      }, true);
+
+      table.addEventListener("keydown", (event) => {
+        const cell = event.target.closest(".cell");
+        if (!cell) {
+          return;
+        }
+        if (event.key === "Enter") {
+          event.preventDefault();
+          cell.blur();
+        }
+      });
+
+      table.addEventListener("paste", (event) => {
+        const cell = event.target.closest(".cell");
+        if (!cell) {
+          return;
+        }
+        const text = event.clipboardData?.getData("text/plain") ?? "";
+        if (!text.includes("\t") && !text.includes("\n")) {
+          return;
+        }
+        event.preventDefault();
+        pasteMatrix(text, Number(cell.dataset.row), Number(cell.dataset.col));
+      });
+    }
+
+    function renderSheetTabs() {
+      const fragment = document.createDocumentFragment();
+      state.workbook.sheets.forEach((sheet) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = `sheet-tab${sheet.id === state.workbook.activeSheetId ? " active" : ""}`;
+        button.textContent = sheet.name;
+        button.addEventListener("click", () => {
+          state.workbook.activeSheetId = sheet.id;
+          ensureWorkbookShape();
+          renderWorkbook();
+        });
+        fragment.appendChild(button);
+      });
+
+      const addButton = document.createElement("button");
+      addButton.type = "button";
+      addButton.className = "sheet-tab";
+      addButton.textContent = "＋";
+      addButton.addEventListener("click", addSheet);
+      fragment.appendChild(addButton);
+
+      elements.sheetTabs.replaceChildren(fragment);
+    }
+
+    function updateSelectedCellMarker() {
+      document.querySelectorAll(".cell.selected").forEach((cell) => cell.classList.remove("selected"));
+      const selector = `.cell[data-row="${state.selectedCell.row}"][data-col="${state.selectedCell.col}"]`;
+      const cell = document.querySelector(selector);
+      if (cell) {
+        cell.classList.add("selected");
+      }
+    }
+
+    function updateCellValue(row, col, value) {
+      const sheet = getActiveSheet();
+      ensureGridCell(sheet.data, row, col);
+      sheet.data[row][col] = normaliseCell(value);
+    }
+
+    function pasteMatrix(text, startRow, startCol) {
+      const matrix = text
+        .replace(/\r\n/g, "\n")
+        .replace(/\r/g, "\n")
+        .split("\n")
+        .filter((line, index, lines) => line !== "" || index < lines.length - 1)
+        .map((line) => line.split("\t"));
+      const sheet = getActiveSheet();
+      matrix.forEach((row, rowOffset) => {
+        row.forEach((value, colOffset) => {
+          ensureGridCell(sheet.data, startRow + rowOffset, startCol + colOffset);
+          sheet.data[startRow + rowOffset][startCol + colOffset] = normaliseCell(value);
+        });
+      });
+      sanitizeActiveSheetHeaders();
+      ensureWorkbookShape();
+      renderWorkbook();
+    }
+
+    function addRow() {
+      const sheet = getActiveSheet();
+      const columnCount = Math.max(...sheet.data.map((row) => row.length), DEFAULT_COL_COUNT);
+      sheet.data.push(Array(columnCount).fill(""));
+      renderWorkbook();
+    }
+
+    function addColumn() {
+      const sheet = getActiveSheet();
+      sheet.data.forEach((row, rowIndex) => {
+        row.push(rowIndex === 0 ? `column_${row.length + 1}` : "");
+      });
+      sanitizeActiveSheetHeaders();
+      renderWorkbook();
+    }
+
+    function addSheet() {
+      const sheetNumber = state.workbook.sheets.length + 1;
+      const name = createUniqueSheetName(`Sheet${sheetNumber}`);
+      const id = `sheet-${crypto.randomUUID()}`;
+      state.workbook.sheets.push({
+        id,
+        name,
+        data: createBlankSheetData(),
+      });
+      state.workbook.activeSheetId = id;
+      ensureWorkbookShape();
+      renderWorkbook();
+    }
+
+    function createBlankSheetData() {
+      const headers = Array.from({ length: DEFAULT_COL_COUNT }, (_, index) => `column_${index + 1}`);
+      return [
+        headers,
+        ...Array.from({ length: DEFAULT_ROW_COUNT - 1 }, () => Array(DEFAULT_COL_COUNT).fill("")),
+      ];
+    }
+
+    function sanitizeActiveSheetHeaders() {
+      const sheet = getActiveSheet();
+      const current = sheet.data[0] ?? [];
+      const sanitised = sanitizeHeaderList(current);
+      let changed = false;
+      sanitised.forEach((header, index) => {
+        if (sheet.data[0][index] !== header) {
+          sheet.data[0][index] = header;
+          changed = true;
+        }
+      });
+      if (changed) {
+        elements.sheetStatus.textContent = "列名を R 互換の名前に自動調整しました";
+        renderWorkbook();
+      }
+    }
+
+    function sanitizeHeaderList(headers) {
+      const used = new Map();
+      return headers.map((value, index) => {
+        let base = String(value ?? "").trim()
+          .replace(/[^\w]+/g, "_")
+          .replace(/^_+/, "_")
+          .replace(/_+/g, "_")
+          .replace(/^(\d)/, "_$1")
+          .replace(/^$/, `column_${index + 1}`);
+        if (!/^[A-Za-z_]/.test(base)) {
+          base = `_${base}`;
+        }
+        base = base.replace(/[^A-Za-z0-9_]/g, "_");
+        const count = (used.get(base) ?? 0) + 1;
+        used.set(base, count);
+        return count === 1 ? base : `${base}_${count}`;
+      });
+    }
+
+    function setOutputTab(tab) {
+      state.outputTab = tab;
+      elements.outputTabs.forEach((button) => {
+        button.classList.toggle("active", button.dataset.tab === tab);
+      });
+      elements.outputPanels.forEach((panel) => {
+        panel.classList.toggle("active", panel.dataset.panel === tab);
+      });
+      if (tab === "graph") {
+        updateGraphCanvasMetrics();
+      }
+    }
+
+    function updateGraphCanvasMetrics() {
+      const graphPanel = document.querySelector('[data-panel="graph"] .graph-shell');
+      const rect = graphPanel.getBoundingClientRect();
+      const width = Math.max(320, Math.floor(rect.width || 640));
+      const height = Math.max(220, Math.floor(rect.height || 360));
+      const nextWidth = width * GRAPH_SCALE;
+      const nextHeight = height * GRAPH_SCALE;
+      if (elements.graphCanvas.width !== nextWidth || elements.graphCanvas.height !== nextHeight) {
+        elements.graphCanvas.width = nextWidth;
+        elements.graphCanvas.height = nextHeight;
+        graphContext.clearRect(0, 0, elements.graphCanvas.width, elements.graphCanvas.height);
+        if (!state.graphHasImage) {
+          elements.graphEmptyState.classList.remove("hidden");
+        }
+      }
+      elements.graphCanvas.style.width = `${width}px`;
+      elements.graphCanvas.style.height = `${height}px`;
+      state.plotSize = {
+        width: Math.max(160, Math.floor(elements.graphCanvas.width / GRAPH_SCALE)),
+        height: Math.max(120, Math.floor(elements.graphCanvas.height / GRAPH_SCALE)),
+      };
+    }
+
+    function downloadGraph() {
+      if (!state.graphHasImage) {
+        appendSystemLine("まだグラフがありません。plot() か ggplot2 を実行してください。", true);
+        return;
+      }
+      const link = document.createElement("a");
+      link.href = elements.graphCanvas.toDataURL("image/png");
+      link.download = "physics-plot.png";
+      link.click();
+    }
+
+    function exportSetup() {
+      const payload = buildExportPayload();
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = JSON_FILE_NAME;
+      link.click();
+      URL.revokeObjectURL(url);
+    }
+
+    async function handleImportFile(event) {
+      const file = event.target.files?.[0];
+      if (!file) {
+        return;
+      }
+
+      try {
+        const text = await file.text();
+        const parsed = JSON.parse(text);
+        if (!parsed || !parsed.workbook || !Array.isArray(parsed.workbook.sheets)) {
+          throw new Error("JSON format is not supported.");
+        }
+        state.workbook = parsed.workbook;
+        elements.scriptEditor.value = typeof parsed.script === "string" ? parsed.script : "";
+        ensureWorkbookShape();
+        renderWorkbook();
+        elements.sheetStatus.textContent = "設定を読み込みました";
+        if (state.ready) {
+          await syncWorkbookToR();
+        }
+      } catch (error) {
+        appendSystemLine(`設定読込に失敗しました: ${error.message}`, true);
+      } finally {
+        event.target.value = "";
+      }
+    }
+
+    function buildExportPayload() {
+      return {
+        version: 1,
+        exportedAt: new Date().toISOString(),
+        workbook: state.workbook,
+        script: elements.scriptEditor.value,
+      };
+    }
+
+    function ensureWorkbookShape() {
+      if (!state.workbook.sheets.length) {
+        state.workbook.sheets.push({
+          id: `sheet-${crypto.randomUUID()}`,
+          name: DEFAULT_SHEET_NAME,
+          data: createBlankSheetData(),
+        });
+      }
+
+      const ids = new Set();
+      state.workbook.sheets.forEach((sheet, index) => {
+        if (!sheet.id || ids.has(sheet.id)) {
+          sheet.id = `sheet-${index + 1}-${crypto.randomUUID()}`;
+        }
+        ids.add(sheet.id);
+        sheet.name = createUniqueSheetName(sheet.name || `Sheet${index + 1}`, sheet.id);
+        if (!Array.isArray(sheet.data) || sheet.data.length === 0) {
+          sheet.data = createBlankSheetData();
+        }
+        const columnCount = Math.max(...sheet.data.map((row) => Array.isArray(row) ? row.length : 0), DEFAULT_COL_COUNT);
+        sheet.data = sheet.data.map((row) => {
+          const nextRow = Array.isArray(row) ? row.map((cell) => normaliseCell(cell)) : [];
+          while (nextRow.length < columnCount) {
+            nextRow.push("");
+          }
+          return nextRow;
+        });
+        while (sheet.data.length < DEFAULT_ROW_COUNT) {
+          sheet.data.push(Array(columnCount).fill(""));
+        }
+        sheet.data[0] = sanitizeHeaderList(sheet.data[0]);
+      });
+
+      if (!state.workbook.activeSheetId || !state.workbook.sheets.some((sheet) => sheet.id === state.workbook.activeSheetId)) {
+        state.workbook.activeSheetId = state.workbook.sheets[0].id;
+      }
+    }
+
+    function createUniqueSheetName(name, currentId = null) {
+      const base = String(name || "Sheet").trim() || "Sheet";
+      const existing = new Set(
+        state.workbook.sheets
+          .filter((sheet) => sheet.id !== currentId)
+          .map((sheet) => sheet.name),
+      );
+      if (!existing.has(base)) {
+        return base;
+      }
+      let counter = 2;
+      while (existing.has(`${base}_${counter}`)) {
+        counter += 1;
+      }
+      return `${base}_${counter}`;
+    }
+
+    function getActiveSheet() {
+      return state.workbook.sheets[getActiveSheetIndex()];
+    }
+
+    function getActiveSheetIndex() {
+      return state.workbook.sheets.findIndex((sheet) => sheet.id === state.workbook.activeSheetId);
+    }
+
+    function ensureGridCell(grid, row, col) {
+      while (grid.length <= row) {
+        grid.push(Array(Math.max(col + 1, DEFAULT_COL_COUNT)).fill(""));
+      }
+      const targetRow = grid[row];
+      while (targetRow.length <= col) {
+        targetRow.push("");
+      }
+    }
+
+    function columnLabel(index) {
+      let value = index + 1;
+      let label = "";
+      while (value > 0) {
+        const remainder = (value - 1) % 26;
+        label = String.fromCharCode(65 + remainder) + label;
+        value = Math.floor((value - 1) / 26);
+      }
+      return label;
+    }
+
+    function cloneGrid(grid) {
+      return grid.map((row) => row.slice());
+    }
+
+    function normaliseCell(value) {
+      return String(value ?? "").replace(/\u00a0/g, " ").trim();
+    }
+
+    function appendOutput(message, kind = "stdout") {
+      const line = document.createElement("span");
+      if (kind !== "stdout") {
+        line.className = kind;
+      }
+      line.textContent = message;
+      elements.consoleOutput.appendChild(line);
+      if (!String(message).endsWith("\n")) {
+        elements.consoleOutput.appendChild(document.createTextNode("\n"));
+      }
+      elements.consoleOutput.scrollTop = elements.consoleOutput.scrollHeight;
+    }
+
+    function appendSystemLine(message, isError = false) {
+      appendOutput(`[system] ${message}`, isError ? "stderr" : "system");
+    }
+
+    function setRuntimeStatus(message, isError = false) {
+      elements.runtimeStatus.textContent = message;
+      elements.runtimeStatus.style.background = isError ? "#fdecea" : "#eef3fa";
+      elements.runtimeStatus.style.color = isError ? "var(--danger)" : "var(--muted)";
+    }
+
+    function setBusy(busy) {
+      state.busy = busy;
+      [
+        elements.runScriptButton,
+        elements.runConsoleButton,
+        elements.importButton,
+        elements.exportButton,
+        elements.addRowButton,
+        elements.addColumnButton,
+      ].forEach((element) => {
+        element.disabled = busy;
+      });
+      elements.consoleInput.disabled = busy;
+      elements.scriptEditor.readOnly = busy;
+    }
+
+    async function waitFor(predicate, timeoutMs, timeoutMessage) {
+      const started = performance.now();
+      while (performance.now() - started < timeoutMs) {
+        if (predicate()) {
+          return;
+        }
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+      throw new Error(timeoutMessage);
+    }
+  </script>
+</body>
+</html>
