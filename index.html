@@ -1438,7 +1438,7 @@
         }
       });
       window.addEventListener("resize", () => {
-        updateGraphCanvasMetrics({ clearGraphOnResize: true });
+        updateGraphCanvasMetrics();
         syncPlotSizeToR().catch((error) => appendSystemLine(`plot device resize failed: ${error.message}`, true));
       });
     }
@@ -1536,6 +1536,27 @@
             axis(4, at = axTicks(2), labels = FALSE, tcl = -0.15, lwd = 0, lwd.ticks = 1)
           }
           box(bty = "l")
+        }
+        .webr_fig_width_px <- NA_integer_
+        .webr_fig_height_px <- NA_integer_
+        set.figure <- function(width = 5, height = 5, units = c("in", "cm", "px")) {
+          units <- match.arg(units)
+          to_px <- function(value) {
+            if (units == "in") value * 72
+            else if (units == "cm") value / 2.54 * 72
+            else value
+          }
+          clamp <- function(value) max(216, min(1600, round(value)))
+          w <- clamp(to_px(width))
+          h <- clamp(to_px(height))
+          assign(".webr_fig_width_px", as.integer(w), envir = .GlobalEnv)
+          assign(".webr_fig_height_px", as.integer(h), envir = .GlobalEnv)
+          invisible(c(width_px = w, height_px = h))
+        }
+        reset.figure <- function() {
+          assign(".webr_fig_width_px", NA_integer_, envir = .GlobalEnv)
+          assign(".webr_fig_height_px", NA_integer_, envir = .GlobalEnv)
+          invisible(NULL)
         }
       `);
       elements.loadingMessage.textContent = "入力シートを R に同期しています。";
@@ -1686,8 +1707,61 @@
       await runRCode(code, { echoLabel, printEval: true });
     }
 
+    async function resolveCaptureSize(code, escapedCode) {
+      const fallback = { width: state.plotSize.width, height: state.plotSize.height };
+      // Only opt-in scripts pay for the extra resolution pass.
+      if (!/\b(?:set|reset)\.figure\b/.test(code)) {
+        return fallback;
+      }
+      try {
+        // Run the script once in a sandbox (output and plotting suppressed,
+        // local scope) so any set.figure()/reset.figure() updates the globals
+        // we read below. captureR fixes the device size up front, so the
+        // requested size has to be known before the real capture.
+        await state.webR.evalRVoid(`
+          local({
+            con <- textConnection("__webr_prepass", "w", local = TRUE)
+            sink(con); sink(con, type = "message")
+            dev_ok <- tryCatch({ grDevices::pdf(NULL); TRUE }, error = function(e) FALSE)
+            on.exit({
+              if (isTRUE(dev_ok)) try(grDevices::dev.off(), silent = TRUE)
+              sink(type = "message"); sink(); close(con)
+            }, add = TRUE)
+            tryCatch(
+              source(textConnection(${escapedCode}), echo = FALSE, print.eval = FALSE, local = TRUE),
+              error = function(e) invisible(NULL),
+              warning = function(w) invisible(NULL)
+            )
+          })
+        `);
+        const width = await readRPx("as.numeric(ifelse(is.na(.webr_fig_width_px), 0, .webr_fig_width_px))");
+        const height = await readRPx("as.numeric(ifelse(is.na(.webr_fig_height_px), 0, .webr_fig_height_px))");
+        if (width >= 1 && height >= 1) {
+          return { width: Math.round(width), height: Math.round(height) };
+        }
+      } catch (error) {
+        appendSystemLine(`figure size could not be resolved, using panel size. ${error.message}`, true);
+      }
+      return fallback;
+    }
+
+    async function readRPx(rExpr) {
+      const obj = await state.webR.evalR(rExpr);
+      try {
+        const value = await obj.toNumber();
+        return Number.isFinite(value) ? value : 0;
+      } finally {
+        try {
+          state.webR.destroy(obj);
+        } catch (_) {
+          /* proxy already freed */
+        }
+      }
+    }
+
     async function executeRSource(code, { printEval = false } = {}) {
       const escapedCode = escapeRString(code);
+      const captureSize = await resolveCaptureSize(code, escapedCode);
       const shelter = await new state.webR.Shelter();
       try {
         const capture = await shelter.captureR(
@@ -1709,8 +1783,8 @@
           {
             captureConditions: false,
             captureGraphics: {
-              width: state.plotSize.width,
-              height: state.plotSize.height,
+              width: captureSize.width,
+              height: captureSize.height,
               bg: "white",
             },
           },
@@ -2170,14 +2244,14 @@
       });
     }
 
-    function updateGraphCanvasMetrics({ clearGraphOnResize = false } = {}) {
+    function updateGraphCanvasMetrics() {
       const rect = elements.graphShell.getBoundingClientRect();
-      const nextPlotSize = {
+      // state.plotSize is the default capture size (used when the script does
+      // not call set.figure) and the on-screen panel resolution.
+      state.plotSize = {
         width: Math.max(320, Math.floor(rect.width || 640)),
         height: Math.max(220, Math.floor(rect.height || 360)),
       };
-      const sizeChanged = nextPlotSize.width !== state.plotSize.width || nextPlotSize.height !== state.plotSize.height;
-      state.plotSize = nextPlotSize;
 
       elements.graphCanvas.width = state.plotSize.width;
       elements.graphCanvas.height = state.plotSize.height;
@@ -2185,11 +2259,8 @@
       elements.graphCanvas.style.height = "100%";
       elements.graphShell.style.background = "#fff";
 
-      if (clearGraphOnResize && sizeChanged && state.graphHasImage) {
-        clearGraphPreview("グラフサイズを更新しました", "画面サイズ変更後は、必要に応じてコードを再実行してください。");
-        return;
-      }
-
+      // The buffer holds the figure at its native aspect ratio, so a resize
+      // just re-fits it (letterbox) without needing a re-run.
       if (state.graphHasImage && graphBufferCanvas.width && graphBufferCanvas.height) {
         renderGraphPreviewFromBuffer();
       } else {
@@ -2202,31 +2273,42 @@
       elements.graphEmptyMessage.textContent = message;
     }
 
-    function clearGraphPreview(title, message) {
-      graphBufferCanvas.width = 0;
-      graphBufferCanvas.height = 0;
-      graphContext.clearRect(0, 0, elements.graphCanvas.width, elements.graphCanvas.height);
-      state.graphHasImage = false;
-      setGraphEmptyState(title, message);
-      elements.graphEmptyState.classList.remove("hidden");
-      closeGraphViewer();
-    }
-
     function renderGraphPreviewFromBuffer() {
       if (!graphBufferCanvas.width || !graphBufferCanvas.height) {
         return;
       }
-      graphContext.clearRect(0, 0, elements.graphCanvas.width, elements.graphCanvas.height);
-      graphContext.drawImage(graphBufferCanvas, 0, 0);
+      const canvasWidth = elements.graphCanvas.width;
+      const canvasHeight = elements.graphCanvas.height;
+      graphContext.clearRect(0, 0, canvasWidth, canvasHeight);
+      graphContext.fillStyle = "#fff";
+      graphContext.fillRect(0, 0, canvasWidth, canvasHeight);
+      // Fit the figure into the panel while preserving its true aspect ratio
+      // (letterbox) so a square or tall plot is not stretched to the panel.
+      const scale = Math.min(
+        canvasWidth / graphBufferCanvas.width,
+        canvasHeight / graphBufferCanvas.height,
+      );
+      const drawWidth = graphBufferCanvas.width * scale;
+      const drawHeight = graphBufferCanvas.height * scale;
+      const offsetX = (canvasWidth - drawWidth) / 2;
+      const offsetY = (canvasHeight - drawHeight) / 2;
+      graphContext.imageSmoothingQuality = "high";
+      graphContext.drawImage(
+        graphBufferCanvas,
+        0, 0, graphBufferCanvas.width, graphBufferCanvas.height,
+        offsetX, offsetY, drawWidth, drawHeight,
+      );
       state.graphHasImage = true;
       elements.graphEmptyState.classList.add("hidden");
     }
 
     function renderCapturedImage(image) {
-      graphBufferCanvas.width = state.plotSize.width;
-      graphBufferCanvas.height = state.plotSize.height;
+      // Keep the buffer at the device's native resolution and aspect ratio so
+      // PNG export and the full-screen viewer stay crisp and undistorted.
+      graphBufferCanvas.width = image.width;
+      graphBufferCanvas.height = image.height;
       graphBufferContext.clearRect(0, 0, graphBufferCanvas.width, graphBufferCanvas.height);
-      graphBufferContext.drawImage(image, 0, 0, image.width, image.height, 0, 0, graphBufferCanvas.width, graphBufferCanvas.height);
+      graphBufferContext.drawImage(image, 0, 0);
       renderGraphPreviewFromBuffer();
     }
 

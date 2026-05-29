@@ -185,6 +185,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#複数の系列を重ねて凡例をつける" id="toc-複数の系列を重ねて凡例をつける" class="nav-link" data-scroll-target="#複数の系列を重ねて凡例をつける">複数の系列を重ねて凡例をつける</a></li>
   <li><a href="#時系列を線グラフで描く" id="toc-時系列を線グラフで描く" class="nav-link" data-scroll-target="#時系列を線グラフで描く">時系列を線グラフで描く</a></li>
   <li><a href="#カテゴリ比較の棒グラフ誤差棒つき" id="toc-カテゴリ比較の棒グラフ誤差棒つき" class="nav-link" data-scroll-target="#カテゴリ比較の棒グラフ誤差棒つき">カテゴリ比較の棒グラフ（誤差棒つき）</a></li>
+  <li><a href="#縦横比-11-の正方形の図" id="toc-縦横比-11-の正方形の図" class="nav-link" data-scroll-target="#縦横比-11-の正方形の図">縦横比 1:1 の正方形の図</a></li>
+  <li><a href="#画面を分割して複数のグラフを並べるsubplot" id="toc-画面を分割して複数のグラフを並べるsubplot" class="nav-link" data-scroll-target="#画面を分割して複数のグラフを並べるsubplot">画面を分割して複数のグラフを並べる（subplot）</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -315,11 +317,27 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tr>
 <tr class="even">
 <td>余白・軸を整える（独自）</td>
-<td><code>set.paper_style()</code></td>
+<td><code>set.paper_style(mar = c(下,左,上,右))</code></td>
 </tr>
 <tr class="odd">
 <td>補助グリッド（独自）</td>
 <td><code>add.paper_guides()</code></td>
+</tr>
+<tr class="even">
+<td>x,y を 1:1 の縮尺にする</td>
+<td><code>plot(x, y, asp = 1)</code></td>
+</tr>
+<tr class="odd">
+<td>図の大きさ・縦横比を決める（独自）</td>
+<td><code>set.figure(width = 4.5, height = 4.5, units = "in")</code></td>
+</tr>
+<tr class="even">
+<td>図サイズを自動フィットに戻す（独自）</td>
+<td><code>reset.figure()</code></td>
+</tr>
+<tr class="odd">
+<td>画面を分割して並べる</td>
+<td><code>par(mfrow = c(1, 2))</code></td>
 </tr>
 </tbody>
 </table>
@@ -462,6 +480,28 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Category"</span>, <span class="at">ylab =</span> <span class="st">"Value / unit"</span>)</span>
 <span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(bar_x, df<span class="sc">$</span>mean <span class="sc">-</span> df<span class="sc">$</span>sd, bar_x, df<span class="sc">$</span>mean <span class="sc">+</span> df<span class="sc">$</span>sd,</span>
 <span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">code =</span> <span class="dv">3</span>, <span class="at">length =</span> <span class="fl">0.05</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="縦横比-11-の正方形の図" class="level3">
+<h3 class="anchored" data-anchor-id="縦横比-11-の正方形の図">縦横比 1:1 の正方形の図</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">get.input</span>()</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.figure</span>(<span class="at">width =</span> <span class="fl">4.5</span>, <span class="at">height =</span> <span class="fl">4.5</span>, <span class="at">units =</span> <span class="st">"in"</span>)   <span class="co"># 正方形の図</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">set.paper_style</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="fl">4.2</span>, <span class="fl">4.2</span>, <span class="fl">2.0</span>, <span class="fl">1.0</span>))          <span class="co"># 余白を調整</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>x_m, df<span class="sc">$</span>y_m, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">asp =</span> <span class="dv">1</span>,               <span class="co"># x,y を同じ縮尺に</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"x / m"</span>, <span class="at">ylab =</span> <span class="st">"y / m"</span>)</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="fu">add.paper_guides</span>()</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a><span class="co"># reset.figure()  # 描画エリアへの自動フィットに戻す</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="画面を分割して複数のグラフを並べるsubplot" class="level3">
+<h3 class="anchored" data-anchor-id="画面を分割して複数のグラフを並べるsubplot">画面を分割して複数のグラフを並べる（subplot）</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">get.input</span>()</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.figure</span>(<span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="fl">3.5</span>, <span class="at">units =</span> <span class="st">"in"</span>)   <span class="co"># 横長の図にする</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))                                <span class="co"># 1 行 2 列に分割</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.paper_style</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="fl">4.2</span>, <span class="fl">4.2</span>, <span class="fl">2.2</span>, <span class="fl">1.0</span>))</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>x_m, df<span class="sc">$</span>y_m, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">main =</span> <span class="st">"x-y"</span>,        <span class="co"># 左のパネル</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"x / m"</span>, <span class="at">ylab =</span> <span class="st">"y / m"</span>)</span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>t_s, df<span class="sc">$</span>y_m, <span class="at">type =</span> <span class="st">"o"</span>, <span class="at">main =</span> <span class="st">"y-t"</span>,      <span class="co"># 右のパネル</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Time / s"</span>, <span class="at">ylab =</span> <span class="st">"y / m"</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 <ul>
 <li>概念をはじめから学ぶ → <a href="./index.html">生徒ガイド</a></li>

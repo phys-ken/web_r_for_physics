@@ -120,3 +120,48 @@ test("editor execution prints data frames and dataframe tab previews pasted TSV 
   await expect(page.locator("#dataframeTableWrap")).toContainText("sum_xy");
   await expect(page.locator("#dataframeTableWrap")).toContainText("7");
 });
+
+async function runEditor(page) {
+  const runButton = page.getByRole("button", { name: "コード実行" });
+  await runButton.click();
+  await expect(runButton).toBeDisabled();          // entered busy state
+  await expect(runButton).toBeEnabled({ timeout: 30000 }); // finished this run
+  await expect(page.locator("#graphEmptyState")).toBeHidden({ timeout: 30000 });
+}
+
+async function viewerDims(page) {
+  await page.getByRole("button", { name: "全体表示" }).click();
+  const meta = await page.locator("#graphViewerMeta").innerText();
+  await page.getByRole("button", { name: "閉じる" }).click();
+  const match = meta.match(/\((\d+)\s*×\s*(\d+)\)/);
+  return match ? { width: Number(match[1]), height: Number(match[2]) } : null;
+}
+
+test("set.figure lets code control the figure aspect ratio", async ({ page }) => {
+  await page.goto("./");
+  await expect(page.locator("#runtimeStatus")).toHaveText(/webR 準備完了/, { timeout: 180000 });
+  await page.getByRole("button", { name: "グラフ", exact: true }).click();
+
+  // Default capture follows the (landscape) panel.
+  await page.locator("#scriptEditor").fill("plot(1:5, 1:5, pch = 19)");
+  await runEditor(page);
+  const panelDims = await viewerDims(page);
+  expect(panelDims.width).toBeGreaterThan(panelDims.height);
+
+  // set.figure makes the captured figure square, independent of the panel.
+  await page.locator("#scriptEditor").fill(
+    'set.figure(width = 4, height = 4, units = "in")\nplot(1:5, 1:5, pch = 19, asp = 1)',
+  );
+  await runEditor(page);
+  const squareDims = await viewerDims(page);
+  expect(squareDims.width).toBe(squareDims.height);
+
+  // The graph-size sample combines set.figure, par(mfrow) subplots and margins.
+  await page.getByRole("button", { name: "設定読込 (JSON)" }).click();
+  await page.getByRole("button", { name: "作図サイズとレイアウト" }).click();
+  await expect(page.locator("#scriptEditor")).toHaveValue(/set\.figure/, { timeout: 30000 });
+  await page.getByRole("button", { name: "グラフ", exact: true }).click();
+  await runEditor(page);
+  const wideDims = await viewerDims(page);
+  expect(wideDims.width / wideDims.height).toBeGreaterThan(2);
+});

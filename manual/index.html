@@ -181,6 +181,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#直線曲線をあてはめる回帰" id="toc-直線曲線をあてはめる回帰" class="nav-link" data-scroll-target="#直線曲線をあてはめる回帰">8. 直線・曲線をあてはめる（回帰）</a></li>
   <li><a href="#つのタブの使い分け" id="toc-つのタブの使い分け" class="nav-link" data-scroll-target="#つのタブの使い分け">9. 3 つのタブの使い分け</a></li>
   <li><a href="#保存と読込" id="toc-保存と読込" class="nav-link" data-scroll-target="#保存と読込">10. 保存と読込</a></li>
+  <li><a href="#グラフのサイズ縦横比画面分割" id="toc-グラフのサイズ縦横比画面分割" class="nav-link" data-scroll-target="#グラフのサイズ縦横比画面分割">11. グラフのサイズ・縦横比・画面分割</a>
+  <ul class="collapse">
+  <li><a href="#縦横比をそろえるデータの単位を-11-に" id="toc-縦横比をそろえるデータの単位を-11-に" class="nav-link" data-scroll-target="#縦横比をそろえるデータの単位を-11-に">縦横比をそろえる（データの単位を 1:1 に）</a></li>
+  <li><a href="#図全体のサイズ縦横比を決める-set.figure" id="toc-図全体のサイズ縦横比を決める-set.figure" class="nav-link" data-scroll-target="#図全体のサイズ縦横比を決める-set.figure">図全体のサイズ・縦横比を決める — <code>set.figure()</code></a></li>
+  <li><a href="#画面を分割して並べるsubplot-parmfrow" id="toc-画面を分割して並べるsubplot-parmfrow" class="nav-link" data-scroll-target="#画面を分割して並べるsubplot-parmfrow">画面を分割して並べる（subplot）— <code>par(mfrow)</code></a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -422,6 +428,61 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>設定読込 (JSON)</strong> … 保存したファイル、または授業用サンプルを開く。</li>
 <li>読み込んだ後は、必要に応じて「コード実行」をもう一度押してください。</li>
 </ul>
+</section>
+<section id="グラフのサイズ縦横比画面分割" class="level2">
+<h2 class="anchored" data-anchor-id="グラフのサイズ縦横比画面分割">11. グラフのサイズ・縦横比・画面分割</h2>
+<p>ふだんはグラフが描画エリアの大きさに自動で合わせて描かれますが、<strong>コードで縦横比や余白、画面分割を自分で決める</strong>こともできます。</p>
+<section id="縦横比をそろえるデータの単位を-11-に" class="level3">
+<h3 class="anchored" data-anchor-id="縦横比をそろえるデータの単位を-11-に">縦横比をそろえる（データの単位を 1:1 に）</h3>
+<p><code>plot()</code> に <code>asp = 1</code> を付けると、<strong>x と y の 1 目盛りが同じ長さ</strong>になります。位置(x, y)のように両軸が同じ単位のときは、これで本当の形が崩れずに見えます。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>x_m, df<span class="sc">$</span>y_m, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">asp =</span> <span class="dv">1</span>,</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"x / m"</span>, <span class="at">ylab =</span> <span class="st">"y / m"</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="図全体のサイズ縦横比を決める-set.figure" class="level3">
+<h3 class="anchored" data-anchor-id="図全体のサイズ縦横比を決める-set.figure">図全体のサイズ・縦横比を決める — <code>set.figure()</code></h3>
+<p><code>set.figure(width, height)</code> で、<strong>図そのものの大きさと縦横比</strong>を指定できます。単位は <code>units = "in"</code>（インチ・既定）/ <code>"cm"</code> / <code>"px"</code>。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.figure</span>(<span class="at">width =</span> <span class="fl">4.5</span>, <span class="at">height =</span> <span class="fl">4.5</span>, <span class="at">units =</span> <span class="st">"in"</span>)  <span class="co"># 正方形の図にする</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>x_m, df<span class="sc">$</span>y_m, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">asp =</span> <span class="dv">1</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"x / m"</span>, <span class="at">ylab =</span> <span class="st">"y / m"</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>set.figure()</code> を呼ばなければ、これまで通り描画エリアに自動でフィットします。元に戻したいときは <code>reset.figure()</code> を実行します。</p>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>余白(マージン)を変える
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>set.paper_style(mar = c(下, 左, 上, 右))</code> で、軸ラベルや目盛りのための余白を調整できます。ラベルが切れるときは左や下を大きく、余白が広すぎるときは小さくします。</p>
+</div>
+</div>
+</section>
+<section id="画面を分割して並べるsubplot-parmfrow" class="level3">
+<h3 class="anchored" data-anchor-id="画面を分割して並べるsubplot-parmfrow">画面を分割して並べる（subplot）— <code>par(mfrow)</code></h3>
+<p><code>par(mfrow = c(行, 列))</code> を実行してから複数の <code>plot()</code> を呼ぶと、<strong>1 枚の図に複数のグラフを並べて</strong>描けます。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.figure</span>(<span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="fl">3.5</span>, <span class="at">units =</span> <span class="st">"in"</span>)  <span class="co"># 横長にする</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))                               <span class="co"># 1 行 2 列に分割</span></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>x_m, df<span class="sc">$</span>y_m, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">main =</span> <span class="st">"x-y"</span>)       <span class="co"># 左</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>t_s, df<span class="sc">$</span>y_m, <span class="at">type =</span> <span class="st">"o"</span>, <span class="at">main =</span> <span class="st">"y-t"</span>)     <span class="co"># 右</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ヒント</span>やってみよう
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>「作図サイズとレイアウト」サンプルを開いて実行し、<code>set.figure()</code> の数値や <code>par(mfrow)</code> の行・列を変えて、図の形がどう変わるか試してみましょう。</p>
+<p>PNG 保存や「全体表示」も、指定した縦横比のまま書き出されます。</p>
+</div>
+</div>
+</div>
 <hr>
 <p>次のステップ：</p>
 <ul>
@@ -430,6 +491,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->

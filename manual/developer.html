@@ -174,6 +174,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#状態モデル" id="toc-状態モデル" class="nav-link" data-scroll-target="#状態モデル">状態モデル</a></li>
   <li><a href="#r-実行フロー" id="toc-r-実行フロー" class="nav-link" data-scroll-target="#r-実行フロー">R 実行フロー</a></li>
   <li><a href="#get.input-と注入されるヘルパー" id="toc-get.input-と注入されるヘルパー" class="nav-link" data-scroll-target="#get.input-と注入されるヘルパー"><code>get.input()</code> と注入されるヘルパー</a></li>
+  <li><a href="#図サイズ制御とレンダリング" id="toc-図サイズ制御とレンダリング" class="nav-link" data-scroll-target="#図サイズ制御とレンダリング">図サイズ制御とレンダリング</a></li>
   <li><a href="#json-保存復元フォーマット" id="toc-json-保存復元フォーマット" class="nav-link" data-scroll-target="#json-保存復元フォーマット">JSON 保存・復元フォーマット</a></li>
   <li><a href="#サンプル" id="toc-サンプル" class="nav-link" data-scroll-target="#サンプル">サンプル</a></li>
   <li><a href="#マニュアル" id="toc-マニュアル" class="nav-link" data-scroll-target="#マニュアル">マニュアル</a></li>
@@ -247,8 +248,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><code>get.input(sheet = NULL)</code> — 現在シート / 名前 / 1 始まり番号でシートを <code>data.frame</code> として返す。実体は注入済みの <code>.webr_input_sheets</code>（名前付きリスト）と <code>.webr_active_sheet_index</code> を参照。</li>
 <li><code>set.paper_style(mar, mgp, cex, tcl, las)</code> — <code>par()</code> をレポート向け体裁に設定。</li>
 <li><code>add.paper_guides(show_grid, show_top_axis, show_right_axis, grid_col)</code> — グリッドと補助目盛り・<code>box()</code> を追加。</li>
+<li><code>set.figure(width, height, units = "in"|"cm"|"px")</code> / <code>reset.figure()</code> — <code>.webr_fig_width_px</code> / <code>.webr_fig_height_px</code>（既定 <code>NA</code>）に px 換算値を書き込む。クランプは 216–1600 px。</li>
 </ul>
 <p>列の型推論は JS 側（<code>inferColumnType</code>）で行い、numeric / logical / character を判定してから R へ渡す。</p>
+</section>
+<section id="図サイズ制御とレンダリング" class="level2">
+<h2 class="anchored" data-anchor-id="図サイズ制御とレンダリング">図サイズ制御とレンダリング</h2>
+<ul>
+<li><code>captureR</code> の <code>captureGraphics: {width, height}</code> は <strong>デバイス生成時にサイズを固定</strong>する。実測では出力ビットマップは指定 px の 2 倍解像度、アスペクト比は指定どおり。<code>captureGraphics: true</code> は常に 504×504、コード途中の <code>options(device)</code> 変更は無視される。</li>
+<li>そのためサイズは <strong>キャプチャ前に JS が知る必要がある</strong>。<code>resolveCaptureSize()</code> はコードに <code>set.figure</code> / <code>reset.figure</code> が含まれるときだけ、スクリプトを <strong>サンドボックス事前評価</strong>（<code>sink</code> で出力抑制・<code>pdf(NULL)</code>・<code>local = TRUE</code>）してから <code>.webr_fig_*_px</code> を読み、<code>captureGraphics</code> のサイズに使う。未使用時はパネル実寸（<code>state.plotSize</code>）。</li>
+<li><code>renderCapturedImage()</code> はバッファをデバイスのネイティブ解像度・アスペクトのまま保持し、<code>renderGraphPreviewFromBuffer()</code> がパネルへ <strong>contain（レターボックス）</strong> で描画する。PNG 保存（<code>downloadGraph</code>）と全体表示（<code>openGraphViewer</code>）はこのバッファを使うため、指定した縦横比・解像度がそのまま出力される。</li>
+<li>subplot は <code>par(mfrow=...)</code>、データ単位 1:1 は <code>asp = 1</code> で、いずれも標準 base R のまま機能する。</li>
+</ul>
 </section>
 <section id="json-保存復元フォーマット" class="level2">
 <h2 class="anchored" data-anchor-id="json-保存復元フォーマット">JSON 保存・復元フォーマット</h2>

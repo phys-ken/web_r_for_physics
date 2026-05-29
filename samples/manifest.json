@@ -23,6 +23,12 @@
       "title": "材質ごとの抵抗比較",
       "description": "材質別の抵抗をカテゴリ比較として棒グラフで並べます。平均・標準偏差・誤差棒の付け方を学べます。",
       "file": "material-resistance.json"
+    },
+    {
+      "id": "graph-size",
+      "title": "作図サイズとレイアウト",
+      "description": "set.figure() で図の縦横比(1:1 など)や余白を決め、par(mfrow) で画面を分割して複数のグラフを並べる方法を学べます。",
+      "file": "graph-size.json"
     }
   ]
 }

@@ -1,0 +1,95 @@
+{
+  "version": 2,
+  "app": {
+    "workbook": {
+      "activeSheetId": "sheet-1",
+      "sheets": [
+        {
+          "id": "sheet-1",
+          "name": "projectile",
+          "data": [
+            [
+              "t_s",
+              "x_m",
+              "y_m"
+            ],
+            [
+              "0.0",
+              "0.0",
+              "0.00"
+            ],
+            [
+              "0.2",
+              "1.0",
+              "1.40"
+            ],
+            [
+              "0.4",
+              "2.0",
+              "2.42"
+            ],
+            [
+              "0.6",
+              "3.0",
+              "3.04"
+            ],
+            [
+              "0.8",
+              "4.0",
+              "3.26"
+            ],
+            [
+              "1.0",
+              "5.0",
+              "3.10"
+            ],
+            [
+              "1.2",
+              "6.0",
+              "2.54"
+            ],
+            [
+              "1.4",
+              "7.0",
+              "1.60"
+            ],
+            [
+              "1.6",
+              "8.0",
+              "0.26"
+            ],
+            [
+              "",
+              "",
+              ""
+            ],
+            [
+              "",
+              "",
+              ""
+            ]
+          ]
+        }
+      ]
+    },
+    "script": "# === 作図サイズとレイアウト(縦横比・余白・画面分割) ===\n# 投げ上げた物体の時刻 t, 水平位置 x, 高さ y を記録した data.frame\ndf <- get.input()\n\n# (1) 図全体のサイズと縦横比をコードで決める。\n#     units は \"in\"(インチ) / \"cm\" / \"px\"。ここは横長の 8 x 3.5 インチ。\n#     set.figure() を呼ばなければ、図は描画エリアの大きさに自動でフィットする。\nset.figure(width = 8, height = 3.5, units = \"in\")\n\n# (2) par(mfrow = c(行, 列)) で画面を分割し、複数のグラフを並べる(subplot)。\npar(mfrow = c(1, 2))\n\n# (3) set.paper_style(mar = c(下, 左, 上, 右)) で各パネルの余白を整える。\nset.paper_style(mar = c(4.2, 4.2, 2.2, 1.0))\n\n# 左: 物体の軌跡。asp = 1 で x と y の 1 目盛りを同じ長さにし、本当の形で見せる\nplot(df$x_m, df$y_m,\n  pch = 19, col = \"firebrick\", cex = 1.1, asp = 1,\n  xlab = \"x / m\", ylab = \"y / m\",\n  main = \"Trajectory (asp = 1)\"\n)\nadd.paper_guides()\n\n# 右: 高さの時間変化。こちらは asp 指定なし(縦横は自動)\nplot(df$t_s, df$y_m,\n  type = \"o\", pch = 20, lwd = 1.6, col = \"#1f77b4\",\n  xlab = \"Time / s\", ylab = \"y / m\",\n  main = \"Height vs time\"\n)\nadd.paper_guides()\n\n# 1 枚の正方形にしたいときは、たとえば次のようにする:\n#   set.figure(width = 4.5, height = 4.5); par(mfrow = c(1, 1))\n# 描画エリアへの自動フィットに戻すときは reset.figure() を実行する。",
+    "ui": {
+      "currentPage": "workspace",
+      "outputTab": "graph",
+      "selectedCell": {
+        "row": 1,
+        "col": 0
+      },
+      "restoreBanner": "",
+      "sheetStatus": "作図サイズサンプル",
+      "runtimeStatus": {
+        "text": "サンプルを読み込みました",
+        "tone": "warning"
+      }
+    },
+    "console": {
+      "entries": [],
+      "history": []
+    }
+  }
+}

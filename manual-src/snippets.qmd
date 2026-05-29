@@ -33,8 +33,12 @@ title: "Physics webR Lab スニペット集"
 | 直線を重ねる | `abline(fit)` / `abline(h = 0)` |
 | 誤差棒 | `arrows(x, y-e, x, y+e, angle = 90, code = 3, length = 0.04)` |
 | 凡例 | `legend("topleft", legend = c(...), pch = c(...), col = c(...))` |
-| 余白・軸を整える（独自） | `set.paper_style()` |
+| 余白・軸を整える（独自） | `set.paper_style(mar = c(下,左,上,右))` |
 | 補助グリッド（独自） | `add.paper_guides()` |
+| x,y を 1:1 の縮尺にする | `plot(x, y, asp = 1)` |
+| 図の大きさ・縦横比を決める（独自） | `set.figure(width = 4.5, height = 4.5, units = "in")` |
+| 図サイズを自動フィットに戻す（独自） | `reset.figure()` |
+| 画面を分割して並べる | `par(mfrow = c(1, 2))` |
 
 ### よく使うオプション
 
@@ -146,6 +150,32 @@ bar_x <- barplot(df$mean, names.arg = df$label,
   xlab = "Category", ylab = "Value / unit")
 arrows(bar_x, df$mean - df$sd, bar_x, df$mean + df$sd,
   angle = 90, code = 3, length = 0.05)
+```
+
+### 縦横比 1:1 の正方形の図
+
+```r
+df <- get.input()
+set.figure(width = 4.5, height = 4.5, units = "in")   # 正方形の図
+set.paper_style(mar = c(4.2, 4.2, 2.0, 1.0))          # 余白を調整
+plot(df$x_m, df$y_m, pch = 19, asp = 1,               # x,y を同じ縮尺に
+  xlab = "x / m", ylab = "y / m")
+add.paper_guides()
+# reset.figure()  # 描画エリアへの自動フィットに戻す
+```
+
+### 画面を分割して複数のグラフを並べる（subplot）
+
+```r
+df <- get.input()
+set.figure(width = 8, height = 3.5, units = "in")   # 横長の図にする
+par(mfrow = c(1, 2))                                # 1 行 2 列に分割
+set.paper_style(mar = c(4.2, 4.2, 2.2, 1.0))
+
+plot(df$x_m, df$y_m, pch = 19, main = "x-y",        # 左のパネル
+  xlab = "x / m", ylab = "y / m")
+plot(df$t_s, df$y_m, type = "o", main = "y-t",      # 右のパネル
+  xlab = "Time / s", ylab = "y / m")
 ```
 
 ---
