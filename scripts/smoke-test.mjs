@@ -25,7 +25,7 @@ assert.match(html, /詳しい学習用ガイド/);
 assert.match(html, /\.\/manual\/snippets\.html/);
 assert.match(html, /set\.figure <- function/);
 assert.match(html, /renderCapturedImages/);
-assert.ok(manifest.samples.length === 6);
+assert.ok(manifest.samples.length === 7);
 assert.match(manualIndex, /Physics webR Lab 学習ガイド/);
 
 console.log("Smoke test passed: index.html and sample manifest contain the expected app scaffolding.");

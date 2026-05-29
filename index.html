@@ -302,6 +302,9 @@
       display: grid;
       gap: 3px;
       text-align: left;
+      /* override the global button no-wrap so descriptions wrap onto lines */
+      white-space: normal;
+      word-break: break-word;
     }
 
     .sample-card:hover:enabled {
@@ -1099,7 +1102,7 @@
                     <button class="output-tab" type="button" data-tab="graph">グラフ</button>
                     <button class="output-tab" type="button" data-tab="dataframe">データフレーム</button>
                   </div>
-                  <div class="toolbar-group">
+                  <div id="graphActions" class="toolbar-group hidden">
                     <button id="openGraphViewerButton" type="button">全体表示</button>
                     <button id="downloadGraphButton" type="button">グラフをダウンロード</button>
                   </div>
@@ -1384,6 +1387,7 @@
       dataframeEmptyMessage: document.getElementById("dataframeEmptyMessage"),
       dataframeTableWrap: document.getElementById("dataframeTableWrap"),
       downloadGraphButton: document.getElementById("downloadGraphButton"),
+      graphActions: document.getElementById("graphActions"),
       graphThumbs: document.getElementById("graphThumbs"),
       graphShell: document.querySelector(".graph-shell"),
       openGraphViewerButton: document.getElementById("openGraphViewerButton"),
@@ -2020,9 +2024,16 @@
       elements.outputPanels.forEach((panel) => {
         panel.classList.toggle("active", panel.dataset.panel === nextTab);
       });
+      updateGraphActionsVisibility(nextTab);
       if (nextTab === "graph") {
         updateGraphCanvasMetrics();
       }
+    }
+
+    function updateGraphActionsVisibility(activeTab = state.app.ui.outputTab) {
+      // 全体表示 / ダウンロードはグラフタブで図があるときだけ意味がある。
+      const show = activeTab === "graph" && state.graphHasImage;
+      elements.graphActions.classList.toggle("hidden", !show);
     }
 
     function renderWorkbook() {
@@ -2371,6 +2382,7 @@
       state.graphSelectedIndex = state.graphImages.length > 0 ? 0 : -1;
       renderGraphThumbs();
       renderGraphPreview();
+      updateGraphActionsVisibility();
     }
 
     function selectGraphImage(index) {

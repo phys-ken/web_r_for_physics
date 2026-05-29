@@ -282,9 +282,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="callout-body-container callout-body">
 <p>左下のタブでシートを増やせます。シートごとに別の <code>data.frame</code> として受け取るには、<strong>シート名</strong>を渡します。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>vt <span class="ot">&lt;-</span> <span class="fu">get.input</span>(<span class="st">"vt_m2_F1"</span>)     <span class="co"># 名前で指定</span></span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fa <span class="ot">&lt;-</span> <span class="fu">get.input</span>(<span class="st">"vary_force"</span>)   <span class="co"># 別のシートを別の変数へ</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>ma <span class="ot">&lt;-</span> <span class="fu">get.input</span>(<span class="dv">3</span>)              <span class="co"># 1 始まりの番号でも可</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>vt_F <span class="ot">&lt;-</span> <span class="fu">get.input</span>(<span class="st">"vt_m2"</span>)   <span class="co"># 名前で指定</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>vt_m <span class="ot">&lt;-</span> <span class="fu">get.input</span>(<span class="st">"vt_F4"</span>)   <span class="co"># 別のシートを別の変数へ</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>first <span class="ot">&lt;-</span> <span class="fu">get.input</span>(<span class="dv">1</span>)        <span class="co"># 1 始まりの番号でも可</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <p>こうして条件ごとのデータを別々の <code>data.frame</code> に分けておくと、あとでまとめて比較できます（「ニュートンの第2法則」サンプルがこの形です）。</p>
 </div>
 </div>
@@ -494,7 +494,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="callout-body-container callout-body">
 <p><code>par(mfrow)</code> を使わず、<code>plot()</code> を続けて何回か呼ぶと、<strong>それぞれが別の図</strong>になります。図が 2 枚以上あるときは、グラフタブの上に<strong>サムネイル</strong>が並び、クリックで切り替えられます。「全体表示」や「グラフをダウンロード」は、いま選んでいる図に対して働きます。</p>
-<p>「ニュートンの第2法則」サンプルは、v-t・a-F・a-(1/m) の 3 枚を切り替えて見られます。</p>
+<p>「ニュートンの第2法則」サンプルは、力を変えた v-t・質量を変えた v-t・a-F・a-(1/m) の 4 枚を切り替えて見られます。</p>
 </div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">

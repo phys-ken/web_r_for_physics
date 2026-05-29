@@ -19,7 +19,7 @@ test("manual navigation, webR execution, graph render, and JSON round-trip", asy
 
   await page.getByRole("button", { name: "設定読込 (JSON)" }).click();
   await expect(page.getByRole("dialog", { name: "設定読込" })).toBeVisible();
-  await page.getByRole("button", { name: "単振り子" }).click();
+  await page.getByRole("button", { name: /誤差棒付き散布図/ }).click();
   await expect(page.locator("#scriptEditor")).toHaveValue(/set\.paper_style/, { timeout: 30000 });
   await expect(page.locator("#sheetTabs")).toContainText("pendulum");
 
@@ -172,24 +172,31 @@ test("the Newton sample is multi-sheet and yields a switchable figure gallery", 
 
   await page.getByRole("button", { name: "設定読込 (JSON)" }).click();
   await page.getByRole("button", { name: "ニュートンの第2法則" }).click();
-  await expect(page.locator("#scriptEditor")).toHaveValue(/get\.input\("vary_force"\)/, { timeout: 30000 });
-  await expect(page.locator("#sheetTabs")).toContainText("vary_mass");
+  await expect(page.locator("#scriptEditor")).toHaveValue(/get\.input\("vt_m2"\)/, { timeout: 30000 });
+  await expect(page.locator("#sheetTabs")).toContainText("vt_F4");
 
+  // Graph actions are hidden until a figure exists on the graph tab.
+  await expect(page.locator("#graphActions")).toBeHidden();
   await page.getByRole("button", { name: "グラフ", exact: true }).click();
   await runEditor(page);
 
-  // Three plot pages -> three switchable thumbnails.
+  // Four plot pages -> four switchable thumbnails, and actions now show.
   await expect(page.locator("#graphThumbs")).toBeVisible();
-  await expect(page.locator(".graph-thumb")).toHaveCount(3);
+  await expect(page.locator(".graph-thumb")).toHaveCount(4);
+  await expect(page.locator("#graphActions")).toBeVisible();
 
   // No R error reached the console (read textContent: the panel is hidden).
   const consoleText = await page.locator("#consoleOutput").textContent();
   expect(consoleText).not.toMatch(/not found|could not find/i);
 
   // Selecting a figure drives the full-screen viewer and download target.
-  await page.locator('.graph-thumb[data-graph-index="2"]').click();
-  await expect(page.locator(".graph-thumb.active")).toHaveText(/図 3/);
+  await page.locator('.graph-thumb[data-graph-index="3"]').click();
+  await expect(page.locator(".graph-thumb.active")).toHaveText(/図 4/);
   await page.getByRole("button", { name: "全体表示" }).click();
-  await expect(page.locator("#graphViewerMeta")).toContainText("図 3 / 3");
+  await expect(page.locator("#graphViewerMeta")).toContainText("図 4 / 4");
   await page.getByRole("button", { name: "閉じる" }).click();
+
+  // Switching to the console tab hides the graph-only actions.
+  await page.getByRole("button", { name: "コンソール", exact: true }).click();
+  await expect(page.locator("#graphActions")).toBeHidden();
 });
