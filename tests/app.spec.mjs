@@ -2,7 +2,7 @@ import { test, expect } from "@playwright/test";
 import { readFile } from "node:fs/promises";
 
 test("manual navigation, webR execution, graph render, and JSON round-trip", async ({ page }) => {
-  await page.goto("/");
+  await page.goto("./");
 
   await expect(page.getByRole("tab", { name: "マニュアル" })).toBeVisible();
   await page.getByRole("tab", { name: "マニュアル" }).click();
