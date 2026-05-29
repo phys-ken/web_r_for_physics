@@ -10,10 +10,10 @@
       color-scheme: light;
       --bg: #eef2f7;
       --panel: #ffffff;
-      --panel-soft: #f7f9fc;
-      --panel-strong: #f1f4f9;
-      --border: #d7dee8;
-      --border-strong: #b8c4d3;
+      --panel-soft: #f5f5f5;
+      --panel-strong: #ececec;
+      --border: #bcbcbc;
+      --border-strong: #969696;
       --text: #223242;
       --muted: #667789;
       --accent: #2b6de4;
@@ -21,9 +21,9 @@
       --danger: #c13e31;
       --success: #147748;
       --warning: #946200;
-      --shadow: 0 10px 24px rgba(35, 55, 83, 0.08);
-      --radius: 12px;
-      --radius-sm: 10px;
+      --shadow: none;
+      --radius: 4px;
+      --radius-sm: 3px;
       --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       --font-mono: "SFMono-Regular", SFMono-Regular, ui-monospace, Menlo, Consolas, monospace;
     }
@@ -53,13 +53,15 @@
 
     button {
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 3px;
       background: var(--panel);
       color: var(--text);
-      padding: 0.56rem 0.92rem;
+      padding: 0.28rem 0.48rem;
       cursor: pointer;
       transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
       white-space: nowrap;
+      font-size: 0.8rem;
+      line-height: 1.2;
     }
 
     button:hover:enabled {
@@ -95,13 +97,13 @@
       height: 100vh;
       height: 100dvh;
       padding:
-        max(12px, env(safe-area-inset-top))
-        max(12px, env(safe-area-inset-right))
-        max(12px, env(safe-area-inset-bottom))
-        max(12px, env(safe-area-inset-left));
+        max(6px, env(safe-area-inset-top))
+        max(6px, env(safe-area-inset-right))
+        max(6px, env(safe-area-inset-bottom))
+        max(6px, env(safe-area-inset-left));
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 6px;
       overflow: hidden;
     }
 
@@ -110,60 +112,60 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 14px;
-      min-height: 68px;
-      padding: 12px 14px;
+      gap: 8px;
+      min-height: 42px;
+      padding: 5px 7px;
       border: 1px solid var(--border);
-      border-radius: 16px;
-      background: linear-gradient(180deg, #fbfcfe, #f3f6fb);
-      box-shadow: var(--shadow);
+      border-radius: var(--radius);
+      background: var(--panel-strong);
     }
 
     .topbar-group {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 6px;
       min-width: 0;
       flex-wrap: wrap;
     }
 
     .app-brand {
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
+      display: inline-flex;
+      flex-direction: row;
+      align-items: center;
+      gap: 8px;
       min-width: 0;
     }
 
     .app-brand strong {
-      font-size: 1.02rem;
+      font-size: 0.92rem;
       font-weight: 700;
     }
 
     .app-brand span {
-      color: var(--muted);
-      font-size: 0.82rem;
+      display: none;
     }
 
     .nav-toggle {
       display: inline-flex;
-      gap: 8px;
-      padding: 4px;
+      gap: 0;
+      padding: 0;
       border: 1px solid var(--border);
-      border-radius: 999px;
-      background: rgba(255, 255, 255, 0.82);
+      border-radius: var(--radius-sm);
+      background: var(--panel);
     }
 
     .nav-toggle button {
-      border-radius: 999px;
+      border-radius: 0;
       border-color: transparent;
       background: transparent;
       color: var(--muted);
-      padding-inline: 0.9rem;
+      padding: 0.28rem 0.58rem;
+      font-size: 0.78rem;
     }
 
     .nav-toggle button.active {
-      background: var(--accent-soft);
-      border-color: #bfd1f4;
+      background: #dfe8f7;
+      border-color: var(--border-strong);
       color: var(--accent);
       font-weight: 650;
     }
@@ -173,11 +175,12 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 0.42rem 0.72rem;
-      border-radius: 999px;
-      background: #eef3fa;
+      padding: 0.2rem 0.42rem;
+      border-radius: 2px;
+      border: 1px solid var(--border);
+      background: var(--panel);
       color: var(--muted);
-      font-size: 0.82rem;
+      font-size: 0.74rem;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -220,14 +223,14 @@
 
     .restore-banner {
       flex-shrink: 0;
-      margin-bottom: 10px;
-      padding: 11px 14px;
-      border: 1px solid #eadaa5;
-      border-radius: 12px;
-      background: #fff9e3;
+      margin-bottom: 6px;
+      padding: 5px 8px;
+      border: 1px solid #d0c48f;
+      border-radius: 2px;
+      background: #fff7d1;
       color: #785a00;
-      font-size: 0.88rem;
-      line-height: 1.45;
+      font-size: 0.76rem;
+      line-height: 1.25;
     }
 
     .workspace {
@@ -235,7 +238,7 @@
       min-height: 0;
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
-      gap: 12px;
+      gap: 6px;
     }
 
     .panel {
@@ -245,7 +248,7 @@
       flex-direction: column;
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: 14px;
+      border-radius: var(--radius);
       box-shadow: var(--shadow);
       overflow: hidden;
     }
@@ -254,43 +257,43 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 10px;
-      padding: 12px 14px;
+      gap: 6px;
+      padding: 6px 8px;
       border-bottom: 1px solid var(--border);
-      background: linear-gradient(180deg, #fbfcfe, #f5f8fc);
+      background: var(--panel-strong);
     }
 
     .panel-title {
       display: flex;
       flex-direction: column;
-      gap: 2px;
+      gap: 1px;
       min-width: 0;
     }
 
     .panel-title strong {
-      font-size: 0.96rem;
+      font-size: 0.84rem;
       font-weight: 650;
     }
 
     .panel-title span {
       color: var(--muted);
-      font-size: 0.81rem;
+      font-size: 0.72rem;
     }
 
     .toolbar,
     .toolbar-group {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 4px;
       min-width: 0;
       flex-wrap: wrap;
     }
 
     .toolbar {
       justify-content: space-between;
-      padding: 10px 12px;
+      padding: 4px 6px;
       border-bottom: 1px solid var(--border);
-      background: var(--panel-soft);
+      background: var(--panel);
     }
 
     .left-panel-body {
@@ -307,16 +310,16 @@
     }
 
     table.sheet-table {
-      width: max(100%, 760px);
+      width: max(100%, 680px);
       border-collapse: collapse;
       table-layout: fixed;
-      font-size: 0.92rem;
+      font-size: 0.82rem;
     }
 
     .sheet-table th,
     .sheet-table td {
       border: 1px solid var(--border);
-      min-width: 84px;
+      min-width: 72px;
     }
 
     .sheet-table thead th {
@@ -325,24 +328,24 @@
       z-index: 2;
       background: #eef4fd;
       color: var(--muted);
-      font-size: 0.8rem;
+      font-size: 0.72rem;
       font-weight: 600;
       text-align: center;
-      padding: 0.45rem 0.35rem;
+      padding: 0.22rem 0.18rem;
     }
 
     .row-label {
       position: sticky;
       left: 0;
       z-index: 1;
-      width: 46px;
-      min-width: 46px;
+      width: 34px;
+      min-width: 34px;
       background: #f7f9fc;
       color: var(--muted);
       text-align: center;
-      font-size: 0.8rem;
+      font-size: 0.7rem;
       font-weight: 600;
-      padding: 0.45rem 0.25rem;
+      padding: 0.2rem 0.12rem;
     }
 
     .sheet-table tbody tr:first-child .row-label {
@@ -355,8 +358,8 @@
     }
 
     .cell {
-      min-height: 38px;
-      padding: 0.46rem 0.56rem;
+      min-height: 28px;
+      padding: 0.22rem 0.35rem;
       outline: none;
       white-space: pre-wrap;
       word-break: break-word;
@@ -374,26 +377,26 @@
     .sheet-tabs {
       display: flex;
       align-items: center;
-      gap: 8px;
-      padding: 10px 12px;
+      gap: 4px;
+      padding: 4px 6px;
       border-top: 1px solid var(--border);
-      background: #fbfcfe;
+      background: var(--panel-strong);
       overflow-x: auto;
       flex-shrink: 0;
     }
 
     .sheet-tab {
       border: 1px solid var(--border);
-      border-radius: 999px;
-      padding: 0.45rem 0.85rem;
+      border-radius: 2px;
+      padding: 0.22rem 0.48rem;
       background: #fff;
       color: var(--muted);
-      font-size: 0.85rem;
+      font-size: 0.76rem;
     }
 
     .sheet-tab.active {
-      background: var(--accent-soft);
-      border-color: #bdd0f7;
+      background: #dfe8f7;
+      border-color: var(--border-strong);
       color: var(--accent);
       font-weight: 650;
     }
@@ -421,10 +424,10 @@
       width: 100%;
       border: 0;
       resize: none;
-      padding: 14px;
+      padding: 8px;
       font-family: var(--font-mono);
-      font-size: 0.92rem;
-      line-height: 1.5;
+      font-size: 0.82rem;
+      line-height: 1.35;
       color: var(--text);
       background: #fdfefe;
       outline: none;
@@ -432,20 +435,21 @@
 
     .output-tabs {
       display: flex;
-      gap: 8px;
+      gap: 4px;
     }
 
     .output-tab {
       border: 1px solid transparent;
-      border-radius: 999px;
-      padding: 0.35rem 0.85rem;
+      border-radius: 2px;
+      padding: 0.22rem 0.52rem;
       background: transparent;
       color: var(--muted);
+      font-size: 0.76rem;
     }
 
     .output-tab.active {
-      background: var(--accent-soft);
-      border-color: #bdd0f7;
+      background: #dfe8f7;
+      border-color: var(--border-strong);
       color: var(--accent);
       font-weight: 650;
     }
@@ -463,7 +467,7 @@
       display: flex;
       flex-direction: column;
       min-height: 0;
-      padding: 12px;
+      padding: 6px;
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
@@ -480,14 +484,14 @@
       flex: 1;
       min-height: 0;
       margin: 0;
-      padding: 12px;
+      padding: 8px;
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 2px;
       background: #18212c;
       color: #e9f1fb;
       font-family: var(--font-mono);
-      font-size: 0.86rem;
-      line-height: 1.45;
+      font-size: 0.78rem;
+      line-height: 1.28;
       overflow: auto;
       white-space: pre-wrap;
       word-break: break-word;
@@ -504,17 +508,18 @@
     .console-input-row {
       display: grid;
       grid-template-columns: minmax(0, 1fr) auto;
-      gap: 8px;
-      padding-top: 10px;
+      gap: 4px;
+      padding-top: 6px;
     }
 
     .console-input {
       width: 100%;
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 0.65rem 0.8rem;
+      border-radius: 2px;
+      padding: 0.32rem 0.45rem;
       background: #fff;
       color: var(--text);
+      font-size: 0.8rem;
     }
 
     .graph-shell {
@@ -522,9 +527,9 @@
       flex: 1;
       min-height: 0;
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 2px;
       overflow: hidden;
-      background: linear-gradient(180deg, #fbfdff, #f0f5fb);
+      background: #fff;
     }
 
     .graph-canvas {
@@ -540,7 +545,7 @@
       display: grid;
       place-items: center;
       text-align: center;
-      padding: 18px;
+      padding: 8px;
       color: var(--muted);
       background:
         linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.92)),
@@ -567,19 +572,19 @@
 
     .manual-page {
       min-height: 0;
-      padding: 4px;
+      padding: 0;
       overflow: auto;
     }
 
     .manual-card {
       max-width: 1100px;
       margin: 0 auto;
-      padding: 22px;
+      padding: 12px;
       border: 1px solid var(--border);
-      border-radius: 16px;
+      border-radius: var(--radius);
       background: var(--panel);
       box-shadow: var(--shadow);
-      line-height: 1.7;
+      line-height: 1.45;
     }
 
     .manual-card h1,
@@ -591,27 +596,27 @@
     .manual-card h1 {
       margin-top: 0;
       margin-bottom: 0.4rem;
-      font-size: 1.35rem;
+      font-size: 1.05rem;
     }
 
     .manual-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
-      margin: 18px 0;
+      gap: 8px;
+      margin: 10px 0;
     }
 
     .manual-box {
-      padding: 14px;
+      padding: 8px;
       border: 1px solid var(--border);
-      border-radius: 12px;
+      border-radius: var(--radius);
       background: var(--panel-soft);
     }
 
     .manual-box h3 {
       margin-top: 0;
       margin-bottom: 0.45rem;
-      font-size: 0.95rem;
+      font-size: 0.82rem;
     }
 
     .manual-card code,
@@ -620,8 +625,8 @@
     }
 
     .manual-card pre {
-      padding: 12px;
-      border-radius: 12px;
+      padding: 8px;
+      border-radius: var(--radius);
       background: #18212c;
       color: #edf4ff;
       overflow: auto;
@@ -630,13 +635,13 @@
     .manual-card table {
       width: 100%;
       border-collapse: collapse;
-      margin: 12px 0;
+      margin: 8px 0;
     }
 
     .manual-card th,
     .manual-card td {
       border: 1px solid var(--border);
-      padding: 0.65rem 0.75rem;
+      padding: 0.35rem 0.45rem;
       text-align: left;
       vertical-align: top;
     }
@@ -657,8 +662,8 @@
 
     .loading-card {
       width: min(420px, calc(100vw - 32px));
-      padding: 20px 22px;
-      border-radius: 16px;
+      padding: 14px 16px;
+      border-radius: var(--radius);
       border: 1px solid var(--border);
       background: #fff;
       box-shadow: var(--shadow);
@@ -739,10 +744,10 @@
             <div class="left-panel-body">
               <div class="toolbar">
                 <div class="toolbar-group">
-                  <button id="addRowButton" type="button">行を追加</button>
-                  <button id="addColumnButton" type="button">列を追加</button>
-                  <button id="renameSheetButton" type="button">シート名変更</button>
-                  <button id="deleteSheetButton" type="button">シート削除</button>
+                  <button id="addRowButton" type="button">+行</button>
+                  <button id="addColumnButton" type="button">+列</button>
+                  <button id="renameSheetButton" type="button">名前</button>
+                  <button id="deleteSheetButton" type="button">削除</button>
                 </div>
                 <div id="sheetStatus" class="status-pill">1行目は R 互換の列名へ自動調整されます</div>
               </div>
@@ -757,7 +762,7 @@
                 <div class="panel-header">
                   <div class="panel-title">
                     <strong>R スクリプト</strong>
-                    <span>Ctrl / Command + Enter で実行、`get.input()` で表データ取得</span>
+                    <span>Ctrl / Command + Enter で実行</span>
                   </div>
                   <div class="toolbar-group">
                     <button id="runScriptButton" class="primary" type="button">コード実行</button>
