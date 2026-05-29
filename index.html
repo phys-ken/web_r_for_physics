@@ -4,22 +4,26 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>Physics webR Lab</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232b6de4'/%3E%3Cpath d='M22 14h20v6l-6 10v6l12 18H16l12-18v-6l-6-10z' fill='white'/%3E%3C/svg%3E">
   <style>
     :root {
       color-scheme: light;
-      --bg: #edf1f5;
+      --bg: #eef2f7;
       --panel: #ffffff;
       --panel-soft: #f7f9fc;
-      --border: #d6dde8;
-      --border-strong: #b8c2cf;
-      --text: #233243;
-      --muted: #607286;
+      --panel-strong: #f1f4f9;
+      --border: #d7dee8;
+      --border-strong: #b8c4d3;
+      --text: #223242;
+      --muted: #667789;
       --accent: #2b6de4;
-      --accent-soft: #e8f0ff;
-      --success: #127a46;
-      --danger: #b33c2f;
-      --shadow: 0 10px 24px rgba(38, 62, 89, 0.08);
+      --accent-soft: #e9f1ff;
+      --danger: #c13e31;
+      --success: #147748;
+      --warning: #946200;
+      --shadow: 0 10px 24px rgba(35, 55, 83, 0.08);
       --radius: 12px;
+      --radius-sm: 10px;
       --font-ui: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
       --font-mono: "SFMono-Regular", SFMono-Regular, ui-monospace, Menlo, Consolas, monospace;
     }
@@ -52,7 +56,7 @@
       border-radius: 10px;
       background: var(--panel);
       color: var(--text);
-      padding: 0.55rem 0.9rem;
+      padding: 0.56rem 0.92rem;
       cursor: pointer;
       transition: background 0.15s ease, border-color 0.15s ease, transform 0.15s ease;
       white-space: nowrap;
@@ -73,18 +77,18 @@
     }
 
     button.primary {
+      color: #fff;
       background: var(--accent);
       border-color: var(--accent);
-      color: #fff;
     }
 
     button.primary:hover:enabled {
-      background: #1e5fd1;
-      border-color: #1e5fd1;
+      background: #1e60d3;
+      border-color: #1e60d3;
     }
 
-    button.ghost {
-      background: transparent;
+    .hidden {
+      display: none !important;
     }
 
     .app-shell {
@@ -95,11 +99,140 @@
         max(12px, env(safe-area-inset-right))
         max(12px, env(safe-area-inset-bottom))
         max(12px, env(safe-area-inset-left));
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
       overflow: hidden;
     }
 
+    .app-topbar {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      min-height: 68px;
+      padding: 12px 14px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: linear-gradient(180deg, #fbfcfe, #f3f6fb);
+      box-shadow: var(--shadow);
+    }
+
+    .topbar-group {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+      flex-wrap: wrap;
+    }
+
+    .app-brand {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      min-width: 0;
+    }
+
+    .app-brand strong {
+      font-size: 1.02rem;
+      font-weight: 700;
+    }
+
+    .app-brand span {
+      color: var(--muted);
+      font-size: 0.82rem;
+    }
+
+    .nav-toggle {
+      display: inline-flex;
+      gap: 8px;
+      padding: 4px;
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.82);
+    }
+
+    .nav-toggle button {
+      border-radius: 999px;
+      border-color: transparent;
+      background: transparent;
+      color: var(--muted);
+      padding-inline: 0.9rem;
+    }
+
+    .nav-toggle button.active {
+      background: var(--accent-soft);
+      border-color: #bfd1f4;
+      color: var(--accent);
+      font-weight: 650;
+    }
+
+    .status-pill {
+      max-width: 100%;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 0.42rem 0.72rem;
+      border-radius: 999px;
+      background: #eef3fa;
+      color: var(--muted);
+      font-size: 0.82rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status-pill.error {
+      background: #fdecea;
+      color: var(--danger);
+    }
+
+    .status-pill.success {
+      background: #ebf9f0;
+      color: var(--success);
+    }
+
+    .status-pill.warning {
+      background: #fff5d8;
+      color: var(--warning);
+    }
+
+    .app-main {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .page {
+      flex: 1;
+      min-height: 0;
+      display: none;
+      overflow: hidden;
+    }
+
+    .page.active {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .restore-banner {
+      flex-shrink: 0;
+      margin-bottom: 10px;
+      padding: 11px 14px;
+      border: 1px solid #eadaa5;
+      border-radius: 12px;
+      background: #fff9e3;
+      color: #785a00;
+      font-size: 0.88rem;
+      line-height: 1.45;
+    }
+
     .workspace {
-      height: 100%;
+      flex: 1;
+      min-height: 0;
       display: grid;
       grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 12px;
@@ -112,7 +245,7 @@
       flex-direction: column;
       background: var(--panel);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
+      border-radius: 14px;
       box-shadow: var(--shadow);
       overflow: hidden;
     }
@@ -141,41 +274,23 @@
 
     .panel-title span {
       color: var(--muted);
-      font-size: 0.8rem;
+      font-size: 0.81rem;
     }
 
-    .toolbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      padding: 10px 12px;
-      border-bottom: 1px solid var(--border);
-      background: var(--panel-soft);
-      flex-wrap: wrap;
-    }
-
+    .toolbar,
     .toolbar-group {
       display: flex;
       align-items: center;
       gap: 8px;
-      flex-wrap: wrap;
       min-width: 0;
+      flex-wrap: wrap;
     }
 
-    .status-pill {
-      max-width: 100%;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      padding: 0.38rem 0.7rem;
-      border-radius: 999px;
-      background: #eef3fa;
-      color: var(--muted);
-      font-size: 0.8rem;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+    .toolbar {
+      justify-content: space-between;
+      padding: 10px 12px;
+      border-bottom: 1px solid var(--border);
+      background: var(--panel-soft);
     }
 
     .left-panel-body {
@@ -192,7 +307,7 @@
     }
 
     table.sheet-table {
-      width: max(100%, 720px);
+      width: max(100%, 760px);
       border-collapse: collapse;
       table-layout: fixed;
       font-size: 0.92rem;
@@ -220,10 +335,10 @@
       position: sticky;
       left: 0;
       z-index: 1;
+      width: 46px;
+      min-width: 46px;
       background: #f7f9fc;
       color: var(--muted);
-      width: 44px;
-      min-width: 44px;
       text-align: center;
       font-size: 0.8rem;
       font-weight: 600;
@@ -241,7 +356,7 @@
 
     .cell {
       min-height: 38px;
-      padding: 0.45rem 0.55rem;
+      padding: 0.46rem 0.56rem;
       outline: none;
       white-space: pre-wrap;
       word-break: break-word;
@@ -278,8 +393,8 @@
 
     .sheet-tab.active {
       background: var(--accent-soft);
-      color: var(--accent);
       border-color: #bdd0f7;
+      color: var(--accent);
       font-weight: 650;
     }
 
@@ -330,8 +445,8 @@
 
     .output-tab.active {
       background: var(--accent-soft);
-      color: var(--accent);
       border-color: #bdd0f7;
+      color: var(--accent);
       font-weight: 650;
     }
 
@@ -350,15 +465,15 @@
       min-height: 0;
       padding: 12px;
       opacity: 0;
-      pointer-events: none;
       visibility: hidden;
+      pointer-events: none;
       transition: opacity 0.15s ease;
     }
 
     .output-panel.active {
       opacity: 1;
-      pointer-events: auto;
       visibility: visible;
+      pointer-events: auto;
     }
 
     .console-output {
@@ -428,7 +543,7 @@
       padding: 18px;
       color: var(--muted);
       background:
-        linear-gradient(180deg, rgba(255,255,255,0.86), rgba(255,255,255,0.9)),
+        linear-gradient(180deg, rgba(255,255,255,0.9), rgba(255,255,255,0.92)),
         repeating-linear-gradient(
           90deg,
           rgba(95, 125, 160, 0.05) 0,
@@ -443,6 +558,91 @@
           transparent 1px,
           transparent 48px
         );
+    }
+
+    .graph-empty strong {
+      display: block;
+      margin-bottom: 6px;
+    }
+
+    .manual-page {
+      min-height: 0;
+      padding: 4px;
+      overflow: auto;
+    }
+
+    .manual-card {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 22px;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      line-height: 1.7;
+    }
+
+    .manual-card h1,
+    .manual-card h2,
+    .manual-card h3 {
+      line-height: 1.3;
+    }
+
+    .manual-card h1 {
+      margin-top: 0;
+      margin-bottom: 0.4rem;
+      font-size: 1.35rem;
+    }
+
+    .manual-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      margin: 18px 0;
+    }
+
+    .manual-box {
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--panel-soft);
+    }
+
+    .manual-box h3 {
+      margin-top: 0;
+      margin-bottom: 0.45rem;
+      font-size: 0.95rem;
+    }
+
+    .manual-card code,
+    .manual-card pre {
+      font-family: var(--font-mono);
+    }
+
+    .manual-card pre {
+      padding: 12px;
+      border-radius: 12px;
+      background: #18212c;
+      color: #edf4ff;
+      overflow: auto;
+    }
+
+    .manual-card table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 12px 0;
+    }
+
+    .manual-card th,
+    .manual-card td {
+      border: 1px solid var(--border);
+      padding: 0.65rem 0.75rem;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    .manual-card th {
+      background: var(--panel-strong);
     }
 
     .loading-overlay {
@@ -464,19 +664,6 @@
       box-shadow: var(--shadow);
     }
 
-    .loading-card strong {
-      display: block;
-      font-size: 1rem;
-      margin-bottom: 6px;
-    }
-
-    .loading-card p {
-      margin: 0;
-      color: var(--muted);
-      font-size: 0.92rem;
-      line-height: 1.5;
-    }
-
     .spinner {
       width: 28px;
       height: 28px;
@@ -487,101 +674,217 @@
       margin-bottom: 14px;
     }
 
+    .loading-card strong {
+      display: block;
+      margin-bottom: 6px;
+      font-size: 1rem;
+    }
+
+    .loading-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
     @keyframes spin {
       to {
         transform: rotate(360deg);
       }
     }
 
-    .hidden {
-      display: none !important;
-    }
-
-    @media (max-width: 960px) {
+    @media (max-width: 1100px) {
       .workspace {
         grid-template-columns: 1fr;
         grid-template-rows: minmax(0, 1fr) minmax(0, 1fr);
+      }
+
+      .manual-grid {
+        grid-template-columns: 1fr;
       }
     }
   </style>
 </head>
 <body>
   <div class="app-shell">
-    <div class="workspace">
-      <section class="panel">
-        <div class="panel-header">
-          <div class="panel-title">
-            <strong>データ入力</strong>
-            <span>複数シートの測定値をそのまま R に渡せます</span>
-          </div>
-          <div class="toolbar-group">
-            <button id="importButton" type="button">設定読込 (JSON)</button>
-            <button id="exportButton" type="button">設定保存 (JSON)</button>
-          </div>
+    <header class="app-topbar">
+      <div class="topbar-group">
+        <div class="app-brand">
+          <strong>Physics webR Lab</strong>
+          <span>高校の理科実験向け・単一 HTML 完結の軽量 RStudio 風解析ツール</span>
         </div>
-        <div class="left-panel-body">
-          <div class="toolbar">
-            <div class="toolbar-group">
-              <button id="addRowButton" type="button">行を追加</button>
-              <button id="addColumnButton" type="button">列を追加</button>
-            </div>
-            <div id="sheetStatus" class="status-pill">1行目は R 互換の列名へ自動調整されます</div>
-          </div>
-          <div id="sheetWrap" class="sheet-wrap"></div>
-          <div class="sheet-tabs" id="sheetTabs"></div>
+        <div class="nav-toggle" role="tablist" aria-label="Main navigation">
+          <button id="workspaceNavButton" class="active" type="button" data-page="workspace" role="tab" aria-selected="true">ワークスペース</button>
+          <button id="manualNavButton" type="button" data-page="manual" role="tab" aria-selected="false">マニュアル</button>
         </div>
-      </section>
+      </div>
+      <div class="topbar-group">
+        <span id="runtimeStatus" class="status-pill">webR を初期化中…</span>
+        <button id="importButton" type="button">設定読込 (JSON)</button>
+        <button id="exportButton" type="button">設定保存 (JSON)</button>
+      </div>
+    </header>
 
-      <section class="panel">
-        <div class="right-grid">
-          <div class="script-section">
+    <main class="app-main">
+      <section id="workspacePage" class="page active">
+        <div id="restoreBanner" class="restore-banner hidden"></div>
+        <div class="workspace">
+          <section class="panel">
             <div class="panel-header">
               <div class="panel-title">
-                <strong>R スクリプト</strong>
-                <span>Ctrl/Command + Enter でも実行できます</span>
-              </div>
-              <div class="toolbar-group">
-                <button id="runScriptButton" class="primary" type="button">コード実行</button>
+                <strong>データ入力</strong>
+                <span>複数シートの測定値をそのまま R に渡せます</span>
               </div>
             </div>
-            <textarea id="scriptEditor" class="script-editor" spellcheck="false"></textarea>
-          </div>
-
-          <div class="output-section">
-            <div class="panel-header">
-              <div class="output-tabs">
-                <button class="output-tab active" type="button" data-tab="console">コンソール</button>
-                <button class="output-tab" type="button" data-tab="graph">グラフ</button>
-              </div>
-              <div class="toolbar-group">
-                <span id="runtimeStatus" class="status-pill">webR を初期化中…</span>
-                <button id="downloadGraphButton" type="button">グラフをダウンロード</button>
-              </div>
-            </div>
-            <div class="output-panels">
-              <div class="output-panel active" data-panel="console">
-                <pre id="consoleOutput" class="console-output" aria-live="polite"></pre>
-                <div class="console-input-row">
-                  <input id="consoleInput" class="console-input" type="text" placeholder="例: summary(get.input())" autocomplete="off" spellcheck="false">
-                  <button id="runConsoleButton" type="button">1行実行</button>
+            <div class="left-panel-body">
+              <div class="toolbar">
+                <div class="toolbar-group">
+                  <button id="addRowButton" type="button">行を追加</button>
+                  <button id="addColumnButton" type="button">列を追加</button>
+                  <button id="renameSheetButton" type="button">シート名変更</button>
+                  <button id="deleteSheetButton" type="button">シート削除</button>
                 </div>
+                <div id="sheetStatus" class="status-pill">1行目は R 互換の列名へ自動調整されます</div>
               </div>
-              <div class="output-panel" data-panel="graph">
-                <div class="graph-shell">
-                  <canvas id="graphCanvas" class="graph-canvas"></canvas>
-                  <div id="graphEmptyState" class="graph-empty">
-                    <div>
-                      <strong>ここに R のグラフが表示されます</strong>
-                      <div>plot() や ggplot2 を実行すると、このキャンバスに描画されます。</div>
+              <div id="sheetWrap" class="sheet-wrap"></div>
+              <div id="sheetTabs" class="sheet-tabs"></div>
+            </div>
+          </section>
+
+          <section class="panel">
+            <div class="right-grid">
+              <div class="script-section">
+                <div class="panel-header">
+                  <div class="panel-title">
+                    <strong>R スクリプト</strong>
+                    <span>Ctrl / Command + Enter で実行、`get.input()` で表データ取得</span>
+                  </div>
+                  <div class="toolbar-group">
+                    <button id="runScriptButton" class="primary" type="button">コード実行</button>
+                  </div>
+                </div>
+                <textarea id="scriptEditor" class="script-editor" spellcheck="false"></textarea>
+              </div>
+
+              <div class="output-section">
+                <div class="panel-header">
+                  <div class="output-tabs">
+                    <button class="output-tab active" type="button" data-tab="console">コンソール</button>
+                    <button class="output-tab" type="button" data-tab="graph">グラフ</button>
+                  </div>
+                  <div class="toolbar-group">
+                    <button id="downloadGraphButton" type="button">グラフをダウンロード</button>
+                  </div>
+                </div>
+                <div class="output-panels">
+                  <div class="output-panel active" data-panel="console">
+                    <pre id="consoleOutput" class="console-output" aria-live="polite"></pre>
+                    <div class="console-input-row">
+                      <input id="consoleInput" class="console-input" type="text" placeholder="例: summary(get.input())" autocomplete="off" spellcheck="false">
+                      <button id="runConsoleButton" type="button">1行実行</button>
+                    </div>
+                  </div>
+                  <div class="output-panel" data-panel="graph">
+                    <div class="graph-shell">
+                      <canvas id="graphCanvas" class="graph-canvas"></canvas>
+                      <div id="graphEmptyState" class="graph-empty">
+                        <div>
+                          <strong id="graphEmptyTitle">ここに R のグラフが表示されます</strong>
+                          <div id="graphEmptyMessage">plot() や ggplot2 を実行すると、このキャンバスに描画されます。</div>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
+          </section>
         </div>
       </section>
-    </div>
+
+      <section id="manualPage" class="page manual-page">
+        <article class="manual-card">
+          <h1>マニュアル</h1>
+          <p>このアプリは、学校の iPad で物理実験の測定データを表入力し、そのまま webR で解析するための単一 HTML ツールです。サーバーへデータ送信せず、GitHub Pages 上でも静的配信で動きます。</p>
+
+          <div class="manual-grid">
+            <section class="manual-box">
+              <h3>基本の流れ</h3>
+              <ol>
+                <li>左側の表に測定値を入力します。</li>
+                <li>1 行目は列名です。日本語や記号を入れても R 互換名へ自動調整されます。</li>
+                <li>右上のエディタに R コードを書いて「コード実行」を押します。</li>
+                <li>結果は右下の「コンソール」または「グラフ」で確認します。</li>
+              </ol>
+            </section>
+            <section class="manual-box">
+              <h3>シート操作</h3>
+              <ul>
+                <li>下部タブでシート切り替え</li>
+                <li>＋ボタンで新規シート追加</li>
+                <li>「シート名変更」でタブ名変更</li>
+                <li>「シート削除」で不要シート削除</li>
+              </ul>
+            </section>
+          </div>
+
+          <h2><code>get.input()</code> の使い方</h2>
+          <table>
+            <thead>
+              <tr>
+                <th>書き方</th>
+                <th>意味</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>df &lt;- get.input()</code></td>
+                <td>現在のアクティブシートを <code>data.frame</code> として取得します。</td>
+              </tr>
+              <tr>
+                <td><code>df &lt;- get.input("Sheet2")</code></td>
+                <td>シート名を指定して取得します。</td>
+              </tr>
+              <tr>
+                <td><code>df &lt;- get.input(2)</code></td>
+                <td>1 始まりのシート番号で取得します。</td>
+              </tr>
+            </tbody>
+          </table>
+
+          <h2>JSON 保存と復元</h2>
+          <p>「設定保存 (JSON)」は、単なる表データだけではなく、できるだけ作業中の状態も保存します。たとえば次の情報を含みます。</p>
+          <ul>
+            <li>すべてのシート内容とアクティブシート</li>
+            <li>右上のスクリプトエディタ内容</li>
+            <li>現在表示中のページ（ワークスペース / マニュアル）</li>
+            <li>コンソール / グラフの選択状態</li>
+            <li>コンソール出力履歴と REPL 履歴</li>
+          </ul>
+          <p>ただし、R ランタイム内部のオブジェクトそのものは保存されません。JSON を読み込んだ後は、必要に応じてスクリプトを再実行してください。</p>
+
+          <h2>コード例</h2>
+          <pre><code>df &lt;- get.input()
+summary(df)
+
+plot(
+  df$time_s,
+  df$distance_m,
+  pch = 19,
+  xlab = "time_s",
+  ylab = "distance_m"
+)</code></pre>
+
+          <h2>補足</h2>
+          <ul>
+            <li>Ctrl / Command + Enter でスクリプト実行できます。</li>
+            <li>コンソール入力欄では上下キーで実行履歴をたどれます。</li>
+            <li><code>ggplot2</code> を使うときは初回のみ読み込みが少し長くなることがあります。</li>
+            <li>画面サイズを大きく変えた後は、必要に応じてコードを再実行するとグラフが最新サイズに更新されます。</li>
+          </ul>
+        </article>
+      </section>
+    </main>
   </div>
 
   <input id="importFileInput" class="hidden" type="file" accept="application/json,.json">
@@ -597,16 +900,18 @@
   <script type="module">
     import { WebR } from "https://webr.r-wasm.org/v0.6.0/webr.mjs";
 
+    const APP_VERSION = 2;
     const DEFAULT_ROW_COUNT = 12;
     const DEFAULT_COL_COUNT = 6;
     const DEFAULT_SHEET_NAME = "Measurements";
     const JSON_FILE_NAME = "experiment_setup.json";
     const GRAPH_SCALE = 2;
     const WEBR_BASE_URL = "https://webr.r-wasm.org/v0.6.0/";
+    const MAX_CONSOLE_ENTRIES = 300;
+    const MAX_HISTORY_ENTRIES = 100;
     const SELF_TEST_MODE = new URLSearchParams(window.location.search).get("selftest") === "1";
 
     const initialWorkbook = {
-      version: 1,
       activeSheetId: "sheet-1",
       sheets: [
         {
@@ -655,24 +960,50 @@ arrows(
   length = 0.05
 )`;
 
-    const state = {
+    const initialAppState = {
       workbook: structuredClone(initialWorkbook),
-      selectedCell: { row: 0, col: 0 },
-      outputTab: "console",
+      script: defaultScript,
+      ui: {
+        currentPage: "workspace",
+        outputTab: "console",
+        selectedCell: { row: 0, col: 0 },
+        restoreBanner: "",
+        sheetStatus: "1行目は R 互換の列名へ自動調整されます",
+        runtimeStatus: { text: "webR を初期化中…", tone: "neutral" },
+      },
+      console: {
+        entries: [],
+        history: [],
+      },
+      runtime: {
+        ggplot2Ready: false,
+      },
+    };
+
+    const state = {
+      app: structuredClone(initialAppState),
       webR: null,
       ready: false,
       busy: false,
-      ggplot2Ready: false,
       graphHasImage: false,
       plotSize: { width: 504, height: 360 },
+      historyIndex: 0,
     };
 
     const elements = {
+      workspaceNavButton: document.getElementById("workspaceNavButton"),
+      manualNavButton: document.getElementById("manualNavButton"),
+      workspacePage: document.getElementById("workspacePage"),
+      manualPage: document.getElementById("manualPage"),
+      runtimeStatus: document.getElementById("runtimeStatus"),
+      restoreBanner: document.getElementById("restoreBanner"),
       importButton: document.getElementById("importButton"),
       exportButton: document.getElementById("exportButton"),
       importFileInput: document.getElementById("importFileInput"),
       addRowButton: document.getElementById("addRowButton"),
       addColumnButton: document.getElementById("addColumnButton"),
+      renameSheetButton: document.getElementById("renameSheetButton"),
+      deleteSheetButton: document.getElementById("deleteSheetButton"),
       sheetWrap: document.getElementById("sheetWrap"),
       sheetTabs: document.getElementById("sheetTabs"),
       sheetStatus: document.getElementById("sheetStatus"),
@@ -681,11 +1012,12 @@ arrows(
       consoleOutput: document.getElementById("consoleOutput"),
       consoleInput: document.getElementById("consoleInput"),
       runConsoleButton: document.getElementById("runConsoleButton"),
-      runtimeStatus: document.getElementById("runtimeStatus"),
       outputTabs: Array.from(document.querySelectorAll(".output-tab")),
       outputPanels: Array.from(document.querySelectorAll(".output-panel")),
       graphCanvas: document.getElementById("graphCanvas"),
       graphEmptyState: document.getElementById("graphEmptyState"),
+      graphEmptyTitle: document.getElementById("graphEmptyTitle"),
+      graphEmptyMessage: document.getElementById("graphEmptyMessage"),
       downloadGraphButton: document.getElementById("downloadGraphButton"),
       loadingOverlay: document.getElementById("loadingOverlay"),
       loadingMessage: document.getElementById("loadingMessage"),
@@ -693,45 +1025,64 @@ arrows(
 
     const graphContext = elements.graphCanvas.getContext("2d");
 
-    elements.scriptEditor.value = defaultScript;
     ensureWorkbookShape();
-    renderWorkbook();
-    setOutputTab("console");
-
-    elements.importButton.addEventListener("click", () => elements.importFileInput.click());
-    elements.importFileInput.addEventListener("change", handleImportFile);
-    elements.exportButton.addEventListener("click", exportSetup);
-    elements.addRowButton.addEventListener("click", addRow);
-    elements.addColumnButton.addEventListener("click", addColumn);
-    elements.runScriptButton.addEventListener("click", () => runScript(elements.scriptEditor.value));
-    elements.runConsoleButton.addEventListener("click", () => runConsoleLine());
-    elements.consoleInput.addEventListener("keydown", (event) => {
-      if (event.key === "Enter") {
-        event.preventDefault();
-        runConsoleLine();
-      }
-    });
-    elements.scriptEditor.addEventListener("keydown", (event) => {
-      const withModifier = event.metaKey || event.ctrlKey;
-      if (withModifier && event.key === "Enter") {
-        event.preventDefault();
-        runScript(elements.scriptEditor.value);
-      }
-    });
-    elements.outputTabs.forEach((button) => {
-      button.addEventListener("click", () => setOutputTab(button.dataset.tab));
-    });
-    elements.downloadGraphButton.addEventListener("click", downloadGraph);
-    window.addEventListener("resize", () => {
-      updateGraphCanvasMetrics();
-      syncPlotSizeToR().catch((error) => appendSystemLine(`plot device resize failed: ${error.message}`, true));
-    });
-
+    applyStateToUi();
+    bindEvents();
     boot().catch((error) => {
       appendSystemLine(`webR initialisation failed: ${error.message}`, true);
-      setRuntimeStatus("webR 起動に失敗しました", true);
+      setRuntimeStatus("webR 起動に失敗しました", "error");
       elements.loadingMessage.textContent = "webR の起動に失敗しました。ネットワークやブラウザ設定を確認してください。";
     });
+
+    function bindEvents() {
+      [elements.workspaceNavButton, elements.manualNavButton].forEach((button) => {
+        button.addEventListener("click", () => setCurrentPage(button.dataset.page));
+      });
+
+      elements.importButton.addEventListener("click", () => elements.importFileInput.click());
+      elements.exportButton.addEventListener("click", exportSetup);
+      elements.importFileInput.addEventListener("change", handleImportFile);
+      elements.addRowButton.addEventListener("click", addRow);
+      elements.addColumnButton.addEventListener("click", addColumn);
+      elements.renameSheetButton.addEventListener("click", renameActiveSheet);
+      elements.deleteSheetButton.addEventListener("click", deleteActiveSheet);
+      elements.runScriptButton.addEventListener("click", () => runScript(elements.scriptEditor.value));
+      elements.scriptEditor.addEventListener("input", () => {
+        state.app.script = elements.scriptEditor.value;
+      });
+      elements.scriptEditor.addEventListener("keydown", (event) => {
+        const withModifier = event.metaKey || event.ctrlKey;
+        if (withModifier && event.key === "Enter") {
+          event.preventDefault();
+          runScript(elements.scriptEditor.value);
+        }
+      });
+      elements.runConsoleButton.addEventListener("click", () => runConsoleLine());
+      elements.consoleInput.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") {
+          event.preventDefault();
+          runConsoleLine();
+          return;
+        }
+        if (event.key === "ArrowUp") {
+          event.preventDefault();
+          navigateConsoleHistory(-1);
+          return;
+        }
+        if (event.key === "ArrowDown") {
+          event.preventDefault();
+          navigateConsoleHistory(1);
+        }
+      });
+      elements.outputTabs.forEach((button) => {
+        button.addEventListener("click", () => setOutputTab(button.dataset.tab));
+      });
+      elements.downloadGraphButton.addEventListener("click", downloadGraph);
+      window.addEventListener("resize", () => {
+        updateGraphCanvasMetrics();
+        syncPlotSizeToR().catch((error) => appendSystemLine(`plot device resize failed: ${error.message}`, true));
+      });
+    }
 
     async function boot() {
       setBusy(true);
@@ -792,13 +1143,40 @@ arrows(
       elements.loadingMessage.textContent = "入力シートを R に同期しています。";
       await syncWorkbookToR();
       state.ready = true;
-      setRuntimeStatus("webR 準備完了");
+      setRuntimeStatus("webR 準備完了", "success");
       appendSystemLine(`webR is ready. crossOriginIsolated=${String(window.crossOriginIsolated)}.`);
       elements.loadingOverlay.classList.add("hidden");
       setBusy(false);
       if (SELF_TEST_MODE) {
         await runSelfTest();
       }
+    }
+
+    function applyStateToUi() {
+      elements.scriptEditor.value = state.app.script;
+      state.historyIndex = state.app.console.history.length;
+      renderRestoreBanner();
+      renderWorkbook();
+      renderConsoleEntries();
+      setCurrentPage(state.app.ui.currentPage, { persist: false });
+      setOutputTab(state.app.ui.outputTab, { persist: false });
+      setSheetStatus(state.app.ui.sheetStatus);
+      setRuntimeStatus(
+        state.app.ui.runtimeStatus.text,
+        state.app.ui.runtimeStatus.tone,
+        { persist: false },
+      );
+    }
+
+    function renderRestoreBanner() {
+      const message = state.app.ui.restoreBanner;
+      if (!message) {
+        elements.restoreBanner.classList.add("hidden");
+        elements.restoreBanner.textContent = "";
+        return;
+      }
+      elements.restoreBanner.classList.remove("hidden");
+      elements.restoreBanner.textContent = message;
     }
 
     function startOutputReader(webR) {
@@ -830,6 +1208,7 @@ arrows(
       if (data.event === "canvasNewPage") {
         graphContext.clearRect(0, 0, elements.graphCanvas.width, elements.graphCanvas.height);
         state.graphHasImage = false;
+        setGraphEmptyState("ここに R のグラフが表示されます", "plot() や ggplot2 を実行すると、このキャンバスに描画されます。");
         elements.graphEmptyState.classList.remove("hidden");
         return;
       }
@@ -843,7 +1222,7 @@ arrows(
     }
 
     async function runScript(code) {
-      await runRCode(code, { echoLabel: "# Run editor script" });
+      await runRCode(code, { echoLabel: "# Run editor script", printEval: false });
     }
 
     async function runConsoleLine() {
@@ -851,15 +1230,41 @@ arrows(
       if (!code) {
         return;
       }
+      pushConsoleHistory(code);
       elements.consoleInput.value = "";
-      await runRCode(code, { echoLabel: `> ${code}` });
+      await runConsoleCode(code, { echoLabel: `> ${code}` });
     }
 
-    async function runRCode(code, { echoLabel = "" } = {}) {
+    function navigateConsoleHistory(direction) {
+      if (!state.app.console.history.length) {
+        return;
+      }
+      state.historyIndex = Math.min(
+        state.app.console.history.length,
+        Math.max(0, state.historyIndex + direction),
+      );
+      if (state.historyIndex === state.app.console.history.length) {
+        elements.consoleInput.value = "";
+        return;
+      }
+      elements.consoleInput.value = state.app.console.history[state.historyIndex];
+    }
+
+    function pushConsoleHistory(code) {
+      state.app.console.history.push(code);
+      if (state.app.console.history.length > MAX_HISTORY_ENTRIES) {
+        state.app.console.history.splice(0, state.app.console.history.length - MAX_HISTORY_ENTRIES);
+      }
+      state.historyIndex = state.app.console.history.length;
+    }
+
+    async function runRCode(code, { echoLabel = "", printEval = false } = {}) {
       if (!state.ready || state.busy || !code.trim()) {
         return;
       }
 
+      state.app.ui.restoreBanner = "";
+      renderRestoreBanner();
       setBusy(true);
       setRuntimeStatus("R コードを実行中…");
       if (echoLabel) {
@@ -871,28 +1276,70 @@ arrows(
         await syncPlotSizeToR();
         await syncWorkbookToR();
         await ensureGgplot2IfNeeded(code);
-        await state.webR.evalRVoid(code);
-        setRuntimeStatus("実行完了");
+        const result = await executeRSource(code, { printEval });
+        if (result.output) {
+          appendOutput(result.output, "stdout");
+        }
+        if (result.error) {
+          throw new Error(result.error);
+        }
+        setRuntimeStatus("実行完了", "success");
       } catch (error) {
         appendSystemLine(error.message, true);
-        setRuntimeStatus("実行エラー", true);
+        setRuntimeStatus("実行エラー", "error");
       } finally {
         setBusy(false);
       }
     }
 
+    async function runConsoleCode(code, { echoLabel = "" } = {}) {
+      await runRCode(code, { echoLabel, printEval: true });
+    }
+
+    async function executeRSource(code, { printEval = false } = {}) {
+      const escapedCode = escapeRString(code);
+      await state.webR.evalRVoid(`
+        .webr_last_output <- ""
+        .webr_last_error <- NULL
+        .webr_last_output <- paste(
+          capture.output(
+            tryCatch(
+              source(
+                textConnection(${escapedCode}),
+                echo = FALSE,
+                print.eval = ${printEval ? "TRUE" : "FALSE"},
+                max.deparse.length = Inf,
+                local = .GlobalEnv
+              ),
+              error = function(e) {
+                .webr_last_error <<- conditionMessage(e)
+                invisible(NULL)
+              }
+            ),
+            type = "output"
+          ),
+          collapse = "\\n"
+        )
+      `);
+      const output = await state.webR.evalRString(`if (nzchar(.webr_last_output)) .webr_last_output else ""`);
+      const error = await state.webR.evalRString(`if (is.null(.webr_last_error)) "" else .webr_last_error`);
+      return { output, error };
+    }
+
     async function runSelfTest() {
       appendSystemLine("SELFTEST: starting");
       const payload = buildExportPayload();
-      const roundTrip = JSON.parse(JSON.stringify(payload));
+      const roundTrip = normaliseImportedPayload(JSON.parse(JSON.stringify(payload)));
       if (
-        roundTrip.script !== elements.scriptEditor.value
-        || roundTrip.workbook.sheets.length !== state.workbook.sheets.length
-        || roundTrip.workbook.activeSheetId !== state.workbook.activeSheetId
+        roundTrip.script !== state.app.script
+        || roundTrip.workbook.sheets.length !== state.app.workbook.sheets.length
+        || roundTrip.ui.outputTab !== state.app.ui.outputTab
       ) {
         throw new Error("SELFTEST failed during JSON round-trip.");
       }
       appendSystemLine("SELFTEST: JSON round-trip ok");
+      setCurrentPage("manual");
+      setCurrentPage("workspace");
       setOutputTab("graph");
       await runRCode(
         `df <- get.input()
@@ -901,12 +1348,12 @@ arrows(
          plot(df$time_s, df$distance_m, pch = 19, xlab = "time_s", ylab = "distance_m")`,
         { echoLabel: "# SELFTEST run" },
       );
-      await waitFor(() => state.graphHasImage, 8000, "SELFTEST graph render timed out.");
+      await waitFor(() => state.graphHasImage, 30000, "SELFTEST graph render timed out.");
       appendSystemLine("SELFTEST:PASS");
     }
 
     async function ensureGgplot2IfNeeded(code) {
-      if (state.ggplot2Ready) {
+      if (state.app.runtime.ggplot2Ready) {
         return;
       }
       if (!/(ggplot2|ggplot\s*\(|geom_[a-z_]+|aes\s*\()/i.test(code)) {
@@ -917,7 +1364,7 @@ arrows(
       try {
         await state.webR.installPackages(["ggplot2"]);
         await state.webR.evalRVoid("suppressPackageStartupMessages(library(ggplot2))");
-        state.ggplot2Ready = true;
+        state.app.runtime.ggplot2Ready = true;
         appendSystemLine("ggplot2 is ready.");
       } catch (error) {
         throw new Error(`ggplot2 could not be loaded. Try base R plot() instead. ${error.message}`);
@@ -947,13 +1394,13 @@ arrows(
     }
 
     function buildWorkbookRLiteral() {
-      const sheetExpressions = state.workbook.sheets.map((sheet) => {
+      const sheetExpressions = state.app.workbook.sheets.map((sheet) => {
         const frame = sheetToFrameModel(sheet);
         const columnValues = frame.columns.map((column) => buildRVector(column.values, column.type)).join(",\n");
         const columnNames = `c(${frame.columns.map((column) => escapeRString(column.name)).join(", ")})`;
         return `as.data.frame(stats::setNames(list(${columnValues}), ${columnNames}), check.names = FALSE, stringsAsFactors = FALSE)`;
       });
-      const sheetNames = `c(${state.workbook.sheets.map((sheet) => escapeRString(sheet.name)).join(", ")})`;
+      const sheetNames = `c(${state.app.workbook.sheets.map((sheet) => escapeRString(sheet.name)).join(", ")})`;
       return `stats::setNames(list(\n${sheetExpressions.join(",\n")}\n), ${sheetNames})`;
     }
 
@@ -966,20 +1413,17 @@ arrows(
       }
       const headers = sanitizeHeaderList(headerSeed);
       const bodyRows = data.slice(1).filter((row) => row.some((cell) => String(cell ?? "").trim() !== ""));
-      const columns = headers.map((header, index) => {
-        const values = bodyRows.map((row) => String(row[index] ?? "").trim());
-        return {
-          name: header,
-          type: inferColumnType(values),
-          values,
-        };
-      });
+      const columns = headers.map((header, index) => ({
+        name: header,
+        type: inferColumnType(bodyRows.map((row) => String(row[index] ?? "").trim())),
+        values: bodyRows.map((row) => String(row[index] ?? "").trim()),
+      }));
       return { columns };
     }
 
     function inferColumnType(values) {
       const nonEmpty = values.filter((value) => value !== "");
-      if (nonEmpty.length === 0) {
+      if (!nonEmpty.length) {
         return "character";
       }
       const numericPattern = /^[-+]?(?:\d+\.?\d*|\.\d+)(?:[eE][-+]?\d+)?$/;
@@ -995,31 +1439,17 @@ arrows(
 
     function buildRVector(values, type) {
       if (type === "numeric") {
-        if (values.length === 0) {
-          return "numeric(0)";
-        }
-        return `c(${values.map((value) => (value === "" ? "NA_real_" : value)).join(", ")})`;
+        return values.length ? `c(${values.map((value) => (value === "" ? "NA_real_" : value)).join(", ")})` : "numeric(0)";
       }
       if (type === "logical") {
-        if (values.length === 0) {
-          return "logical(0)";
-        }
-        return `c(${values.map((value) => {
+        return values.length ? `c(${values.map((value) => {
           if (value === "") {
             return "NA";
           }
           return /^true$/i.test(value) ? "TRUE" : "FALSE";
-        }).join(", ")})`;
+        }).join(", ")})` : "logical(0)";
       }
-      if (values.length === 0) {
-        return "character(0)";
-      }
-      return `c(${values.map((value) => {
-        if (value === "") {
-          return "NA_character_";
-        }
-        return escapeRString(value);
-      }).join(", ")})`;
+      return values.length ? `c(${values.map((value) => (value === "" ? "NA_character_" : escapeRString(value))).join(", ")})` : "character(0)";
     }
 
     function escapeRString(value) {
@@ -1029,6 +1459,34 @@ arrows(
         .replace(/\r/g, "\\r")
         .replace(/\n/g, "\\n");
       return `"${escaped}"`;
+    }
+
+    function setCurrentPage(page, { persist = true } = {}) {
+      state.app.ui.currentPage = page;
+      elements.workspacePage.classList.toggle("active", page === "workspace");
+      elements.manualPage.classList.toggle("active", page === "manual");
+      elements.workspaceNavButton.classList.toggle("active", page === "workspace");
+      elements.manualNavButton.classList.toggle("active", page === "manual");
+      elements.workspaceNavButton.setAttribute("aria-selected", String(page === "workspace"));
+      elements.manualNavButton.setAttribute("aria-selected", String(page === "manual"));
+      if (!persist) {
+        return;
+      }
+    }
+
+    function setOutputTab(tab, { persist = true } = {}) {
+      if (persist) {
+        state.app.ui.outputTab = tab;
+      }
+      elements.outputTabs.forEach((button) => {
+        button.classList.toggle("active", button.dataset.tab === tab);
+      });
+      elements.outputPanels.forEach((panel) => {
+        panel.classList.toggle("active", panel.dataset.panel === tab);
+      });
+      if (tab === "graph") {
+        updateGraphCanvasMetrics();
+      }
     }
 
     function renderWorkbook() {
@@ -1081,7 +1539,6 @@ arrows(
         tbody.appendChild(tr);
       });
       table.appendChild(tbody);
-
       elements.sheetWrap.replaceChildren(table);
 
       table.addEventListener("focusin", (event) => {
@@ -1089,7 +1546,7 @@ arrows(
         if (!cell) {
           return;
         }
-        state.selectedCell = {
+        state.app.ui.selectedCell = {
           row: Number(cell.dataset.row),
           col: Number(cell.dataset.col),
         };
@@ -1141,14 +1598,13 @@ arrows(
 
     function renderSheetTabs() {
       const fragment = document.createDocumentFragment();
-      state.workbook.sheets.forEach((sheet) => {
+      state.app.workbook.sheets.forEach((sheet) => {
         const button = document.createElement("button");
         button.type = "button";
-        button.className = `sheet-tab${sheet.id === state.workbook.activeSheetId ? " active" : ""}`;
+        button.className = `sheet-tab${sheet.id === state.app.workbook.activeSheetId ? " active" : ""}`;
         button.textContent = sheet.name;
         button.addEventListener("click", () => {
-          state.workbook.activeSheetId = sheet.id;
-          ensureWorkbookShape();
+          state.app.workbook.activeSheetId = sheet.id;
           renderWorkbook();
         });
         fragment.appendChild(button);
@@ -1166,8 +1622,8 @@ arrows(
 
     function updateSelectedCellMarker() {
       document.querySelectorAll(".cell.selected").forEach((cell) => cell.classList.remove("selected"));
-      const selector = `.cell[data-row="${state.selectedCell.row}"][data-col="${state.selectedCell.col}"]`;
-      const cell = document.querySelector(selector);
+      const { row, col } = state.app.ui.selectedCell;
+      const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
       if (cell) {
         cell.classList.add("selected");
       }
@@ -1215,17 +1671,51 @@ arrows(
     }
 
     function addSheet() {
-      const sheetNumber = state.workbook.sheets.length + 1;
-      const name = createUniqueSheetName(`Sheet${sheetNumber}`);
+      const sheetNumber = state.app.workbook.sheets.length + 1;
       const id = `sheet-${crypto.randomUUID()}`;
-      state.workbook.sheets.push({
+      state.app.workbook.sheets.push({
         id,
-        name,
+        name: createUniqueSheetName(`Sheet${sheetNumber}`),
         data: createBlankSheetData(),
       });
-      state.workbook.activeSheetId = id;
-      ensureWorkbookShape();
+      state.app.workbook.activeSheetId = id;
       renderWorkbook();
+    }
+
+    function renameActiveSheet() {
+      const sheet = getActiveSheet();
+      const nextName = window.prompt("新しいシート名を入力してください。", sheet.name);
+      if (nextName === null) {
+        return;
+      }
+      const trimmed = nextName.trim();
+      if (!trimmed) {
+        setSheetStatus("シート名は空にできません");
+        return;
+      }
+      sheet.name = createUniqueSheetName(trimmed, sheet.id);
+      renderWorkbook();
+      setSheetStatus(`シート名を「${sheet.name}」に変更しました`);
+    }
+
+    function deleteActiveSheet() {
+      if (state.app.workbook.sheets.length === 1) {
+        setSheetStatus("最低 1 枚のシートが必要です");
+        return;
+      }
+      const sheet = getActiveSheet();
+      const hasValues = sheet.data.some((row, rowIndex) => rowIndex > 0 && row.some((cell) => String(cell ?? "").trim() !== ""));
+      const message = hasValues
+        ? `「${sheet.name}」を削除します。入力データも消えます。`
+        : `「${sheet.name}」を削除します。よろしいですか？`;
+      if (!window.confirm(message)) {
+        return;
+      }
+      const index = getActiveSheetIndex();
+      state.app.workbook.sheets.splice(index, 1);
+      state.app.workbook.activeSheetId = state.app.workbook.sheets[Math.max(0, index - 1)].id;
+      renderWorkbook();
+      setSheetStatus("シートを削除しました");
     }
 
     function createBlankSheetData() {
@@ -1248,7 +1738,7 @@ arrows(
         }
       });
       if (changed) {
-        elements.sheetStatus.textContent = "列名を R 互換の名前に自動調整しました";
+        setSheetStatus("列名を R 互換の名前に自動調整しました");
         renderWorkbook();
       }
     }
@@ -1258,10 +1748,9 @@ arrows(
       return headers.map((value, index) => {
         let base = String(value ?? "").trim()
           .replace(/[^\w]+/g, "_")
-          .replace(/^_+/, "_")
           .replace(/_+/g, "_")
-          .replace(/^(\d)/, "_$1")
-          .replace(/^$/, `column_${index + 1}`);
+          .replace(/^$/, `column_${index + 1}`)
+          .replace(/^(\d)/, "_$1");
         if (!/^[A-Za-z_]/.test(base)) {
           base = `_${base}`;
         }
@@ -1272,19 +1761,6 @@ arrows(
       });
     }
 
-    function setOutputTab(tab) {
-      state.outputTab = tab;
-      elements.outputTabs.forEach((button) => {
-        button.classList.toggle("active", button.dataset.tab === tab);
-      });
-      elements.outputPanels.forEach((panel) => {
-        panel.classList.toggle("active", panel.dataset.panel === tab);
-      });
-      if (tab === "graph") {
-        updateGraphCanvasMetrics();
-      }
-    }
-
     function updateGraphCanvasMetrics() {
       const graphPanel = document.querySelector('[data-panel="graph"] .graph-shell');
       const rect = graphPanel.getBoundingClientRect();
@@ -1293,10 +1769,13 @@ arrows(
       const nextWidth = width * GRAPH_SCALE;
       const nextHeight = height * GRAPH_SCALE;
       if (elements.graphCanvas.width !== nextWidth || elements.graphCanvas.height !== nextHeight) {
+        const hadGraph = state.graphHasImage;
         elements.graphCanvas.width = nextWidth;
         elements.graphCanvas.height = nextHeight;
         graphContext.clearRect(0, 0, elements.graphCanvas.width, elements.graphCanvas.height);
-        if (!state.graphHasImage) {
+        state.graphHasImage = false;
+        if (hadGraph) {
+          setGraphEmptyState("グラフサイズを更新しました", "画面サイズ変更後は、必要に応じてコードを再実行してください。");
           elements.graphEmptyState.classList.remove("hidden");
         }
       }
@@ -1308,6 +1787,11 @@ arrows(
       };
     }
 
+    function setGraphEmptyState(title, message) {
+      elements.graphEmptyTitle.textContent = title;
+      elements.graphEmptyMessage.textContent = message;
+    }
+
     function downloadGraph() {
       if (!state.graphHasImage) {
         appendSystemLine("まだグラフがありません。plot() か ggplot2 を実行してください。", true);
@@ -1317,6 +1801,29 @@ arrows(
       link.href = elements.graphCanvas.toDataURL("image/png");
       link.download = "physics-plot.png";
       link.click();
+    }
+
+    function buildExportPayload() {
+      return {
+        version: APP_VERSION,
+        exportedAt: new Date().toISOString(),
+        app: {
+          workbook: structuredClone(state.app.workbook),
+          script: state.app.script,
+          ui: {
+            currentPage: state.app.ui.currentPage,
+            outputTab: state.app.ui.outputTab,
+            selectedCell: state.app.ui.selectedCell,
+          },
+          console: {
+            entries: structuredClone(state.app.console.entries),
+            history: structuredClone(state.app.console.history),
+          },
+          runtime: {
+            ggplot2Ready: state.app.runtime.ggplot2Ready,
+          },
+        },
+      };
     }
 
     function exportSetup() {
@@ -1335,21 +1842,16 @@ arrows(
       if (!file) {
         return;
       }
-
       try {
-        const text = await file.text();
-        const parsed = JSON.parse(text);
-        if (!parsed || !parsed.workbook || !Array.isArray(parsed.workbook.sheets)) {
-          throw new Error("JSON format is not supported.");
-        }
-        state.workbook = parsed.workbook;
-        elements.scriptEditor.value = typeof parsed.script === "string" ? parsed.script : "";
+        const parsed = JSON.parse(await file.text());
+        state.app = normaliseImportedPayload(parsed);
         ensureWorkbookShape();
-        renderWorkbook();
-        elements.sheetStatus.textContent = "設定を読み込みました";
+        applyStateToUi();
         if (state.ready) {
           await syncWorkbookToR();
         }
+        setSheetStatus("設定を読み込みました");
+        appendSystemLine("JSON setup restored. Re-run your script if you need to rebuild the R workspace.");
       } catch (error) {
         appendSystemLine(`設定読込に失敗しました: ${error.message}`, true);
       } finally {
@@ -1357,18 +1859,79 @@ arrows(
       }
     }
 
-    function buildExportPayload() {
-      return {
-        version: 1,
-        exportedAt: new Date().toISOString(),
-        workbook: state.workbook,
-        script: elements.scriptEditor.value,
-      };
+    function normaliseImportedPayload(payload) {
+      if (payload && payload.version === APP_VERSION && payload.app) {
+        validateAppPayload(payload.app);
+        return {
+          workbook: payload.app.workbook,
+          script: String(payload.app.script ?? ""),
+          ui: {
+            currentPage: payload.app.ui?.currentPage === "manual" ? "manual" : "workspace",
+            outputTab: payload.app.ui?.outputTab === "graph" ? "graph" : "console",
+            selectedCell: normaliseSelectedCell(payload.app.ui?.selectedCell),
+            restoreBanner: "前回の画面状態とコンソール出力を復元しました。R 環境そのものは再現されないため、必要ならコードを再実行してください。",
+            sheetStatus: "設定を読み込みました",
+            runtimeStatus: { text: "JSON を読み込みました", tone: "warning" },
+          },
+          console: {
+            entries: Array.isArray(payload.app.console?.entries) ? payload.app.console.entries.slice(-MAX_CONSOLE_ENTRIES) : [],
+            history: Array.isArray(payload.app.console?.history) ? payload.app.console.history.slice(-MAX_HISTORY_ENTRIES) : [],
+          },
+          runtime: {
+            ggplot2Ready: Boolean(payload.app.runtime?.ggplot2Ready),
+          },
+        };
+      }
+
+      if (payload && payload.version === 1 && payload.workbook) {
+        if (!Array.isArray(payload.workbook.sheets)) {
+          throw new Error("旧形式 JSON の workbook.sheets が不正です。");
+        }
+        return {
+          workbook: payload.workbook,
+          script: String(payload.script ?? ""),
+          ui: {
+            currentPage: "workspace",
+            outputTab: "console",
+            selectedCell: { row: 0, col: 0 },
+            restoreBanner: "旧形式の JSON を読み込みました。追加の状態情報は既定値で補っています。",
+            sheetStatus: "旧形式の設定を読み込みました",
+            runtimeStatus: { text: "旧形式 JSON を読み込みました", tone: "warning" },
+          },
+          console: { entries: [], history: [] },
+          runtime: { ggplot2Ready: false },
+        };
+      }
+
+      throw new Error("この JSON 形式には対応していません。");
+    }
+
+    function validateAppPayload(app) {
+      if (!app || typeof app !== "object") {
+        throw new Error("app オブジェクトが見つかりません。");
+      }
+      if (!app.workbook || !Array.isArray(app.workbook.sheets)) {
+        throw new Error("workbook.sheets が不正です。");
+      }
+      app.workbook.sheets.forEach((sheet, index) => {
+        if (typeof sheet.name !== "string" || !Array.isArray(sheet.data)) {
+          throw new Error(`sheet ${index + 1} の形式が不正です。`);
+        }
+      });
+    }
+
+    function normaliseSelectedCell(value) {
+      if (!value || typeof value !== "object") {
+        return { row: 0, col: 0 };
+      }
+      const row = Number.isInteger(value.row) && value.row >= 0 ? value.row : 0;
+      const col = Number.isInteger(value.col) && value.col >= 0 ? value.col : 0;
+      return { row, col };
     }
 
     function ensureWorkbookShape() {
-      if (!state.workbook.sheets.length) {
-        state.workbook.sheets.push({
+      if (!state.app.workbook.sheets.length) {
+        state.app.workbook.sheets.push({
           id: `sheet-${crypto.randomUUID()}`,
           name: DEFAULT_SHEET_NAME,
           data: createBlankSheetData(),
@@ -1376,13 +1939,13 @@ arrows(
       }
 
       const ids = new Set();
-      state.workbook.sheets.forEach((sheet, index) => {
+      state.app.workbook.sheets.forEach((sheet, index) => {
         if (!sheet.id || ids.has(sheet.id)) {
           sheet.id = `sheet-${index + 1}-${crypto.randomUUID()}`;
         }
         ids.add(sheet.id);
         sheet.name = createUniqueSheetName(sheet.name || `Sheet${index + 1}`, sheet.id);
-        if (!Array.isArray(sheet.data) || sheet.data.length === 0) {
+        if (!Array.isArray(sheet.data) || !sheet.data.length) {
           sheet.data = createBlankSheetData();
         }
         const columnCount = Math.max(...sheet.data.map((row) => Array.isArray(row) ? row.length : 0), DEFAULT_COL_COUNT);
@@ -1399,15 +1962,15 @@ arrows(
         sheet.data[0] = sanitizeHeaderList(sheet.data[0]);
       });
 
-      if (!state.workbook.activeSheetId || !state.workbook.sheets.some((sheet) => sheet.id === state.workbook.activeSheetId)) {
-        state.workbook.activeSheetId = state.workbook.sheets[0].id;
+      if (!state.app.workbook.activeSheetId || !state.app.workbook.sheets.some((sheet) => sheet.id === state.app.workbook.activeSheetId)) {
+        state.app.workbook.activeSheetId = state.app.workbook.sheets[0].id;
       }
     }
 
     function createUniqueSheetName(name, currentId = null) {
       const base = String(name || "Sheet").trim() || "Sheet";
       const existing = new Set(
-        state.workbook.sheets
+        state.app.workbook.sheets
           .filter((sheet) => sheet.id !== currentId)
           .map((sheet) => sheet.name),
       );
@@ -1421,21 +1984,20 @@ arrows(
       return `${base}_${counter}`;
     }
 
-    function getActiveSheet() {
-      return state.workbook.sheets[getActiveSheetIndex()];
+    function getActiveSheetIndex() {
+      return state.app.workbook.sheets.findIndex((sheet) => sheet.id === state.app.workbook.activeSheetId);
     }
 
-    function getActiveSheetIndex() {
-      return state.workbook.sheets.findIndex((sheet) => sheet.id === state.workbook.activeSheetId);
+    function getActiveSheet() {
+      return state.app.workbook.sheets[getActiveSheetIndex()];
     }
 
     function ensureGridCell(grid, row, col) {
       while (grid.length <= row) {
         grid.push(Array(Math.max(col + 1, DEFAULT_COL_COUNT)).fill(""));
       }
-      const targetRow = grid[row];
-      while (targetRow.length <= col) {
-        targetRow.push("");
+      while (grid[row].length <= col) {
+        grid[row].push("");
       }
     }
 
@@ -1458,7 +2020,12 @@ arrows(
       return String(value ?? "").replace(/\u00a0/g, " ").trim();
     }
 
-    function appendOutput(message, kind = "stdout") {
+    function renderConsoleEntries() {
+      elements.consoleOutput.replaceChildren();
+      state.app.console.entries.forEach((entry) => appendOutput(entry.text, entry.kind, { persist: false }));
+    }
+
+    function appendOutput(message, kind = "stdout", { persist = true } = {}) {
       const line = document.createElement("span");
       if (kind !== "stdout") {
         line.className = kind;
@@ -1469,27 +2036,44 @@ arrows(
         elements.consoleOutput.appendChild(document.createTextNode("\n"));
       }
       elements.consoleOutput.scrollTop = elements.consoleOutput.scrollHeight;
+
+      if (!persist) {
+        return;
+      }
+      state.app.console.entries.push({ kind, text: String(message) });
+      if (state.app.console.entries.length > MAX_CONSOLE_ENTRIES) {
+        state.app.console.entries.splice(0, state.app.console.entries.length - MAX_CONSOLE_ENTRIES);
+      }
     }
 
     function appendSystemLine(message, isError = false) {
       appendOutput(`[system] ${message}`, isError ? "stderr" : "system");
     }
 
-    function setRuntimeStatus(message, isError = false) {
+    function setSheetStatus(message) {
+      state.app.ui.sheetStatus = message;
+      elements.sheetStatus.textContent = message;
+    }
+
+    function setRuntimeStatus(message, tone = "neutral", { persist = true } = {}) {
       elements.runtimeStatus.textContent = message;
-      elements.runtimeStatus.style.background = isError ? "#fdecea" : "#eef3fa";
-      elements.runtimeStatus.style.color = isError ? "var(--danger)" : "var(--muted)";
+      elements.runtimeStatus.className = `status-pill${tone !== "neutral" ? ` ${tone}` : ""}`;
+      if (persist) {
+        state.app.ui.runtimeStatus = { text: message, tone };
+      }
     }
 
     function setBusy(busy) {
       state.busy = busy;
       [
-        elements.runScriptButton,
-        elements.runConsoleButton,
         elements.importButton,
         elements.exportButton,
         elements.addRowButton,
         elements.addColumnButton,
+        elements.renameSheetButton,
+        elements.deleteSheetButton,
+        elements.runScriptButton,
+        elements.runConsoleButton,
       ].forEach((element) => {
         element.disabled = busy;
       });

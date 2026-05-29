@@ -4,10 +4,15 @@
   "description": "Single-file webR data analysis tool for school physics experiments",
   "scripts": {
     "start": "python3 -m http.server 4173",
-    "test": "node scripts/smoke-test.mjs"
+    "test:static": "node scripts/smoke-test.mjs",
+    "test:browser": "playwright test",
+    "test": "npm run test:static && npm run test:browser"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
-  "type": "commonjs"
+  "type": "commonjs",
+  "devDependencies": {
+    "@playwright/test": "^1.54.1"
+  }
 }

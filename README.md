@@ -10,7 +10,8 @@
 - 右上で複数行の R スクリプトを実行
 - 右下で 1 行ずつ REPL 風に実行
 - `plot()` や `ggplot2` の結果をキャンバスに描画し、PNG 保存
-- 表データとスクリプトをまとめて `experiment_setup.json` に保存 / 復元
+- アプリ上部バーからワークスペース / マニュアルを切り替え
+- 表データだけでなく、スクリプト・表示タブ・console 履歴なども含めて `experiment_setup.json` に保存 / 復元
 
 ## ローカル起動
 
@@ -26,7 +27,16 @@ npm start
 npm test
 ```
 
-これは `index.html` に必要な UI・webR 連携コード・公開前提の設定が入っていることを確認する軽いスモークテストです。
+`npm test` は次を実行します。
+
+1. `node scripts/smoke-test.mjs` による静的スモークテスト
+2. Playwright によるブラウザ実行テスト
+
+Playwright 初回実行時に追加セットアップが必要な場合は次を実行してください。
+
+```bash
+npx playwright install chromium
+```
 
 ## GitHub Pages 公開
 
@@ -41,3 +51,4 @@ npm test
 - webR は GitHub Pages と同じ制約で動作確認しやすいよう、`PostMessage` チャネルで起動
 - `get.input()` は JS 側が実行前に全シートを R のグローバル環境へ注入する方式
 - webR は `v0.6.0` に固定して、`latest` 参照による破壊的変更を避けています
+- エクスポート JSON は作業中のプログラミング状態も復元できるよう、UI 状態と console 履歴を含む形式に拡張しています
