@@ -1,0 +1,325 @@
+{
+  "version": 2,
+  "app": {
+    "workbook": {
+      "activeSheetId": "sheet-1",
+      "sheets": [
+        {
+          "id": "sheet-1",
+          "name": "vt_m2_F1",
+          "data": [
+            [
+              "time_s",
+              "v1",
+              "v2",
+              "v3",
+              "v4",
+              "v5",
+              "v6",
+              "v7",
+              "v8",
+              "v9",
+              "v10"
+            ],
+            [
+              "0.0",
+              "-0.015",
+              "-0.021",
+              "0.003",
+              "-0.010",
+              "0.017",
+              "0.032",
+              "-0.011",
+              "0.020",
+              "0.009",
+              "0.014"
+            ],
+            [
+              "0.2",
+              "0.119",
+              "0.113",
+              "0.136",
+              "0.089",
+              "0.127",
+              "0.107",
+              "0.095",
+              "0.046",
+              "0.075",
+              "0.093"
+            ],
+            [
+              "0.4",
+              "0.185",
+              "0.183",
+              "0.195",
+              "0.193",
+              "0.244",
+              "0.170",
+              "0.231",
+              "0.180",
+              "0.247",
+              "0.177"
+            ],
+            [
+              "0.6",
+              "0.263",
+              "0.273",
+              "0.319",
+              "0.308",
+              "0.272",
+              "0.290",
+              "0.285",
+              "0.251",
+              "0.258",
+              "0.295"
+            ],
+            [
+              "0.8",
+              "0.446",
+              "0.400",
+              "0.388",
+              "0.422",
+              "0.401",
+              "0.436",
+              "0.378",
+              "0.396",
+              "0.419",
+              "0.438"
+            ],
+            [
+              "1.0",
+              "0.465",
+              "0.453",
+              "0.465",
+              "0.460",
+              "0.547",
+              "0.520",
+              "0.463",
+              "0.509",
+              "0.523",
+              "0.471"
+            ],
+            [
+              "1.2",
+              "0.623",
+              "0.578",
+              "0.577",
+              "0.616",
+              "0.599",
+              "0.577",
+              "0.584",
+              "0.583",
+              "0.578",
+              "0.589"
+            ],
+            [
+              "1.4",
+              "0.706",
+              "0.705",
+              "0.705",
+              "0.756",
+              "0.717",
+              "0.704",
+              "0.691",
+              "0.720",
+              "0.709",
+              "0.736"
+            ],
+            [
+              "1.6",
+              "0.788",
+              "0.785",
+              "0.811",
+              "0.791",
+              "0.774",
+              "0.802",
+              "0.801",
+              "0.780",
+              "0.775",
+              "0.827"
+            ],
+            [
+              "1.8",
+              "0.890",
+              "0.883",
+              "0.923",
+              "0.864",
+              "0.866",
+              "0.850",
+              "0.902",
+              "0.869",
+              "0.926",
+              "0.859"
+            ],
+            [
+              "2.0",
+              "0.962",
+              "0.972",
+              "0.983",
+              "1.043",
+              "0.993",
+              "0.993",
+              "0.968",
+              "0.945",
+              "1.023",
+              "0.979"
+            ],
+            [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ],
+            [
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
+          ]
+        },
+        {
+          "id": "sheet-2",
+          "name": "vary_force",
+          "data": [
+            [
+              "force_N",
+              "a1",
+              "a2",
+              "a3"
+            ],
+            [
+              "1",
+              "0.578",
+              "0.522",
+              "0.486"
+            ],
+            [
+              "2",
+              "1.034",
+              "0.955",
+              "1.052"
+            ],
+            [
+              "3",
+              "1.525",
+              "1.486",
+              "1.427"
+            ],
+            [
+              "4",
+              "2.010",
+              "2.008",
+              "1.968"
+            ],
+            [
+              "5",
+              "2.503",
+              "2.553",
+              "2.551"
+            ],
+            [
+              "",
+              "",
+              "",
+              ""
+            ],
+            [
+              "",
+              "",
+              "",
+              ""
+            ]
+          ]
+        },
+        {
+          "id": "sheet-3",
+          "name": "vary_mass",
+          "data": [
+            [
+              "mass_kg",
+              "a1",
+              "a2",
+              "a3"
+            ],
+            [
+              "1",
+              "4.035",
+              "4.019",
+              "3.954"
+            ],
+            [
+              "2",
+              "2.009",
+              "2.013",
+              "1.969"
+            ],
+            [
+              "4",
+              "0.941",
+              "0.968",
+              "1.019"
+            ],
+            [
+              "5",
+              "0.805",
+              "0.830",
+              "0.763"
+            ],
+            [
+              "8",
+              "0.538",
+              "0.435",
+              "0.493"
+            ],
+            [
+              "",
+              "",
+              "",
+              ""
+            ],
+            [
+              "",
+              "",
+              "",
+              ""
+            ]
+          ]
+        }
+      ]
+    },
+    "script": "# === ニュートンの運動の第2法則 F = m a を検証する ===\n# このサンプルは「複数シート」「複数データフレーム」「複数グラフ」をまとめて扱う例です。\n# 3 枚のグラフを描くので、グラフタブ上部のサムネイルで切り替えられます。\n\n# --- シートごとに get.input(\"シート名\") で別々の data.frame として受け取る ---\nvt <- get.input(\"vt_m2_F1\")     # m=2kg, F=1N で 10 回測った v-t データ\nfa <- get.input(\"vary_force\")   # 質量を一定にして、力を変えたときの加速度\nma <- get.input(\"vary_mass\")    # 力を一定にして、質量を変えたときの加速度\n\n# 3 枚の図のサイズをそろえる\nset.figure(width = 7.5, height = 4.6, units = \"in\")\n\n# ============ 図1: v-t グラフ(10 回の試行と、その平均) ============\ntrial_cols <- paste0(\"v\", 1:10)\nvt$v_mean <- rowMeans(vt[trial_cols])   # 各時刻の平均速度\n\nset.paper_style(mar = c(4.2, 4.6, 2.6, 1.0))\n# matplot は複数の列をまとめて重ね描きできる。10 回の試行を薄い線で描く\nmatplot(vt$time_s, vt[trial_cols], type = \"l\", lty = 1, lwd = 1, col = \"#c7d2e8\",\n  xlab = \"Time / s\", ylab = \"Velocity / m s^-1\",\n  main = \"v-t : m = 2 kg, F = 1 N (10 trials)\")\nadd.paper_guides()\npoints(vt$time_s, vt$v_mean, pch = 19, col = \"firebrick\")   # 平均を強調\n\nfit_vt <- lm(v_mean ~ time_s, data = vt)   # 平均の傾き = 加速度 a\nabline(fit_vt, col = \"#374151\", lwd = 2)\n# 近似直線の式(傾き = 加速度)をグラフの中に書き込む\ntext(min(vt$time_s), max(vt$v_mean),\n  labels = sprintf(\"a = slope = %.2f m/s^2\", coef(fit_vt)[2]),\n  pos = 4, col = \"#374151\")\n\n# ============ 図2: 力 F と加速度 a の関係(質量は一定) ============\nfa$a_mean <- rowMeans(fa[c(\"a1\", \"a2\", \"a3\")])\nfa$a_sd   <- apply(fa[c(\"a1\", \"a2\", \"a3\")], 1, sd)   # 3 回のばらつき = 誤差棒\n\nset.paper_style(mar = c(4.2, 4.6, 2.6, 1.0))\nplot(fa$force_N, fa$a_mean, pch = 19, col = \"firebrick\", cex = 1.2,\n  ylim = c(0, max(fa$a_mean + fa$a_sd)),\n  xlab = \"Force / N\", ylab = \"Acceleration / m s^-2\",\n  main = \"a vs F  (mass fixed)\")\nadd.paper_guides()\narrows(fa$force_N, fa$a_mean - fa$a_sd, fa$force_N, fa$a_mean + fa$a_sd,\n  angle = 90, code = 3, length = 0.04)\nfit_fa <- lm(a_mean ~ force_N, data = fa)\nabline(fit_fa, col = \"#374151\", lwd = 2)\n# 傾きは 1/m に等しいはず。式と、そこから求めた質量を書き込む\ntext(min(fa$force_N), max(fa$a_mean + fa$a_sd),\n  labels = sprintf(\"a = %.2f * F   (1/m -> m = %.2f kg)\", coef(fit_fa)[2], 1 / coef(fit_fa)[2]),\n  pos = 4, col = \"#374151\")\n\n# ============ 図3: 質量 m と加速度 a の関係(力は一定) ============\nma$a_mean <- rowMeans(ma[c(\"a1\", \"a2\", \"a3\")])\nma$a_sd   <- apply(ma[c(\"a1\", \"a2\", \"a3\")], 1, sd)\nma$inv_mass <- 1 / ma$mass_kg    # a = F * (1/m) なので、1/m に対して直線になる\n\nset.paper_style(mar = c(4.2, 4.6, 2.6, 1.0))\nplot(ma$inv_mass, ma$a_mean, pch = 17, col = \"#2563eb\", cex = 1.2,\n  ylim = c(0, max(ma$a_mean + ma$a_sd)),\n  xlab = \"1 / mass  / kg^-1\", ylab = \"Acceleration / m s^-2\",\n  main = \"a vs 1/m  (force fixed)\")\nadd.paper_guides()\narrows(ma$inv_mass, ma$a_mean - ma$a_sd, ma$inv_mass, ma$a_mean + ma$a_sd,\n  angle = 90, code = 3, length = 0.04)\nfit_ma <- lm(a_mean ~ inv_mass, data = ma)\nabline(fit_ma, col = \"#374151\", lwd = 2)\n# この直線の傾きは、はたらいた力 F に等しいはず\ntext(min(ma$inv_mass), max(ma$a_mean + ma$a_sd),\n  labels = sprintf(\"a = %.2f * (1/m)   (slope -> F = %.2f N)\", coef(fit_ma)[2], coef(fit_ma)[2]),\n  pos = 4, col = \"#374151\")",
+    "ui": {
+      "currentPage": "workspace",
+      "outputTab": "graph",
+      "selectedCell": {
+        "row": 1,
+        "col": 0
+      },
+      "restoreBanner": "",
+      "sheetStatus": "ニュートン第2法則サンプル",
+      "runtimeStatus": {
+        "text": "サンプルを読み込みました",
+        "tone": "warning"
+      }
+    },
+    "console": {
+      "entries": [],
+      "history": []
+    }
+  }
+}

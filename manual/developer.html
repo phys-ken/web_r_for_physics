@@ -175,6 +175,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#r-実行フロー" id="toc-r-実行フロー" class="nav-link" data-scroll-target="#r-実行フロー">R 実行フロー</a></li>
   <li><a href="#get.input-と注入されるヘルパー" id="toc-get.input-と注入されるヘルパー" class="nav-link" data-scroll-target="#get.input-と注入されるヘルパー"><code>get.input()</code> と注入されるヘルパー</a></li>
   <li><a href="#図サイズ制御とレンダリング" id="toc-図サイズ制御とレンダリング" class="nav-link" data-scroll-target="#図サイズ制御とレンダリング">図サイズ制御とレンダリング</a></li>
+  <li><a href="#複数画像ギャラリー" id="toc-複数画像ギャラリー" class="nav-link" data-scroll-target="#複数画像ギャラリー">複数画像ギャラリー</a></li>
   <li><a href="#json-保存復元フォーマット" id="toc-json-保存復元フォーマット" class="nav-link" data-scroll-target="#json-保存復元フォーマット">JSON 保存・復元フォーマット</a></li>
   <li><a href="#サンプル" id="toc-サンプル" class="nav-link" data-scroll-target="#サンプル">サンプル</a></li>
   <li><a href="#マニュアル" id="toc-マニュアル" class="nav-link" data-scroll-target="#マニュアル">マニュアル</a></li>
@@ -257,8 +258,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <ul>
 <li><code>captureR</code> の <code>captureGraphics: {width, height}</code> は <strong>デバイス生成時にサイズを固定</strong>する。実測では出力ビットマップは指定 px の 2 倍解像度、アスペクト比は指定どおり。<code>captureGraphics: true</code> は常に 504×504、コード途中の <code>options(device)</code> 変更は無視される。</li>
 <li>そのためサイズは <strong>キャプチャ前に JS が知る必要がある</strong>。<code>resolveCaptureSize()</code> はコードに <code>set.figure</code> / <code>reset.figure</code> が含まれるときだけ、スクリプトを <strong>サンドボックス事前評価</strong>（<code>sink</code> で出力抑制・<code>pdf(NULL)</code>・<code>local = TRUE</code>）してから <code>.webr_fig_*_px</code> を読み、<code>captureGraphics</code> のサイズに使う。未使用時はパネル実寸（<code>state.plotSize</code>）。</li>
-<li><code>renderCapturedImage()</code> はバッファをデバイスのネイティブ解像度・アスペクトのまま保持し、<code>renderGraphPreviewFromBuffer()</code> がパネルへ <strong>contain（レターボックス）</strong> で描画する。PNG 保存（<code>downloadGraph</code>）と全体表示（<code>openGraphViewer</code>）はこのバッファを使うため、指定した縦横比・解像度がそのまま出力される。</li>
 <li>subplot は <code>par(mfrow=...)</code>、データ単位 1:1 は <code>asp = 1</code> で、いずれも標準 base R のまま機能する。</li>
+</ul>
+</section>
+<section id="複数画像ギャラリー" class="level2">
+<h2 class="anchored" data-anchor-id="複数画像ギャラリー">複数画像ギャラリー</h2>
+<ul>
+<li>1 回の実行で生成された <strong>全プロットページ</strong> を扱う。<code>executeRSource</code> は <code>capture.images</code> 全体を <code>renderCapturedImages()</code> に渡す（以前は最後の 1 枚のみ）。</li>
+<li>各画像はネイティブ解像度の <code>&lt;canvas&gt;</code> として <code>state.graphImages[]</code> に保持し、<code>state.graphSelectedIndex</code> が選択中を指す。<code>selectedGraphCanvas()</code> がその 1 枚を返す。</li>
+<li><code>renderGraphPreview()</code> が選択画像をパネルへ <strong>contain（レターボックス）</strong> 描画。画像が 2 枚以上のとき <code>renderGraphThumbs()</code> が <code>#graphThumbs</code> にサムネイル（小 <code>&lt;canvas&gt;</code> + 「図 N」）を並べ、クリックで <code>selectGraphImage()</code>。</li>
+<li>PNG 保存（<code>downloadGraph</code>、複数時はファイル名に <code>-N</code>）と全体表示（<code>openGraphViewer</code>、メタに「図 N / 総数」）はいずれも選択中の画像を対象とする。画像はエクスポート JSON には含めない（揮発的）。</li>
 </ul>
 </section>
 <section id="json-保存復元フォーマット" class="level2">

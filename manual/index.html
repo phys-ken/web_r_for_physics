@@ -271,8 +271,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p><code>df$length_m</code> のように <strong><code>データフレーム$列名</code></strong> と書くと、その列（縦 1 本）だけを取り出せます。あとでグラフの横軸・縦軸に使います。</p>
 </div>
 </div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>シートが複数あるとき
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>左下のタブでシートを増やせます。シートごとに別の <code>data.frame</code> として受け取るには、<strong>シート名</strong>を渡します。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>vt <span class="ot">&lt;-</span> <span class="fu">get.input</span>(<span class="st">"vt_m2_F1"</span>)     <span class="co"># 名前で指定</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>fa <span class="ot">&lt;-</span> <span class="fu">get.input</span>(<span class="st">"vary_force"</span>)   <span class="co"># 別のシートを別の変数へ</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>ma <span class="ot">&lt;-</span> <span class="fu">get.input</span>(<span class="dv">3</span>)              <span class="co"># 1 始まりの番号でも可</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<p>こうして条件ごとのデータを別々の <code>data.frame</code> に分けておくと、あとでまとめて比較できます（「ニュートンの第2法則」サンプルがこの形です）。</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-4-contents" aria-controls="callout-4" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -281,7 +298,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div id="callout-4" class="callout-4-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>「単振り子」サンプルを開き、<code>df &lt;- get.input()</code> のあとに <code>head(df)</code> と <code>summary(df)</code> を実行して、表とまったく同じ数字が出ることを確かめましょう。</p>
 </div>
@@ -291,23 +308,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="まずグラフを-1-枚描く-plot" class="level2">
 <h2 class="anchored" data-anchor-id="まずグラフを-1-枚描く-plot">3. まずグラフを 1 枚描く — <code>plot()</code></h2>
 <p>いちばん基本の作図は <code>plot(横軸, 縦軸)</code> です。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">get.input</span>()</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>length_m, df<span class="sc">$</span>period_1_s)   <span class="co"># 横軸 = 長さ, 縦軸 = 1回目の周期</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">get.input</span>()</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>length_m, df<span class="sc">$</span>period_1_s)   <span class="co"># 横軸 = 長さ, 縦軸 = 1回目の周期</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <p>これだけで散布図が <strong>グラフ</strong> タブに出ます。<code>plot()</code> に渡しているのは「横軸の列」と「縦軸の列」の 2 本です。</p>
 </section>
 <section id="グラフの見た目を整える" class="level2">
 <h2 class="anchored" data-anchor-id="グラフの見た目を整える">4. グラフの見た目を整える</h2>
 <p><code>plot()</code> には、見た目を決めるオプションを足せます。よく使うものだけ覚えれば十分です。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.paper_style</span>()                  <span class="co"># 余白や軸を、レポート向けに整える(このアプリ独自)</span></span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>length_m, df<span class="sc">$</span>period_1_s,</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch =</span> <span class="dv">19</span>,                        <span class="co"># 点の形(19 = 塗りつぶしの丸)</span></span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="st">"firebrick"</span>,               <span class="co"># 点の色</span></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex =</span> <span class="fl">1.2</span>,                       <span class="co"># 点の大きさ</span></span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Length / m"</span>,             <span class="co"># 横軸ラベル(単位もここに書く)</span></span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Period / s"</span>,             <span class="co"># 縦軸ラベル</span></span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">"Pendulum"</span>                <span class="co"># グラフのタイトル</span></span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">add.paper_guides</span>()                 <span class="co"># 補助のグリッド線を足す(このアプリ独自)</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.paper_style</span>()                  <span class="co"># 余白や軸を、レポート向けに整える(このアプリ独自)</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>length_m, df<span class="sc">$</span>period_1_s,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch =</span> <span class="dv">19</span>,                        <span class="co"># 点の形(19 = 塗りつぶしの丸)</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="st">"firebrick"</span>,               <span class="co"># 点の色</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex =</span> <span class="fl">1.2</span>,                       <span class="co"># 点の大きさ</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Length / m"</span>,             <span class="co"># 横軸ラベル(単位もここに書く)</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Period / s"</span>,             <span class="co"># 縦軸ラベル</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">"Pendulum"</span>                <span class="co"># グラフのタイトル</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">add.paper_guides</span>()                 <span class="co"># 補助のグリッド線を足す(このアプリ独自)</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -326,11 +343,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="新しい列を計算して足す-平均など" class="level2">
 <h2 class="anchored" data-anchor-id="新しい列を計算して足す-平均など">5. 新しい列を計算して足す — 平均など</h2>
 <p>繰り返し測定したら、<strong>平均</strong> を求めて 1 本の列として足すのが基本です。「<code>データフレーム$新しい列名 &lt;- 計算</code> 」で列を追加できます。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3回(または5回)測った周期の列をまとめて指定</span></span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>period_cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"period_1_s"</span>, <span class="st">"period_2_s"</span>, <span class="st">"period_3_s"</span>)</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 行ごとの平均を、新しい列 period_mean_s として足す</span></span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>period_mean_s <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(df[period_cols])</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3回(または5回)測った周期の列をまとめて指定</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>period_cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"period_1_s"</span>, <span class="st">"period_2_s"</span>, <span class="st">"period_3_s"</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 行ごとの平均を、新しい列 period_mean_s として足す</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>period_mean_s <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(df[period_cols])</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li><code>c(...)</code> は <strong>値をいくつか束ねる</strong>関数（Python のリストに近い）。ここでは列名を束ねています。</li>
 <li><code>rowMeans()</code> は <strong>行ごと（測定ごと）の平均</strong>を計算します。</li>
@@ -340,11 +357,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h2 class="anchored" data-anchor-id="欠損値-na-のあつかい">6. 欠損値 (NA) のあつかい</h2>
 <p>実験では「測り忘れ」「失敗して空欄」がよくあります。R では空欄は <strong><code>NA</code>（欠損値）</strong> として扱われます。<code>NA</code> をそのまま計算すると、結果も <code>NA</code> になってしまいます。</p>
 <p>対処は 2 つ覚えれば十分です。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (A) 計算するとき、NA を無視する: na.rm = TRUE を付ける</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>period_mean_s <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(df[period_cols], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># (B) 使えない行ごと取り除く: subset() で条件に合う行だけ残す</span></span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">subset</span>(df, <span class="sc">!</span><span class="fu">is.na</span>(length_m))   <span class="co"># length_m が NA でない行だけ残す</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (A) 計算するとき、NA を無視する: na.rm = TRUE を付ける</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>period_mean_s <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(df[period_cols], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="co"># (B) 使えない行ごと取り除く: subset() で条件に合う行だけ残す</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">subset</span>(df, <span class="sc">!</span><span class="fu">is.na</span>(length_m))   <span class="co"># length_m が NA でない行だけ残す</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li><code>is.na(x)</code> は「x が NA かどうか」を調べます。<code>!</code> は「ではない」の意味なので、<code>!is.na(length_m)</code> は「length_m が NA でない」。</li>
 <li>横軸に使う列が欠けている行は計算できないので、(B) で取り除きます。測定回数の一部だけ欠けているなら、(A) で「ある分だけで平均」します。</li>
@@ -353,18 +370,18 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="ばらつきとエラーバー" class="level2">
 <h2 class="anchored" data-anchor-id="ばらつきとエラーバー">7. ばらつきとエラーバー</h2>
 <p>平均だけでなく、<strong>どれくらいばらついたか</strong>も大事です。ばらつきは <strong>標準偏差 (sd)</strong> で表し、グラフでは <strong>誤差棒（エラーバー）</strong> として描きます。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 行ごとの標準偏差を新しい列にする(これが誤差棒の長さになる)</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>period_sd_s <span class="ot">&lt;-</span> <span class="fu">apply</span>(df[period_cols], <span class="dv">1</span>, sd, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 行ごとの標準偏差を新しい列にする(これが誤差棒の長さになる)</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>period_sd_s <span class="ot">&lt;-</span> <span class="fu">apply</span>(df[period_cols], <span class="dv">1</span>, sd, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>apply(表, 1, sd)</code> は「<strong>各行 (1) に対して sd を計算する</strong>」という意味です（<code>2</code> にすると列ごと）。</p>
 <p>誤差棒は <code>arrows()</code> で、平均から上下に <code>sd</code> ぶん伸ばして描きます。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>length_m, df<span class="sc">$</span>period_mean_s, <span class="at">pch =</span> <span class="dv">19</span>,</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Length / m"</span>, <span class="at">ylab =</span> <span class="st">"Period / s"</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(</span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>length_m, df<span class="sc">$</span>period_mean_s <span class="sc">-</span> df<span class="sc">$</span>period_sd_s,   <span class="co"># 下端 = 平均 - sd</span></span>
-<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>length_m, df<span class="sc">$</span>period_mean_s <span class="sc">+</span> df<span class="sc">$</span>period_sd_s,   <span class="co"># 上端 = 平均 + sd</span></span>
-<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">code =</span> <span class="dv">3</span>, <span class="at">length =</span> <span class="fl">0.04</span>               <span class="co"># 両端に短い横棒(矢じり)を付ける</span></span>
-<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>length_m, df<span class="sc">$</span>period_mean_s, <span class="at">pch =</span> <span class="dv">19</span>,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Length / m"</span>, <span class="at">ylab =</span> <span class="st">"Period / s"</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>length_m, df<span class="sc">$</span>period_mean_s <span class="sc">-</span> df<span class="sc">$</span>period_sd_s,   <span class="co"># 下端 = 平均 - sd</span></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>length_m, df<span class="sc">$</span>period_mean_s <span class="sc">+</span> df<span class="sc">$</span>period_sd_s,   <span class="co"># 上端 = 平均 + sd</span></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">code =</span> <span class="dv">3</span>, <span class="at">length =</span> <span class="fl">0.04</span>               <span class="co"># 両端に短い横棒(矢じり)を付ける</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
@@ -382,11 +399,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="直線曲線をあてはめる回帰" class="level2">
 <h2 class="anchored" data-anchor-id="直線曲線をあてはめる回帰">8. 直線・曲線をあてはめる（回帰）</h2>
 <p>データに直線をあてはめるには <code>lm()</code>（線形モデル）を使います。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># period_mean_s を length_m で説明する直線をあてはめる</span></span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(period_mean_s <span class="sc">~</span> length_m, <span class="at">data =</span> df)</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(fit, <span class="at">col =</span> <span class="st">"#374151"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)   <span class="co"># あてはめた直線をグラフに重ねる</span></span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)                            <span class="co"># 傾き・切片・あてはまり具合をコンソールで見る</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># period_mean_s を length_m で説明する直線をあてはめる</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(period_mean_s <span class="sc">~</span> length_m, <span class="at">data =</span> df)</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(fit, <span class="at">col =</span> <span class="st">"#374151"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)   <span class="co"># あてはめた直線をグラフに重ねる</span></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)                            <span class="co"># 傾き・切片・あてはまり具合をコンソールで見る</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
 <li><code>y ~ x</code> は「y を x で説明する」という R の書き方です。</li>
 <li>曲線（例：2 次関数）をあてはめたいときは <code>lm(y ~ x + I(x^2), data = df)</code> のようにします。曲線は <code>abline</code> では描けないので、<code>predict()</code> で計算した値を <code>lines()</code> でつなぎます（→ スニペット集を参照）。</li>
@@ -435,15 +452,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="縦横比をそろえるデータの単位を-11-に" class="level3">
 <h3 class="anchored" data-anchor-id="縦横比をそろえるデータの単位を-11-に">縦横比をそろえる（データの単位を 1:1 に）</h3>
 <p><code>plot()</code> に <code>asp = 1</code> を付けると、<strong>x と y の 1 目盛りが同じ長さ</strong>になります。位置(x, y)のように両軸が同じ単位のときは、これで本当の形が崩れずに見えます。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>x_m, df<span class="sc">$</span>y_m, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">asp =</span> <span class="dv">1</span>,</span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"x / m"</span>, <span class="at">ylab =</span> <span class="st">"y / m"</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>x_m, df<span class="sc">$</span>y_m, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">asp =</span> <span class="dv">1</span>,</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"x / m"</span>, <span class="at">ylab =</span> <span class="st">"y / m"</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 </section>
 <section id="図全体のサイズ縦横比を決める-set.figure" class="level3">
 <h3 class="anchored" data-anchor-id="図全体のサイズ縦横比を決める-set.figure">図全体のサイズ・縦横比を決める — <code>set.figure()</code></h3>
 <p><code>set.figure(width, height)</code> で、<strong>図そのものの大きさと縦横比</strong>を指定できます。単位は <code>units = "in"</code>（インチ・既定）/ <code>"cm"</code> / <code>"px"</code>。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.figure</span>(<span class="at">width =</span> <span class="fl">4.5</span>, <span class="at">height =</span> <span class="fl">4.5</span>, <span class="at">units =</span> <span class="st">"in"</span>)  <span class="co"># 正方形の図にする</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>x_m, df<span class="sc">$</span>y_m, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">asp =</span> <span class="dv">1</span>,</span>
-<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"x / m"</span>, <span class="at">ylab =</span> <span class="st">"y / m"</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.figure</span>(<span class="at">width =</span> <span class="fl">4.5</span>, <span class="at">height =</span> <span class="fl">4.5</span>, <span class="at">units =</span> <span class="st">"in"</span>)  <span class="co"># 正方形の図にする</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>x_m, df<span class="sc">$</span>y_m, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">asp =</span> <span class="dv">1</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"x / m"</span>, <span class="at">ylab =</span> <span class="st">"y / m"</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <p><code>set.figure()</code> を呼ばなければ、これまで通り描画エリアに自動でフィットします。元に戻したいときは <code>reset.figure()</code> を実行します。</p>
 <div class="callout callout-style-default callout-note callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -462,12 +479,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="画面を分割して並べるsubplot-parmfrow" class="level3">
 <h3 class="anchored" data-anchor-id="画面を分割して並べるsubplot-parmfrow">画面を分割して並べる（subplot）— <code>par(mfrow)</code></h3>
 <p><code>par(mfrow = c(行, 列))</code> を実行してから複数の <code>plot()</code> を呼ぶと、<strong>1 枚の図に複数のグラフを並べて</strong>描けます。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.figure</span>(<span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="fl">3.5</span>, <span class="at">units =</span> <span class="st">"in"</span>)  <span class="co"># 横長にする</span></span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))                               <span class="co"># 1 行 2 列に分割</span></span>
-<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>x_m, df<span class="sc">$</span>y_m, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">main =</span> <span class="st">"x-y"</span>)       <span class="co"># 左</span></span>
-<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>t_s, df<span class="sc">$</span>y_m, <span class="at">type =</span> <span class="st">"o"</span>, <span class="at">main =</span> <span class="st">"y-t"</span>)     <span class="co"># 右</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.figure</span>(<span class="at">width =</span> <span class="dv">8</span>, <span class="at">height =</span> <span class="fl">3.5</span>, <span class="at">units =</span> <span class="st">"in"</span>)  <span class="co"># 横長にする</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">par</span>(<span class="at">mfrow =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>))                               <span class="co"># 1 行 2 列に分割</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>x_m, df<span class="sc">$</span>y_m, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">main =</span> <span class="st">"x-y"</span>)       <span class="co"># 左</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>t_s, df<span class="sc">$</span>y_m, <span class="at">type =</span> <span class="st">"o"</span>, <span class="at">main =</span> <span class="st">"y-t"</span>)     <span class="co"># 右</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>複数のグラフを別々に描く（図の切り替え）
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>par(mfrow)</code> を使わず、<code>plot()</code> を続けて何回か呼ぶと、<strong>それぞれが別の図</strong>になります。図が 2 枚以上あるときは、グラフタブの上に<strong>サムネイル</strong>が並び、クリックで切り替えられます。「全体表示」や「グラフをダウンロード」は、いま選んでいる図に対して働きます。</p>
+<p>「ニュートンの第2法則」サンプルは、v-t・a-F・a-(1/m) の 3 枚を切り替えて見られます。</p>
+</div>
+</div>
 <div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-7-contents" aria-controls="callout-7" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -476,7 +507,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-7" class="callout-7-contents callout-collapse collapse">
+<div id="callout-9" class="callout-9-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>「作図サイズとレイアウト」サンプルを開いて実行し、<code>set.figure()</code> の数値や <code>par(mfrow)</code> の行・列を変えて、図の形がどう変わるか試してみましょう。</p>
 <p>PNG 保存や「全体表示」も、指定した縦横比のまま書き出されます。</p>

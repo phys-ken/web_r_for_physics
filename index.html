@@ -607,6 +607,48 @@
       font-size: 0.8rem;
     }
 
+    .graph-thumbs {
+      flex-shrink: 0;
+      display: flex;
+      gap: 6px;
+      padding: 0 0 6px;
+      overflow-x: auto;
+    }
+
+    .graph-thumb {
+      flex-shrink: 0;
+      display: block;
+      padding: 2px 2px 1px;
+      border: 1px solid var(--border);
+      border-radius: 3px;
+      background: var(--panel);
+      cursor: pointer;
+    }
+
+    .graph-thumb.active {
+      border-color: var(--accent);
+      box-shadow: inset 0 0 0 1px var(--accent);
+    }
+
+    .graph-thumb canvas {
+      display: block;
+      width: 92px;
+      height: 58px;
+      background: #fff;
+    }
+
+    .graph-thumb .graph-thumb-label {
+      display: block;
+      text-align: center;
+      font-size: 0.66rem;
+      line-height: 1.3;
+      color: var(--muted);
+    }
+
+    .graph-thumb.active .graph-thumb-label {
+      color: var(--accent);
+    }
+
     .graph-shell {
       position: relative;
       flex: 1;
@@ -1071,6 +1113,7 @@
                     </div>
                   </div>
                   <div class="output-panel" data-panel="graph">
+                    <div id="graphThumbs" class="graph-thumbs hidden" role="tablist" aria-label="グラフ一覧"></div>
                     <div class="graph-shell">
                       <canvas id="graphCanvas" class="graph-canvas"></canvas>
                       <div id="graphEmptyState" class="graph-empty">
@@ -1157,6 +1200,8 @@
             <li>左側シートは TSV をそのまま複数セルへ貼り付けできます。</li>
             <li><code>ggplot2</code> を使うときは初回のみ読み込みが少し長くなることがあります。</li>
             <li>細かい作図調整は、R コード側で <code>par()</code> や <code>set.paper_style()</code> を使って設定してください。</li>
+            <li>図の縦横比やサイズは <code>set.figure(width, height)</code> で指定できます（未指定なら描画エリアに自動フィット、<code>reset.figure()</code> で戻す）。</li>
+            <li><code>plot()</code> を複数回呼ぶと図が複数になり、グラフタブ上部のサムネイルで切り替えられます。「全体表示」「ダウンロード」は選択中の図に対して働きます。</li>
           </ul>
 
           <h2>リンク・ライセンス</h2>
@@ -1286,6 +1331,8 @@
       ready: false,
       busy: false,
       graphHasImage: false,
+      graphImages: [],          // native-resolution canvases, one per captured plot page
+      graphSelectedIndex: -1,   // which image is currently previewed / exported
       plotSize: { width: 504, height: 360 },
       historyIndex: 0,
       sampleCatalog: {
@@ -1295,8 +1342,6 @@
         items: [],
       },
     };
-    const graphBufferCanvas = document.createElement("canvas");
-    const graphBufferContext = graphBufferCanvas.getContext("2d");
 
     const elements = {
       workspaceNavButton: document.getElementById("workspaceNavButton"),
@@ -1339,6 +1384,7 @@
       dataframeEmptyMessage: document.getElementById("dataframeEmptyMessage"),
       dataframeTableWrap: document.getElementById("dataframeTableWrap"),
       downloadGraphButton: document.getElementById("downloadGraphButton"),
+      graphThumbs: document.getElementById("graphThumbs"),
       graphShell: document.querySelector(".graph-shell"),
       openGraphViewerButton: document.getElementById("openGraphViewerButton"),
       graphViewerModal: document.getElementById("graphViewerModal"),
@@ -1418,6 +1464,13 @@
         void selectDataFrame(button.dataset.dataframeName);
       });
       elements.downloadGraphButton.addEventListener("click", downloadGraph);
+      elements.graphThumbs.addEventListener("click", (event) => {
+        const thumb = event.target.closest("[data-graph-index]");
+        if (!thumb) {
+          return;
+        }
+        selectGraphImage(Number(thumb.dataset.graphIndex));
+      });
       elements.importModal.addEventListener("click", (event) => {
         if (event.target === elements.importModal) {
           closeImportModal();
@@ -1800,7 +1853,7 @@
           .join("");
 
         if (capture.images.length > 0) {
-          renderCapturedImage(capture.images[capture.images.length - 1]);
+          renderCapturedImages(capture.images);
         }
 
         return { output, error };
@@ -2259,13 +2312,17 @@
       elements.graphCanvas.style.height = "100%";
       elements.graphShell.style.background = "#fff";
 
-      // The buffer holds the figure at its native aspect ratio, so a resize
-      // just re-fits it (letterbox) without needing a re-run.
-      if (state.graphHasImage && graphBufferCanvas.width && graphBufferCanvas.height) {
-        renderGraphPreviewFromBuffer();
+      // Images keep their native aspect ratio, so a resize just re-fits the
+      // selected one (letterbox) without needing a re-run.
+      if (selectedGraphCanvas()) {
+        renderGraphPreview();
       } else {
         graphContext.clearRect(0, 0, elements.graphCanvas.width, elements.graphCanvas.height);
       }
+    }
+
+    function selectedGraphCanvas() {
+      return state.graphImages[state.graphSelectedIndex] ?? null;
     }
 
     function setGraphEmptyState(title, message) {
@@ -2273,8 +2330,9 @@
       elements.graphEmptyMessage.textContent = message;
     }
 
-    function renderGraphPreviewFromBuffer() {
-      if (!graphBufferCanvas.width || !graphBufferCanvas.height) {
+    function renderGraphPreview() {
+      const source = selectedGraphCanvas();
+      if (!source) {
         return;
       }
       const canvasWidth = elements.graphCanvas.width;
@@ -2284,32 +2342,86 @@
       graphContext.fillRect(0, 0, canvasWidth, canvasHeight);
       // Fit the figure into the panel while preserving its true aspect ratio
       // (letterbox) so a square or tall plot is not stretched to the panel.
-      const scale = Math.min(
-        canvasWidth / graphBufferCanvas.width,
-        canvasHeight / graphBufferCanvas.height,
-      );
-      const drawWidth = graphBufferCanvas.width * scale;
-      const drawHeight = graphBufferCanvas.height * scale;
+      const scale = Math.min(canvasWidth / source.width, canvasHeight / source.height);
+      const drawWidth = source.width * scale;
+      const drawHeight = source.height * scale;
       const offsetX = (canvasWidth - drawWidth) / 2;
       const offsetY = (canvasHeight - drawHeight) / 2;
       graphContext.imageSmoothingQuality = "high";
       graphContext.drawImage(
-        graphBufferCanvas,
-        0, 0, graphBufferCanvas.width, graphBufferCanvas.height,
+        source,
+        0, 0, source.width, source.height,
         offsetX, offsetY, drawWidth, drawHeight,
       );
-      state.graphHasImage = true;
       elements.graphEmptyState.classList.add("hidden");
     }
 
-    function renderCapturedImage(image) {
-      // Keep the buffer at the device's native resolution and aspect ratio so
-      // PNG export and the full-screen viewer stay crisp and undistorted.
-      graphBufferCanvas.width = image.width;
-      graphBufferCanvas.height = image.height;
-      graphBufferContext.clearRect(0, 0, graphBufferCanvas.width, graphBufferCanvas.height);
-      graphBufferContext.drawImage(image, 0, 0);
-      renderGraphPreviewFromBuffer();
+    function renderCapturedImages(images) {
+      // Each captured plot page becomes its own native-resolution canvas so PNG
+      // export and the full-screen viewer stay crisp and undistorted, and so the
+      // run's figures can be switched between via the thumbnail strip.
+      state.graphImages = images.map((image) => {
+        const canvas = document.createElement("canvas");
+        canvas.width = image.width;
+        canvas.height = image.height;
+        canvas.getContext("2d").drawImage(image, 0, 0);
+        return canvas;
+      });
+      state.graphHasImage = state.graphImages.length > 0;
+      state.graphSelectedIndex = state.graphImages.length > 0 ? 0 : -1;
+      renderGraphThumbs();
+      renderGraphPreview();
+    }
+
+    function selectGraphImage(index) {
+      if (index < 0 || index >= state.graphImages.length) {
+        return;
+      }
+      state.graphSelectedIndex = index;
+      renderGraphThumbs();
+      renderGraphPreview();
+    }
+
+    function renderGraphThumbs() {
+      const thumbs = elements.graphThumbs;
+      thumbs.replaceChildren();
+      // A single figure does not need a switcher.
+      if (state.graphImages.length <= 1) {
+        thumbs.classList.add("hidden");
+        return;
+      }
+      thumbs.classList.remove("hidden");
+      state.graphImages.forEach((source, index) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "graph-thumb" + (index === state.graphSelectedIndex ? " active" : "");
+        button.dataset.graphIndex = String(index);
+        button.setAttribute("role", "tab");
+        button.setAttribute("aria-selected", index === state.graphSelectedIndex ? "true" : "false");
+
+        const preview = document.createElement("canvas");
+        preview.width = 92;
+        preview.height = 58;
+        const ctx = preview.getContext("2d");
+        ctx.fillStyle = "#fff";
+        ctx.fillRect(0, 0, preview.width, preview.height);
+        const scale = Math.min(preview.width / source.width, preview.height / source.height);
+        const drawWidth = source.width * scale;
+        const drawHeight = source.height * scale;
+        ctx.imageSmoothingQuality = "high";
+        ctx.drawImage(
+          source,
+          0, 0, source.width, source.height,
+          (preview.width - drawWidth) / 2, (preview.height - drawHeight) / 2, drawWidth, drawHeight,
+        );
+
+        const label = document.createElement("span");
+        label.className = "graph-thumb-label";
+        label.textContent = `図 ${index + 1}`;
+
+        button.append(preview, label);
+        thumbs.appendChild(button);
+      });
     }
 
     function renderDataFramePanel() {
@@ -2443,24 +2555,30 @@
     }
 
     function downloadGraph() {
-      if (!state.graphHasImage) {
+      const source = selectedGraphCanvas();
+      if (!source) {
         appendSystemLine("まだグラフがありません。plot() か ggplot2 を実行してください。", true);
         return;
       }
+      const suffix = state.graphImages.length > 1 ? `-${state.graphSelectedIndex + 1}` : "";
       const link = document.createElement("a");
-      link.href = graphBufferCanvas.toDataURL("image/png");
-      link.download = "physics-plot.png";
+      link.href = source.toDataURL("image/png");
+      link.download = `physics-plot${suffix}.png`;
       link.click();
     }
 
     function openGraphViewer() {
-      if (!state.graphHasImage || !graphBufferCanvas.width) {
+      const source = selectedGraphCanvas();
+      if (!source) {
         appendSystemLine("まだ表示できるグラフがありません。先にコードを実行してください。", true);
         return;
       }
-      elements.graphViewerImage.src = graphBufferCanvas.toDataURL("image/png");
-      elements.graphViewerImage.style.width = `${graphBufferCanvas.width}px`;
-      elements.graphViewerMeta.textContent = `最後に描いたグラフを等倍表示中 (${graphBufferCanvas.width} × ${graphBufferCanvas.height})`;
+      const position = state.graphImages.length > 1
+        ? `図 ${state.graphSelectedIndex + 1} / ${state.graphImages.length} ・ `
+        : "";
+      elements.graphViewerImage.src = source.toDataURL("image/png");
+      elements.graphViewerImage.style.width = `${source.width}px`;
+      elements.graphViewerMeta.textContent = `${position}等倍表示中 (${source.width} × ${source.height})`;
       elements.graphViewerModal.classList.remove("hidden");
     }
 

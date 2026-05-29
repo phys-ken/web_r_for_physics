@@ -15,8 +15,14 @@
     {
       "id": "logger-oscillation",
       "title": "データロガー時系列",
-      "description": "運動センサーで測った減衰振動を、点と線の時系列グラフで描きます。途中の欠測がどう表示されるかも確認できます。",
+      "description": "20 Hz で測った減衰振動を分析します。生波形・ピーク検出・log 振幅の回帰から、減衰時定数と振動数を見積もります。",
       "file": "logger-oscillation.json"
+    },
+    {
+      "id": "newton-second-law",
+      "title": "ニュートンの第2法則",
+      "description": "複数シート・複数データフレームの実験データから、v-t・a-F・a-(1/m) の 3 枚のグラフを描きます。回帰直線の式を書き込み、誤差棒も付けます。",
+      "file": "newton-second-law.json"
     },
     {
       "id": "material-resistance",

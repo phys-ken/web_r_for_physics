@@ -54,7 +54,7 @@ test("manual navigation, webR execution, graph render, and JSON round-trip", asy
 
   await page.getByRole("button", { name: "全体表示" }).click();
   await expect(page.getByRole("dialog", { name: "グラフ全体表示" })).toBeVisible();
-  await expect(page.locator("#graphViewerMeta")).toContainText(/最後に描いたグラフ/);
+  await expect(page.locator("#graphViewerMeta")).toContainText(/等倍表示中/);
   await page.getByRole("button", { name: "閉じる" }).click();
 
   const downloadPromise = page.waitForEvent("download");
@@ -164,4 +164,32 @@ test("set.figure lets code control the figure aspect ratio", async ({ page }) =>
   await runEditor(page);
   const wideDims = await viewerDims(page);
   expect(wideDims.width / wideDims.height).toBeGreaterThan(2);
+});
+
+test("the Newton sample is multi-sheet and yields a switchable figure gallery", async ({ page }) => {
+  await page.goto("./");
+  await expect(page.locator("#runtimeStatus")).toHaveText(/webR 準備完了/, { timeout: 180000 });
+
+  await page.getByRole("button", { name: "設定読込 (JSON)" }).click();
+  await page.getByRole("button", { name: "ニュートンの第2法則" }).click();
+  await expect(page.locator("#scriptEditor")).toHaveValue(/get\.input\("vary_force"\)/, { timeout: 30000 });
+  await expect(page.locator("#sheetTabs")).toContainText("vary_mass");
+
+  await page.getByRole("button", { name: "グラフ", exact: true }).click();
+  await runEditor(page);
+
+  // Three plot pages -> three switchable thumbnails.
+  await expect(page.locator("#graphThumbs")).toBeVisible();
+  await expect(page.locator(".graph-thumb")).toHaveCount(3);
+
+  // No R error reached the console (read textContent: the panel is hidden).
+  const consoleText = await page.locator("#consoleOutput").textContent();
+  expect(consoleText).not.toMatch(/not found|could not find/i);
+
+  // Selecting a figure drives the full-screen viewer and download target.
+  await page.locator('.graph-thumb[data-graph-index="2"]').click();
+  await expect(page.locator(".graph-thumb.active")).toHaveText(/図 3/);
+  await page.getByRole("button", { name: "全体表示" }).click();
+  await expect(page.locator("#graphViewerMeta")).toContainText("図 3 / 3");
+  await page.getByRole("button", { name: "閉じる" }).click();
 });

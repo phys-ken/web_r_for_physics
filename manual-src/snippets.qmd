@@ -11,7 +11,8 @@ title: "Physics webR Lab スニペット集"
 | やりたいこと | 書き方 |
 |---|---|
 | 表をデータフレームで受け取る | `df <- get.input()` |
-| シート名 / 番号で受け取る | `get.input("Sheet2")` / `get.input(2)` |
+| シート名 / 番号で受け取る（複数シート） | `get.input("Sheet2")` / `get.input(2)` |
+| 回帰の式をグラフに書き込む | `text(x, y, sprintf("a = %.2f", coef(fit)[2]), pos = 4)` |
 | 先頭数行を見る / 要約する | `head(df)` / `summary(df)` |
 | 1 列を取り出す | `df$length_m` |
 | 列名をまとめて指定 | `cols <- c("a_s", "b_s", "c_s")` |
@@ -176,6 +177,36 @@ plot(df$x_m, df$y_m, pch = 19, main = "x-y",        # 左のパネル
   xlab = "x / m", ylab = "y / m")
 plot(df$t_s, df$y_m, type = "o", main = "y-t",      # 右のパネル
   xlab = "Time / s", ylab = "y / m")
+```
+
+### 複数シートを別々の data.frame にして比較する
+
+```r
+a <- get.input("条件A")   # シートごとに別の data.frame として受け取る
+b <- get.input("条件B")
+# それぞれ平均などを計算してから、同じグラフに重ねたり別の図にしたりできる
+```
+
+### 続けて plot() を呼ぶと複数の図になる（サムネイルで切替）
+
+```r
+set.figure(width = 7, height = 4.5, units = "in")   # 3 枚とも同じサイズに
+
+plot(df$x, df$y1, pch = 19, main = "Figure 1")       # 図1
+plot(df$x, df$y2, type = "o", main = "Figure 2")     # 図2
+barplot(df$z, names.arg = df$label, main = "Figure 3") # 図3
+# 図が 2 枚以上あると、グラフタブ上部のサムネイルで切り替えられる
+```
+
+### 回帰直線の式をグラフ内に書く
+
+```r
+fit <- lm(y ~ x, data = df)
+abline(fit, col = "#374151", lwd = 2)
+# 左上あたりに式を表示(pos = 4 は指定位置の右側に書く)
+text(min(df$x), max(df$y),
+  labels = sprintf("y = %.2f x + %.2f", coef(fit)[2], coef(fit)[1]),
+  pos = 4, col = "#374151")
 ```
 
 ---

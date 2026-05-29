@@ -187,6 +187,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#カテゴリ比較の棒グラフ誤差棒つき" id="toc-カテゴリ比較の棒グラフ誤差棒つき" class="nav-link" data-scroll-target="#カテゴリ比較の棒グラフ誤差棒つき">カテゴリ比較の棒グラフ（誤差棒つき）</a></li>
   <li><a href="#縦横比-11-の正方形の図" id="toc-縦横比-11-の正方形の図" class="nav-link" data-scroll-target="#縦横比-11-の正方形の図">縦横比 1:1 の正方形の図</a></li>
   <li><a href="#画面を分割して複数のグラフを並べるsubplot" id="toc-画面を分割して複数のグラフを並べるsubplot" class="nav-link" data-scroll-target="#画面を分割して複数のグラフを並べるsubplot">画面を分割して複数のグラフを並べる（subplot）</a></li>
+  <li><a href="#複数シートを別々の-data.frame-にして比較する" id="toc-複数シートを別々の-data.frame-にして比較する" class="nav-link" data-scroll-target="#複数シートを別々の-data.frame-にして比較する">複数シートを別々の data.frame にして比較する</a></li>
+  <li><a href="#続けて-plot-を呼ぶと複数の図になるサムネイルで切替" id="toc-続けて-plot-を呼ぶと複数の図になるサムネイルで切替" class="nav-link" data-scroll-target="#続けて-plot-を呼ぶと複数の図になるサムネイルで切替">続けて plot() を呼ぶと複数の図になる（サムネイルで切替）</a></li>
+  <li><a href="#回帰直線の式をグラフ内に書く" id="toc-回帰直線の式をグラフ内に書く" class="nav-link" data-scroll-target="#回帰直線の式をグラフ内に書く">回帰直線の式をグラフ内に書く</a></li>
   </ul></li>
   </ul>
 </nav>
@@ -219,6 +222,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="データを扱う" class="level3">
 <h3 class="anchored" data-anchor-id="データを扱う">データを扱う</h3>
 <table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
 <thead>
 <tr class="header">
 <th>やりたいこと</th>
@@ -231,34 +238,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <td><code>df &lt;- get.input()</code></td>
 </tr>
 <tr class="even">
-<td>シート名 / 番号で受け取る</td>
+<td>シート名 / 番号で受け取る（複数シート）</td>
 <td><code>get.input("Sheet2")</code> / <code>get.input(2)</code></td>
 </tr>
 <tr class="odd">
+<td>回帰の式をグラフに書き込む</td>
+<td><code>text(x, y, sprintf("a = %.2f", coef(fit)[2]), pos = 4)</code></td>
+</tr>
+<tr class="even">
 <td>先頭数行を見る / 要約する</td>
 <td><code>head(df)</code> / <code>summary(df)</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>1 列を取り出す</td>
 <td><code>df$length_m</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>列名をまとめて指定</td>
 <td><code>cols &lt;- c("a_s", "b_s", "c_s")</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>新しい列を足す</td>
 <td><code>df$mean_s &lt;- rowMeans(df[cols], na.rm = TRUE)</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>行ごとの標準偏差</td>
 <td><code>df$sd_s &lt;- apply(df[cols], 1, sd, na.rm = TRUE)</code></td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td>欠損値の行を取り除く</td>
 <td><code>df &lt;- subset(df, !is.na(length_m))</code></td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td>条件で行をしぼる</td>
 <td><code>subset(df, material != "")</code></td>
 </tr>
@@ -502,6 +513,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"x / m"</span>, <span class="at">ylab =</span> <span class="st">"y / m"</span>)</span>
 <span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>t_s, df<span class="sc">$</span>y_m, <span class="at">type =</span> <span class="st">"o"</span>, <span class="at">main =</span> <span class="st">"y-t"</span>,      <span class="co"># 右のパネル</span></span>
 <span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Time / s"</span>, <span class="at">ylab =</span> <span class="st">"y / m"</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="複数シートを別々の-data.frame-にして比較する" class="level3">
+<h3 class="anchored" data-anchor-id="複数シートを別々の-data.frame-にして比較する">複数シートを別々の data.frame にして比較する</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">get.input</span>(<span class="st">"条件A"</span>)   <span class="co"># シートごとに別の data.frame として受け取る</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">get.input</span>(<span class="st">"条件B"</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="co"># それぞれ平均などを計算してから、同じグラフに重ねたり別の図にしたりできる</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="続けて-plot-を呼ぶと複数の図になるサムネイルで切替" class="level3">
+<h3 class="anchored" data-anchor-id="続けて-plot-を呼ぶと複数の図になるサムネイルで切替">続けて plot() を呼ぶと複数の図になる（サムネイルで切替）</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.figure</span>(<span class="at">width =</span> <span class="dv">7</span>, <span class="at">height =</span> <span class="fl">4.5</span>, <span class="at">units =</span> <span class="st">"in"</span>)   <span class="co"># 3 枚とも同じサイズに</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>x, df<span class="sc">$</span>y1, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">main =</span> <span class="st">"Figure 1"</span>)       <span class="co"># 図1</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>x, df<span class="sc">$</span>y2, <span class="at">type =</span> <span class="st">"o"</span>, <span class="at">main =</span> <span class="st">"Figure 2"</span>)     <span class="co"># 図2</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a><span class="fu">barplot</span>(df<span class="sc">$</span>z, <span class="at">names.arg =</span> df<span class="sc">$</span>label, <span class="at">main =</span> <span class="st">"Figure 3"</span>) <span class="co"># 図3</span></span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 図が 2 枚以上あると、グラフタブ上部のサムネイルで切り替えられる</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="回帰直線の式をグラフ内に書く" class="level3">
+<h3 class="anchored" data-anchor-id="回帰直線の式をグラフ内に書く">回帰直線の式をグラフ内に書く</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(y <span class="sc">~</span> x, <span class="at">data =</span> df)</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(fit, <span class="at">col =</span> <span class="st">"#374151"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 左上あたりに式を表示(pos = 4 は指定位置の右側に書く)</span></span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a><span class="fu">text</span>(<span class="fu">min</span>(df<span class="sc">$</span>x), <span class="fu">max</span>(df<span class="sc">$</span>y),</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">labels =</span> <span class="fu">sprintf</span>(<span class="st">"y = %.2f x + %.2f"</span>, <span class="fu">coef</span>(fit)[<span class="dv">2</span>], <span class="fu">coef</span>(fit)[<span class="dv">1</span>]),</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">pos =</span> <span class="dv">4</span>, <span class="at">col =</span> <span class="st">"#374151"</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <hr>
 <ul>
 <li>概念をはじめから学ぶ → <a href="./index.html">生徒ガイド</a></li>
