@@ -1,0 +1,86 @@
+---
+title: "開発者向けリファレンス"
+---
+
+Physics webR Lab の内部構造リファレンス。LLM エージェント・開発者向けに、改変と再ホスティングに必要な事実のみを記す。
+
+リポジトリ: <https://github.com/phys-ken/web_r_for_physics> ／ 公開アプリ: <https://phys-ken.github.io/web_r_for_physics/> ／ ライセンス: MIT
+
+## 全体像
+
+- **単一ファイルアプリ**。アプリ本体のロジックは `index.html`（約 3100 行）に集約。末尾の単一 `<script type="module">` ブロックが全 JS。
+- **ビルド不要**。GitHub Pages が `index.html` をそのまま配信（`.nojekyll` あり）。バンドラ・トランスパイルなし。
+- webR は CDN から ESM import: `https://webr.r-wasm.org/v0.6.0/webr.mjs`。**v0.6.0 固定**（`latest` の破壊的変更回避）。
+
+## 状態モデル
+
+- `state`（`index.html` 内）が単一の信頼できる情報源。主な部分木:
+  - `state.app.workbook.sheets[]` — シートのグリッド（行優先の二次元文字列配列、行 0 = ヘッダ）
+  - `state.app.script` — エディタ内容
+  - `state.app.console.{entries, history}` — コンソール出力と REPL 履歴
+  - `state.app.ui` — currentPage / outputTab / status など
+  - `state.app.dataframes` — data.frame 一覧と選択中プレビュー
+  - `state.webR` — 起動済み WebR インスタンス（`boot()` で設定）
+  - `state.ready` / `state.busy` — 実行ガード
+- `elements` — 全 `getElementById` 参照をまとめたオブジェクト。
+
+## R 実行フロー
+
+1. `runRCode()` — 中心の入口。データ同期＋実行を行う。
+2. `syncWorkbookToR()` → `buildWorkbookRLiteral()` → `sheetToFrameModel()`。各シートのグリッドを型推論（`inferColumnType`）して R の型付きベクタへ変換し、`.GlobalEnv` に注入する。
+3. `executeRSource()` が `shelter.captureR()` 内で `source(..., print.eval = TRUE, local = .GlobalEnv)` 包みでコードを評価。トップレベル式の出力もこれで拾う。
+4. グラフは `captureR()` の `captureGraphics` で取得。`webR.stream()` のストリーミング canvas パッチは意図的に無視（`handleCanvasMessage` 参照。複雑な増分描画で不整合になるため、最終ビットマップのみ採用）。
+5. 実行後 `refreshDataFrameState()` が `.GlobalEnv` を走査して DataFrame タブを更新。
+
+## `get.input()` と注入されるヘルパー
+
+`boot()` 内で R 側に定義される関数（`index.html` の R リテラル中）:
+
+- `get.input(sheet = NULL)` — 現在シート / 名前 / 1 始まり番号でシートを `data.frame` として返す。実体は注入済みの `.webr_input_sheets`（名前付きリスト）と `.webr_active_sheet_index` を参照。
+- `set.paper_style(mar, mgp, cex, tcl, las)` — `par()` をレポート向け体裁に設定。
+- `add.paper_guides(show_grid, show_top_axis, show_right_axis, grid_col)` — グリッドと補助目盛り・`box()` を追加。
+
+列の型推論は JS 側（`inferColumnType`）で行い、numeric / logical / character を判定してから R へ渡す。
+
+## JSON 保存・復元フォーマット
+
+- バージョン 2（`payload.version === 2`）。
+- 検証 `validateAppPayload()`、正規化 `normaliseImportedPayload()` / `ensureWorkbookShape()`。
+- UI 状態・コンソール履歴・ワークブック・スクリプトを丸ごと含む。サンプル（`samples/*.json`）も同一フォーマット。
+
+## サンプル
+
+- `samples/manifest.json` が `{ id, title, description, file }` の配列を持つ。
+- 各サンプルは単体の version 2 エクスポート JSON。`loadSampleById()` が必要時に fetch。
+- 追加するには JSON を `samples/` に置き、manifest に 1 エントリ追記するだけ。
+
+## マニュアル
+
+- `manual-src/` が Quarto ソース（`.qmd` + `_quarto.yml` + `styles.css`）。
+- `manual/` がリポジトリにコミットされる静的出力で、Pages から配信。
+- `.qmd` 編集後は `npm run manual:render`（`quarto render manual-src` → `manual/` へコピー）で再生成。
+
+## コマンド
+
+```bash
+npm start              # http://127.0.0.1:4173/ で配信 (python3 -m http.server)
+npm test               # 静的スモークテスト → Playwright
+npm run test:static    # node scripts/smoke-test.mjs のみ
+npm run test:browser   # Playwright のみ
+npm run manual:render  # Quarto マニュアル再生成
+npx playwright install chromium   # 初回のみ
+npx playwright test --grep "editor execution"   # 単一テスト
+```
+
+## テスト
+
+- `tests/app.spec.mjs` に Playwright 2 件（`fullyParallel: false` で逐次）。
+  1. ナビ → webR 起動 → サンプル読込 → スクリプト実行 → グラフ描画 → 全体表示 → JSON エクスポート/インポート往復 → manual ページ。
+  2. 表への TSV ペースト → エディタ実行で複数 data.frame → DataFrame タブのプレビュー。
+- `PLAYWRIGHT_BASE_URL` で対象 URL を上書き可（既定 `http://127.0.0.1:4173`）。
+
+::: {.callout-warning}
+## テストが依存する不変点
+
+サンプル `単振り子` の存在とその script 内の `set.paper_style`、`#manualPage` 内の `a[href="./manual/"]` リンク、manual トップの h1「Physics webR Lab 学習ガイド」と「スニペット集」リンク。改変時は壊さないこと。
+:::

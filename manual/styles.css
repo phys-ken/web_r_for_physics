@@ -9,3 +9,16 @@ body {
 pre code {
   font-size: 0.92rem;
 }
+
+/* チートシート等の表を読みやすくする */
+table {
+  font-size: 0.95rem;
+}
+
+table code {
+  white-space: nowrap;
+}
+
+table thead th {
+  background: #f2f5f9;
+}

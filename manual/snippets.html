@@ -77,7 +77,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-dde2b6a390d570b148f99722ba58ffcd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-36831655f0a412ff8854dff5c004b9d8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -129,11 +129,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
     <a class="nav-link" href="./index.html"> 
-<span class="menu-text">はじめに</span></a>
+<span class="menu-text">生徒ガイド</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link active" href="./snippets.html" aria-current="page"> 
 <span class="menu-text">スニペット集</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./teacher.html"> 
+<span class="menu-text">教師ガイド</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./developer.html"> 
+<span class="menu-text">開発者向け</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./../"> 
+<span class="menu-text">アプリを開く</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/phys-ken/web_r_for_physics"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text">GitHub</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -151,10 +170,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">目次</h2>
    
   <ul>
-  <li><a href="#位置-時刻データの-2-次近似" id="toc-位置-時刻データの-2-次近似" class="nav-link active" data-scroll-target="#位置-時刻データの-2-次近似">位置-時刻データの 2 次近似</a></li>
-  <li><a href="#データロガーの時系列を線グラフで描く" id="toc-データロガーの時系列を線グラフで描く" class="nav-link" data-scroll-target="#データロガーの時系列を線グラフで描く">データロガーの時系列を線グラフで描く</a></li>
-  <li><a href="#棒グラフが適切な場合" id="toc-棒グラフが適切な場合" class="nav-link" data-scroll-target="#棒グラフが適切な場合">棒グラフが適切な場合</a></li>
-  <li><a href="#ばね振り子などの誤差棒付き散布図" id="toc-ばね振り子などの誤差棒付き散布図" class="nav-link" data-scroll-target="#ばね振り子などの誤差棒付き散布図">ばね・振り子などの誤差棒付き散布図</a></li>
+  <li><a href="#関数チートシート" id="toc-関数チートシート" class="nav-link active" data-scroll-target="#関数チートシート">関数チートシート</a>
+  <ul class="collapse">
+  <li><a href="#データを扱う" id="toc-データを扱う" class="nav-link" data-scroll-target="#データを扱う">データを扱う</a></li>
+  <li><a href="#グラフを描く" id="toc-グラフを描く" class="nav-link" data-scroll-target="#グラフを描く">グラフを描く</a></li>
+  <li><a href="#よく使うオプション" id="toc-よく使うオプション" class="nav-link" data-scroll-target="#よく使うオプション">よく使うオプション</a></li>
+  </ul></li>
+  <li><a href="#スニペット集" id="toc-スニペット集" class="nav-link" data-scroll-target="#スニペット集">スニペット集</a>
+  <ul class="collapse">
+  <li><a href="#平均と標準偏差を求める" id="toc-平均と標準偏差を求める" class="nav-link" data-scroll-target="#平均と標準偏差を求める">平均と標準偏差を求める</a></li>
+  <li><a href="#誤差棒つき散布図" id="toc-誤差棒つき散布図" class="nav-link" data-scroll-target="#誤差棒つき散布図">誤差棒つき散布図</a></li>
+  <li><a href="#直線あてはめ線形回帰" id="toc-直線あてはめ線形回帰" class="nav-link" data-scroll-target="#直線あてはめ線形回帰">直線あてはめ（線形回帰）</a></li>
+  <li><a href="#次曲線をあてはめる" id="toc-次曲線をあてはめる" class="nav-link" data-scroll-target="#次曲線をあてはめる">2 次曲線をあてはめる</a></li>
+  <li><a href="#複数の系列を重ねて凡例をつける" id="toc-複数の系列を重ねて凡例をつける" class="nav-link" data-scroll-target="#複数の系列を重ねて凡例をつける">複数の系列を重ねて凡例をつける</a></li>
+  <li><a href="#時系列を線グラフで描く" id="toc-時系列を線グラフで描く" class="nav-link" data-scroll-target="#時系列を線グラフで描く">時系列を線グラフで描く</a></li>
+  <li><a href="#カテゴリ比較の棒グラフ誤差棒つき" id="toc-カテゴリ比較の棒グラフ誤差棒つき" class="nav-link" data-scroll-target="#カテゴリ比較の棒グラフ誤差棒つき">カテゴリ比較の棒グラフ（誤差棒つき）</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -180,76 +211,265 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="位置-時刻データの-2-次近似" class="level2">
-<h2 class="anchored" data-anchor-id="位置-時刻データの-2-次近似">位置-時刻データの 2 次近似</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">subset</span>(<span class="fu">get.input</span>(), <span class="sc">!</span><span class="fu">is.na</span>(time_s))</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>position_mean_m <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(df[<span class="fu">c</span>(<span class="st">"position_1_m"</span>, <span class="st">"position_2_m"</span>, <span class="st">"position_3_m"</span>)], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>position_sd_m <span class="ot">&lt;-</span> <span class="fu">apply</span>(df[<span class="fu">c</span>(<span class="st">"position_1_m"</span>, <span class="st">"position_2_m"</span>, <span class="st">"position_3_m"</span>)], <span class="dv">1</span>, sd, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.paper_style</span>()</span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(position_mean_m <span class="sc">~</span> time_s <span class="sc">+</span> <span class="fu">I</span>(time_s<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> df)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>time_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(df<span class="sc">$</span>time_s), <span class="fu">max</span>(df<span class="sc">$</span>time_s), <span class="at">length.out =</span> <span class="dv">200</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>time_s, df<span class="sc">$</span>position_mean_m,</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">1.1</span>,</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Time / s"</span>,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Position / m"</span></span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>time_s, df<span class="sc">$</span>position_mean_m <span class="sc">-</span> df<span class="sc">$</span>position_sd_m,</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>time_s, df<span class="sc">$</span>position_mean_m <span class="sc">+</span> df<span class="sc">$</span>position_sd_m,</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">code =</span> <span class="dv">3</span>, <span class="at">length =</span> <span class="fl">0.04</span></span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(time_grid, <span class="fu">predict</span>(fit, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">time_s =</span> time_grid)),</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="st">"#374151"</span>, <span class="at">lwd =</span> <span class="dv">2</span></span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<p>コピペしてすぐ使えるコード片と、関数の早見表（チートシート）です。コメント（<code>#</code>）は日本語、グラフ内のラベルは英語にしています（webR では日本語が文字化けするため）。</p>
+<section id="関数チートシート" class="level2">
+<h2 class="anchored" data-anchor-id="関数チートシート">関数チートシート</h2>
+<section id="データを扱う" class="level3">
+<h3 class="anchored" data-anchor-id="データを扱う">データを扱う</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>やりたいこと</th>
+<th>書き方</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>表をデータフレームで受け取る</td>
+<td><code>df &lt;- get.input()</code></td>
+</tr>
+<tr class="even">
+<td>シート名 / 番号で受け取る</td>
+<td><code>get.input("Sheet2")</code> / <code>get.input(2)</code></td>
+</tr>
+<tr class="odd">
+<td>先頭数行を見る / 要約する</td>
+<td><code>head(df)</code> / <code>summary(df)</code></td>
+</tr>
+<tr class="even">
+<td>1 列を取り出す</td>
+<td><code>df$length_m</code></td>
+</tr>
+<tr class="odd">
+<td>列名をまとめて指定</td>
+<td><code>cols &lt;- c("a_s", "b_s", "c_s")</code></td>
+</tr>
+<tr class="even">
+<td>新しい列を足す</td>
+<td><code>df$mean_s &lt;- rowMeans(df[cols], na.rm = TRUE)</code></td>
+</tr>
+<tr class="odd">
+<td>行ごとの標準偏差</td>
+<td><code>df$sd_s &lt;- apply(df[cols], 1, sd, na.rm = TRUE)</code></td>
+</tr>
+<tr class="even">
+<td>欠損値の行を取り除く</td>
+<td><code>df &lt;- subset(df, !is.na(length_m))</code></td>
+</tr>
+<tr class="odd">
+<td>条件で行をしぼる</td>
+<td><code>subset(df, material != "")</code></td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="データロガーの時系列を線グラフで描く" class="level2">
-<h2 class="anchored" data-anchor-id="データロガーの時系列を線グラフで描く">データロガーの時系列を線グラフで描く</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">subset</span>(<span class="fu">get.input</span>(), <span class="sc">!</span><span class="fu">is.na</span>(time_s))</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.paper_style</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="fl">3.8</span>, <span class="fl">4.1</span>, <span class="fl">0.7</span>, <span class="fl">0.6</span>))</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>time_s, df<span class="sc">$</span>position_m,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"l"</span>, <span class="at">lwd =</span> <span class="dv">2</span>, <span class="at">col =</span> <span class="st">"#1f77b4"</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Time / s"</span>,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Position / m"</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="グラフを描く" class="level3">
+<h3 class="anchored" data-anchor-id="グラフを描く">グラフを描く</h3>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>やりたいこと</th>
+<th>書き方</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>散布図</td>
+<td><code>plot(df$x, df$y, pch = 19)</code></td>
+</tr>
+<tr class="even">
+<td>線グラフ</td>
+<td><code>plot(df$x, df$y, type = "l")</code></td>
+</tr>
+<tr class="odd">
+<td>点と線の両方</td>
+<td><code>plot(df$x, df$y, type = "o")</code></td>
+</tr>
+<tr class="even">
+<td>棒グラフ</td>
+<td><code>barplot(df$mean, names.arg = df$label)</code></td>
+</tr>
+<tr class="odd">
+<td>既存の図に点を重ねる</td>
+<td><code>points(df$x, df$y2)</code></td>
+</tr>
+<tr class="even">
+<td>既存の図に線を重ねる</td>
+<td><code>lines(x, y)</code></td>
+</tr>
+<tr class="odd">
+<td>直線を重ねる</td>
+<td><code>abline(fit)</code> / <code>abline(h = 0)</code></td>
+</tr>
+<tr class="even">
+<td>誤差棒</td>
+<td><code>arrows(x, y-e, x, y+e, angle = 90, code = 3, length = 0.04)</code></td>
+</tr>
+<tr class="odd">
+<td>凡例</td>
+<td><code>legend("topleft", legend = c(...), pch = c(...), col = c(...))</code></td>
+</tr>
+<tr class="even">
+<td>余白・軸を整える（独自）</td>
+<td><code>set.paper_style()</code></td>
+</tr>
+<tr class="odd">
+<td>補助グリッド（独自）</td>
+<td><code>add.paper_guides()</code></td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="棒グラフが適切な場合" class="level2">
-<h2 class="anchored" data-anchor-id="棒グラフが適切な場合">棒グラフが適切な場合</h2>
-<p>カテゴリ比較なら、棒グラフでも意味があります。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">subset</span>(<span class="fu">get.input</span>(), material <span class="sc">!=</span> <span class="st">""</span>)</span>
-<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>resistance_mean_ohm <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(df[<span class="fu">c</span>(<span class="st">"resistance_1_ohm"</span>, <span class="st">"resistance_2_ohm"</span>, <span class="st">"resistance_3_ohm"</span>)], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>resistance_sd_ohm <span class="ot">&lt;-</span> <span class="fu">apply</span>(df[<span class="fu">c</span>(<span class="st">"resistance_1_ohm"</span>, <span class="st">"resistance_2_ohm"</span>, <span class="st">"resistance_3_ohm"</span>)], <span class="dv">1</span>, sd, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="fu">set.paper_style</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="fl">4.6</span>, <span class="fl">4.1</span>, <span class="fl">0.6</span>, <span class="fl">0.6</span>), <span class="at">las =</span> <span class="dv">1</span>)</span>
-<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>bar_x <span class="ot">&lt;-</span> <span class="fu">barplot</span>(df<span class="sc">$</span>resistance_mean_ohm,</span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">names.arg =</span> df<span class="sc">$</span>material,</span>
-<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="st">"#cbd5e1"</span>, <span class="at">border =</span> <span class="st">"#475569"</span>,</span>
-<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(df<span class="sc">$</span>resistance_mean_ohm <span class="sc">+</span> df<span class="sc">$</span>resistance_sd_ohm) <span class="sc">*</span> <span class="fl">1.15</span>),</span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Material"</span>,</span>
-<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Resistance / ohm"</span></span>
-<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(</span>
-<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>  bar_x, df<span class="sc">$</span>resistance_mean_ohm <span class="sc">-</span> df<span class="sc">$</span>resistance_sd_ohm,</span>
-<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>  bar_x, df<span class="sc">$</span>resistance_mean_ohm <span class="sc">+</span> df<span class="sc">$</span>resistance_sd_ohm,</span>
-<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">code =</span> <span class="dv">3</span>, <span class="at">length =</span> <span class="fl">0.04</span></span>
-<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<section id="よく使うオプション" class="level3">
+<h3 class="anchored" data-anchor-id="よく使うオプション">よく使うオプション</h3>
+<table class="caption-top table">
+<thead>
+<tr class="header">
+<th>オプション</th>
+<th>意味</th>
+<th>例</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>pch</code></td>
+<td>点の形</td>
+<td><code>19</code>=●, <code>17</code>=▲, <code>15</code>=■, <code>1</code>=○</td>
+</tr>
+<tr class="even">
+<td><code>col</code></td>
+<td>色</td>
+<td><code>"firebrick"</code>, <code>"#2563eb"</code></td>
+</tr>
+<tr class="odd">
+<td><code>cex</code></td>
+<td>点・文字の大きさ</td>
+<td><code>1.2</code></td>
+</tr>
+<tr class="even">
+<td><code>lwd</code></td>
+<td>線の太さ</td>
+<td><code>2</code></td>
+</tr>
+<tr class="odd">
+<td><code>lty</code></td>
+<td>線の種類</td>
+<td><code>1</code>=実線, <code>2</code>=破線</td>
+</tr>
+<tr class="even">
+<td><code>xlab</code>/<code>ylab</code></td>
+<td>軸ラベル（英語・単位つき）</td>
+<td><code>"Time / s"</code></td>
+</tr>
+<tr class="odd">
+<td><code>main</code></td>
+<td>タイトル</td>
+<td><code>"Free fall"</code></td>
+</tr>
+<tr class="even">
+<td><code>xlim</code>/<code>ylim</code></td>
+<td>軸の範囲</td>
+<td><code>ylim = c(0, 3)</code></td>
+</tr>
+</tbody>
+</table>
 </section>
-<section id="ばね振り子などの誤差棒付き散布図" class="level2">
-<h2 class="anchored" data-anchor-id="ばね振り子などの誤差棒付き散布図">ばね・振り子などの誤差棒付き散布図</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.paper_style</span>()</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>x_value, df<span class="sc">$</span>y_value,</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">1.1</span>,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"X / unit"</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Y / unit"</span></span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(</span>
-<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>x_value, df<span class="sc">$</span>y_value <span class="sc">-</span> df<span class="sc">$</span>y_sd,</span>
-<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>x_value, df<span class="sc">$</span>y_value <span class="sc">+</span> df<span class="sc">$</span>y_sd,</span>
-<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">code =</span> <span class="dv">3</span>, <span class="at">length =</span> <span class="fl">0.04</span></span>
-<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="スニペット集" class="level2">
+<h2 class="anchored" data-anchor-id="スニペット集">スニペット集</h2>
+<section id="平均と標準偏差を求める" class="level3">
+<h3 class="anchored" data-anchor-id="平均と標準偏差を求める">平均と標準偏差を求める</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">get.input</span>()</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"period_1_s"</span>, <span class="st">"period_2_s"</span>, <span class="st">"period_3_s"</span>)   <span class="co"># 繰り返し測定の列</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>mean_s <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(df[cols], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)          <span class="co"># 行ごとの平均</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>sd_s   <span class="ot">&lt;-</span> <span class="fu">apply</span>(df[cols], <span class="dv">1</span>, sd, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)      <span class="co"># 行ごとのばらつき</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="誤差棒つき散布図" class="level3">
+<h3 class="anchored" data-anchor-id="誤差棒つき散布図">誤差棒つき散布図</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.paper_style</span>()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>x_value, df<span class="sc">$</span>y_mean,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">1.1</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"X / unit"</span>, <span class="at">ylab =</span> <span class="st">"Y / unit"</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="fu">add.paper_guides</span>()</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>x_value, df<span class="sc">$</span>y_mean <span class="sc">-</span> df<span class="sc">$</span>y_sd,   <span class="co"># 下端</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>x_value, df<span class="sc">$</span>y_mean <span class="sc">+</span> df<span class="sc">$</span>y_sd,   <span class="co"># 上端</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">code =</span> <span class="dv">3</span>, <span class="at">length =</span> <span class="fl">0.04</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="直線あてはめ線形回帰" class="level3">
+<h3 class="anchored" data-anchor-id="直線あてはめ線形回帰">直線あてはめ（線形回帰）</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(y_mean <span class="sc">~</span> x_value, <span class="at">data =</span> df)   <span class="co"># y を x で説明する直線</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(fit, <span class="at">col =</span> <span class="st">"#374151"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)    <span class="co"># 直線を重ねる</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)                             <span class="co"># 傾き・切片・決定係数を確認</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<p>原点を通る直線にしたいときは <code>lm(y ~ 0 + x, data = df)</code> とします。</p>
+</section>
+<section id="次曲線をあてはめる" class="level3">
+<h3 class="anchored" data-anchor-id="次曲線をあてはめる">2 次曲線をあてはめる</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">subset</span>(<span class="fu">get.input</span>(), <span class="sc">!</span><span class="fu">is.na</span>(time_s))</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(position_m <span class="sc">~</span> time_s <span class="sc">+</span> <span class="fu">I</span>(time_s<span class="sc">^</span><span class="dv">2</span>), <span class="at">data =</span> df)   <span class="co"># 2次の項を足す</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.paper_style</span>()</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>time_s, df<span class="sc">$</span>position_m, <span class="at">pch =</span> <span class="dv">19</span>,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Time / s"</span>, <span class="at">ylab =</span> <span class="st">"Position / m"</span>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 曲線はなめらかな x を作り、predict した値を線でつなぐ</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>x_grid <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="fu">min</span>(df<span class="sc">$</span>time_s), <span class="fu">max</span>(df<span class="sc">$</span>time_s), <span class="at">length.out =</span> <span class="dv">200</span>)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="fu">lines</span>(x_grid, <span class="fu">predict</span>(fit, <span class="at">newdata =</span> <span class="fu">data.frame</span>(<span class="at">time_s =</span> x_grid)),</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="st">"#374151"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="複数の系列を重ねて凡例をつける" class="level3">
+<h3 class="anchored" data-anchor-id="複数の系列を重ねて凡例をつける">複数の系列を重ねて凡例をつける</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">subset</span>(<span class="fu">get.input</span>(), <span class="sc">!</span><span class="fu">is.na</span>(time_s))</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>y_max <span class="ot">&lt;-</span> <span class="fu">max</span>(<span class="fu">c</span>(df<span class="sc">$</span>series_a, df<span class="sc">$</span>series_b), <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">set.paper_style</span>()</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>time_s, df<span class="sc">$</span>series_a, <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">col =</span> <span class="st">"firebrick"</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, y_max),</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Time / s"</span>, <span class="at">ylab =</span> <span class="st">"Value / unit"</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="fu">points</span>(df<span class="sc">$</span>time_s, df<span class="sc">$</span>series_b, <span class="at">pch =</span> <span class="dv">17</span>, <span class="at">col =</span> <span class="st">"#2563eb"</span>)   <span class="co"># 2本目を重ねる</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="fu">legend</span>(<span class="st">"topleft"</span>,</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">legend =</span> <span class="fu">c</span>(<span class="st">"Series A"</span>, <span class="st">"Series B"</span>),</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch =</span> <span class="fu">c</span>(<span class="dv">19</span>, <span class="dv">17</span>), <span class="at">col =</span> <span class="fu">c</span>(<span class="st">"firebrick"</span>, <span class="st">"#2563eb"</span>), <span class="at">bty =</span> <span class="st">"n"</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="時系列を線グラフで描く" class="level3">
+<h3 class="anchored" data-anchor-id="時系列を線グラフで描く">時系列を線グラフで描く</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">subset</span>(<span class="fu">get.input</span>(), <span class="sc">!</span><span class="fu">is.na</span>(time_s))</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.paper_style</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="fl">4.0</span>, <span class="fl">4.2</span>, <span class="fl">2.0</span>, <span class="fl">0.8</span>))</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>time_s, df<span class="sc">$</span>displacement_m,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">"o"</span>, <span class="at">pch =</span> <span class="dv">20</span>, <span class="at">lwd =</span> <span class="fl">1.6</span>, <span class="at">col =</span> <span class="st">"#1f77b4"</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Time / s"</span>, <span class="at">ylab =</span> <span class="st">"Displacement / m"</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">0</span>, <span class="at">col =</span> <span class="st">"#9ca3af"</span>, <span class="at">lty =</span> <span class="dv">2</span>)   <span class="co"># 中心線</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+</section>
+<section id="カテゴリ比較の棒グラフ誤差棒つき" class="level3">
+<h3 class="anchored" data-anchor-id="カテゴリ比較の棒グラフ誤差棒つき">カテゴリ比較の棒グラフ（誤差棒つき）</h3>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">subset</span>(<span class="fu">get.input</span>(), label <span class="sc">!=</span> <span class="st">""</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"v_1"</span>, <span class="st">"v_2"</span>, <span class="st">"v_3"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>mean <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(df[cols], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>sd   <span class="ot">&lt;-</span> <span class="fu">apply</span>(df[cols], <span class="dv">1</span>, sd, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="fu">set.paper_style</span>(<span class="at">mar =</span> <span class="fu">c</span>(<span class="fl">4.6</span>, <span class="fl">4.2</span>, <span class="fl">2.0</span>, <span class="fl">0.8</span>))</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>bar_x <span class="ot">&lt;-</span> <span class="fu">barplot</span>(df<span class="sc">$</span>mean, <span class="at">names.arg =</span> df<span class="sc">$</span>label,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="st">"#cbd5e1"</span>, <span class="at">border =</span> <span class="st">"#475569"</span>,</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylim =</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fu">max</span>(df<span class="sc">$</span>mean <span class="sc">+</span> df<span class="sc">$</span>sd) <span class="sc">*</span> <span class="fl">1.15</span>),</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Category"</span>, <span class="at">ylab =</span> <span class="st">"Value / unit"</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(bar_x, df<span class="sc">$</span>mean <span class="sc">-</span> df<span class="sc">$</span>sd, bar_x, df<span class="sc">$</span>mean <span class="sc">+</span> df<span class="sc">$</span>sd,</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">code =</span> <span class="dv">3</span>, <span class="at">length =</span> <span class="fl">0.05</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<hr>
+<ul>
+<li>概念をはじめから学ぶ → <a href="./index.html">生徒ガイド</a></li>
+<li>授業での使い方 → <a href="./teacher.html">教師ガイド</a></li>
+</ul>
 
 
+</section>
 </section>
 
 </main> <!-- /main -->
@@ -654,6 +874,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   });
   </script>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>MIT License · © 2026 Contributors</p>
+</div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="./../">
+<p>アプリ</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://github.com/phys-ken/web_r_for_physics">
+<p>GitHub リポジトリ</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://github.com/phys-ken/web_r_for_physics/blob/master/LICENSE">
+<p>ライセンス (MIT)</p>
+</a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
 
 
 

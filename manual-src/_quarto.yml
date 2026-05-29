@@ -8,9 +8,29 @@ website:
   navbar:
     left:
       - href: index.qmd
-        text: はじめに
+        text: 生徒ガイド
       - href: snippets.qmd
         text: スニペット集
+      - href: teacher.qmd
+        text: 教師ガイド
+      - href: developer.qmd
+        text: 開発者向け
+    right:
+      - href: ../
+        text: アプリを開く
+      - icon: github
+        href: https://github.com/phys-ken/web_r_for_physics
+        text: GitHub
+  page-footer:
+    border: true
+    left: "MIT License · © 2026 Contributors"
+    center:
+      - text: "アプリ"
+        href: ../
+      - text: "GitHub リポジトリ"
+        href: https://github.com/phys-ken/web_r_for_physics
+      - text: "ライセンス (MIT)"
+        href: https://github.com/phys-ken/web_r_for_physics/blob/master/LICENSE
 
 format:
   html:

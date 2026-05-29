@@ -77,7 +77,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="site_libs/quarto-html/quarto-syntax-highlighting-7f8f88aac4f3542376d5c11b86a4c14d.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="site_libs/bootstrap/bootstrap-dde2b6a390d570b148f99722ba58ffcd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="site_libs/bootstrap/bootstrap-36831655f0a412ff8854dff5c004b9d8.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -129,11 +129,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
             <ul class="navbar-nav navbar-nav-scroll me-auto">
   <li class="nav-item">
     <a class="nav-link active" href="./index.html" aria-current="page"> 
-<span class="menu-text">はじめに</span></a>
+<span class="menu-text">生徒ガイド</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="./snippets.html"> 
 <span class="menu-text">スニペット集</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./teacher.html"> 
+<span class="menu-text">教師ガイド</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="./developer.html"> 
+<span class="menu-text">開発者向け</span></a>
+  </li>  
+</ul>
+            <ul class="navbar-nav navbar-nav-scroll ms-auto">
+  <li class="nav-item">
+    <a class="nav-link" href="./../"> 
+<span class="menu-text">アプリを開く</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="https://github.com/phys-ken/web_r_for_physics"> <i class="bi bi-github" role="img">
+</i> 
+<span class="menu-text">GitHub</span></a>
   </li>  
 </ul>
           </div> <!-- /navcollapse -->
@@ -151,21 +170,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">目次</h2>
    
   <ul>
-  <li><a href="#このページでわかること" id="toc-このページでわかること" class="nav-link active" data-scroll-target="#このページでわかること">このページでわかること</a></li>
-  <li><a href="#まず最初の-3-ステップ" id="toc-まず最初の-3-ステップ" class="nav-link" data-scroll-target="#まず最初の-3-ステップ">まず最初の 3 ステップ</a></li>
-  <li><a href="#画面の見方" id="toc-画面の見方" class="nav-link" data-scroll-target="#画面の見方">画面の見方</a></li>
-  <li><a href="#get.input-の基本" id="toc-get.input-の基本" class="nav-link" data-scroll-target="#get.input-の基本"><code>get.input()</code> の基本</a></li>
-  <li><a href="#論文レポート寄りの作図の基本" id="toc-論文レポート寄りの作図の基本" class="nav-link" data-scroll-target="#論文レポート寄りの作図の基本">論文・レポート寄りの作図の基本</a>
-  <ul class="collapse">
-  <li><a href="#まず意識したいポイント" id="toc-まず意識したいポイント" class="nav-link" data-scroll-target="#まず意識したいポイント">まず意識したいポイント</a></li>
-  </ul></li>
-  <li><a href="#よくある解析の型" id="toc-よくある解析の型" class="nav-link" data-scroll-target="#よくある解析の型">よくある解析の型</a>
-  <ul class="collapse">
-  <li><a href="#繰り返し測定の平均とばらつき" id="toc-繰り返し測定の平均とばらつき" class="nav-link" data-scroll-target="#繰り返し測定の平均とばらつき">繰り返し測定の平均とばらつき</a></li>
-  <li><a href="#誤差棒付き散布図" id="toc-誤差棒付き散布図" class="nav-link" data-scroll-target="#誤差棒付き散布図">誤差棒付き散布図</a></li>
-  <li><a href="#回帰直線" id="toc-回帰直線" class="nav-link" data-scroll-target="#回帰直線">回帰直線</a></li>
-  </ul></li>
-  <li><a href="#サンプルの見方" id="toc-サンプルの見方" class="nav-link" data-scroll-target="#サンプルの見方">サンプルの見方</a></li>
+  <li><a href="#このアプリで何をするのか" id="toc-このアプリで何をするのか" class="nav-link active" data-scroll-target="#このアプリで何をするのか">0. このアプリで何をするのか</a></li>
+  <li><a href="#データフレームって何" id="toc-データフレームって何" class="nav-link" data-scroll-target="#データフレームって何">1. 「データフレーム」って何？</a></li>
+  <li><a href="#まずはデータを受け取る-get.input" id="toc-まずはデータを受け取る-get.input" class="nav-link" data-scroll-target="#まずはデータを受け取る-get.input">2. まずはデータを受け取る — <code>get.input()</code></a></li>
+  <li><a href="#まずグラフを-1-枚描く-plot" id="toc-まずグラフを-1-枚描く-plot" class="nav-link" data-scroll-target="#まずグラフを-1-枚描く-plot">3. まずグラフを 1 枚描く — <code>plot()</code></a></li>
+  <li><a href="#グラフの見た目を整える" id="toc-グラフの見た目を整える" class="nav-link" data-scroll-target="#グラフの見た目を整える">4. グラフの見た目を整える</a></li>
+  <li><a href="#新しい列を計算して足す-平均など" id="toc-新しい列を計算して足す-平均など" class="nav-link" data-scroll-target="#新しい列を計算して足す-平均など">5. 新しい列を計算して足す — 平均など</a></li>
+  <li><a href="#欠損値-na-のあつかい" id="toc-欠損値-na-のあつかい" class="nav-link" data-scroll-target="#欠損値-na-のあつかい">6. 欠損値 (NA) のあつかい</a></li>
+  <li><a href="#ばらつきとエラーバー" id="toc-ばらつきとエラーバー" class="nav-link" data-scroll-target="#ばらつきとエラーバー">7. ばらつきとエラーバー</a></li>
+  <li><a href="#直線曲線をあてはめる回帰" id="toc-直線曲線をあてはめる回帰" class="nav-link" data-scroll-target="#直線曲線をあてはめる回帰">8. 直線・曲線をあてはめる（回帰）</a></li>
+  <li><a href="#つのタブの使い分け" id="toc-つのタブの使い分け" class="nav-link" data-scroll-target="#つのタブの使い分け">9. 3 つのタブの使い分け</a></li>
+  <li><a href="#保存と読込" id="toc-保存と読込" class="nav-link" data-scroll-target="#保存と読込">10. 保存と読込</a></li>
   </ul>
 </nav>
     </div>
@@ -191,100 +206,228 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<section id="このページでわかること" class="level2">
-<h2 class="anchored" data-anchor-id="このページでわかること">このページでわかること</h2>
+<p>このページは、<strong>実験で測ったデータを表に入れ、R のコードでグラフを描いて読み解く</strong>までを、順を追って学ぶための生徒向けガイドです。</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ヒント</span>前提にしていること
+</div>
+</div>
+<div class="callout-body-container callout-body">
 <ul>
-<li><code>get.input()</code> で表データを R に渡す方法</li>
-<li>高校物理でよく使う解析の進め方</li>
-<li>余白や軸を整えた、読みやすいグラフの作り方</li>
+<li>Google Colab などで <strong>Python を少し触ったことがある</strong>（変数・代入・関数呼び出しが何となく分かる）</li>
+<li>ただし <strong>「データフレーム」や「コードでグラフを描く」のは初めて</strong></li>
 </ul>
-</section>
-<section id="まず最初の-3-ステップ" class="level2">
-<h2 class="anchored" data-anchor-id="まず最初の-3-ステップ">まず最初の 3 ステップ</h2>
+<p>この 2 つを橋渡しするのがこのページの目的です。コピペして動かしながら読み進めてください。</p>
+</div>
+</div>
+<section id="このアプリで何をするのか" class="level2">
+<h2 class="anchored" data-anchor-id="このアプリで何をするのか">0. このアプリで何をするのか</h2>
 <ol type="1">
-<li>左側の表に、<strong>実験で測った値だけ</strong>を入力します。</li>
-<li>右上のエディタで <code>df &lt;- get.input()</code> を実行してデータを取得します。</li>
-<li>平均・標準偏差・回帰・グラフ描画は R コード側で計算します。</li>
+<li><strong>左の表</strong>に、実験で測った数値を入力する（1 行目は列の名前）。</li>
+<li><strong>右上のエディタ</strong>に R のコードを書いて「コード実行」を押す。</li>
+<li>計算結果は右下の <strong>コンソール</strong>、グラフは <strong>グラフ</strong> タブに出る。</li>
 </ol>
+<p>データはブラウザの中だけで処理され、どこにも送信されません。まずは「設定読込 (JSON)」からサンプルを開いて、実物を見るのが近道です。</p>
 </section>
-<section id="画面の見方" class="level2">
-<h2 class="anchored" data-anchor-id="画面の見方">画面の見方</h2>
+<section id="データフレームって何" class="level2">
+<h2 class="anchored" data-anchor-id="データフレームって何">1. 「データフレーム」って何？</h2>
+<p><strong>データフレーム (data.frame)</strong> は、ひとことで言うと <strong>表</strong> です。Excel やスプレッドシートの 1 枚のシートとほぼ同じで、</p>
 <ul>
-<li><code>head(df)</code> や <code>summary(df)</code> のような確認用コードは、複数行スクリプト実行でも右下の<strong>コンソール</strong>に表示されます。</li>
-<li><code>plot()</code> や <code>ggplot()</code> の結果は<strong>グラフ</strong>タブに出ます。</li>
-<li>作った <code>data.frame</code> の中身を見たいときは<strong>データフレーム</strong>タブを開くと、R セッション内の <code>data.frame</code> 一覧と先頭行プレビューを確認できます。</li>
-<li>左側の表は TSV をそのまま複数セルへ貼り付けできます。表計算ソフトからのコピペにも使えます。</li>
+<li><strong>列 (column)</strong> … 「長さ」「周期」など、1 種類の量のたて 1 列</li>
+<li><strong>行 (row)</strong> … 1 回ぶんの測定（よこ 1 行）</li>
+</ul>
+<p>でできています。Python で習った「リスト」が縦に何本も束ねられ、それぞれに名前が付いたもの、とイメージするとよいです。</p>
+<p>このアプリでは、左の表がそのままデータフレームになります。<strong>1 行目に書いた言葉が列名</strong>になります。</p>
+</section>
+<section id="まずはデータを受け取る-get.input" class="level2">
+<h2 class="anchored" data-anchor-id="まずはデータを受け取る-get.input">2. まずはデータを受け取る — <code>get.input()</code></h2>
+<p>左の表を R に取り込むには、<code>get.input()</code> を使います。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">get.input</span>()   <span class="co"># 左の表を df という名前のデータフレームに入れる</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(df)            <span class="co"># 先頭の数行を表示して中身を確認する</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><code>&lt;-</code> は Python の <code>=</code>（代入）と同じだと思ってください。R では <code>&lt;-</code> をよく使います。</li>
+<li><code>head(df)</code> は最初の数行だけを見せてくれます。<code>summary(df)</code> を使うと、列ごとの最小・最大・平均などの要約が出ます。</li>
+</ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>列を 1 本だけ取り出す
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>df$length_m</code> のように <strong><code>データフレーム$列名</code></strong> と書くと、その列（縦 1 本）だけを取り出せます。あとでグラフの横軸・縦軸に使います。</p>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-3-contents" aria-controls="callout-3" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ヒント</span>やってみよう
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-3" class="callout-3-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>「単振り子」サンプルを開き、<code>df &lt;- get.input()</code> のあとに <code>head(df)</code> と <code>summary(df)</code> を実行して、表とまったく同じ数字が出ることを確かめましょう。</p>
+</div>
+</div>
+</div>
+</section>
+<section id="まずグラフを-1-枚描く-plot" class="level2">
+<h2 class="anchored" data-anchor-id="まずグラフを-1-枚描く-plot">3. まずグラフを 1 枚描く — <code>plot()</code></h2>
+<p>いちばん基本の作図は <code>plot(横軸, 縦軸)</code> です。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">get.input</span>()</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>length_m, df<span class="sc">$</span>period_1_s)   <span class="co"># 横軸 = 長さ, 縦軸 = 1回目の周期</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<p>これだけで散布図が <strong>グラフ</strong> タブに出ます。<code>plot()</code> に渡しているのは「横軸の列」と「縦軸の列」の 2 本です。</p>
+</section>
+<section id="グラフの見た目を整える" class="level2">
+<h2 class="anchored" data-anchor-id="グラフの見た目を整える">4. グラフの見た目を整える</h2>
+<p><code>plot()</code> には、見た目を決めるオプションを足せます。よく使うものだけ覚えれば十分です。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.paper_style</span>()                  <span class="co"># 余白や軸を、レポート向けに整える(このアプリ独自)</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>length_m, df<span class="sc">$</span>period_1_s,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch =</span> <span class="dv">19</span>,                        <span class="co"># 点の形(19 = 塗りつぶしの丸)</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">col =</span> <span class="st">"firebrick"</span>,               <span class="co"># 点の色</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex =</span> <span class="fl">1.2</span>,                       <span class="co"># 点の大きさ</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Length / m"</span>,             <span class="co"># 横軸ラベル(単位もここに書く)</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Period / s"</span>,             <span class="co"># 縦軸ラベル</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">main =</span> <span class="st">"Pendulum"</span>                <span class="co"># グラフのタイトル</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="fu">add.paper_guides</span>()                 <span class="co"># 補助のグリッド線を足す(このアプリ独自)</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-important callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">重要</span>ラベルは英語で
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>このアプリの R はブラウザの中で動くため、<strong>グラフの中の日本語は文字化けします</strong>。<code>xlab</code> <code>ylab</code> <code>main</code> などは英語（<code>Length / m</code> など）で書いてください。コードの <strong>コメント（<code>#</code> のうしろ）は日本語でかまいません</strong>。</p>
+</div>
+</div>
+<p>軸ラベルには <strong>必ず単位</strong> を書くこと、タイトルを大きくしすぎないこと、点や線は印刷しても見える太さにすること。これだけで「読めるグラフ」になります。</p>
+</section>
+<section id="新しい列を計算して足す-平均など" class="level2">
+<h2 class="anchored" data-anchor-id="新しい列を計算して足す-平均など">5. 新しい列を計算して足す — 平均など</h2>
+<p>繰り返し測定したら、<strong>平均</strong> を求めて 1 本の列として足すのが基本です。「<code>データフレーム$新しい列名 &lt;- 計算</code> 」で列を追加できます。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 3回(または5回)測った周期の列をまとめて指定</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>period_cols <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">"period_1_s"</span>, <span class="st">"period_2_s"</span>, <span class="st">"period_3_s"</span>)</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 行ごとの平均を、新しい列 period_mean_s として足す</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>period_mean_s <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(df[period_cols])</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<ul>
+<li><code>c(...)</code> は <strong>値をいくつか束ねる</strong>関数（Python のリストに近い）。ここでは列名を束ねています。</li>
+<li><code>rowMeans()</code> は <strong>行ごと（測定ごと）の平均</strong>を計算します。</li>
 </ul>
 </section>
-<section id="get.input-の基本" class="level2">
-<h2 class="anchored" data-anchor-id="get.input-の基本"><code>get.input()</code> の基本</h2>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">get.input</span>()</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
-<p>現在のシートを <code>data.frame</code> として受け取ります。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">get.input</span>(<span class="st">"Sheet2"</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
-<p>シート名でも取得できます。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">get.input</span>(<span class="dv">2</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
-<p>1 始まりの番号でも取得できます。</p>
-</section>
-<section id="論文レポート寄りの作図の基本" class="level2">
-<h2 class="anchored" data-anchor-id="論文レポート寄りの作図の基本">論文・レポート寄りの作図の基本</h2>
-<p>このアプリでは、base R の余白や軸を整える helper として <code>set.paper_style()</code> を使えます。</p>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">get.input</span>()</span>
-<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a><span class="fu">set.paper_style</span>()</span>
-<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>time_s, df<span class="sc">$</span>distance_m,</span>
-<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">1.1</span>,</span>
-<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Time / s"</span>,</span>
-<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Distance / m"</span></span>
-<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
-<section id="まず意識したいポイント" class="level3">
-<h3 class="anchored" data-anchor-id="まず意識したいポイント">まず意識したいポイント</h3>
+<section id="欠損値-na-のあつかい" class="level2">
+<h2 class="anchored" data-anchor-id="欠損値-na-のあつかい">6. 欠損値 (NA) のあつかい</h2>
+<p>実験では「測り忘れ」「失敗して空欄」がよくあります。R では空欄は <strong><code>NA</code>（欠損値）</strong> として扱われます。<code>NA</code> をそのまま計算すると、結果も <code>NA</code> になってしまいます。</p>
+<p>対処は 2 つ覚えれば十分です。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># (A) 計算するとき、NA を無視する: na.rm = TRUE を付ける</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>period_mean_s <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(df[period_cols], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co"># (B) 使えない行ごと取り除く: subset() で条件に合う行だけ残す</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">subset</span>(df, <span class="sc">!</span><span class="fu">is.na</span>(length_m))   <span class="co"># length_m が NA でない行だけ残す</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
-<li>タイトルを大きく入れすぎず、<strong>軸ラベルに単位を書く</strong></li>
-<li>余白を詰めすぎず、でも広すぎないようにする</li>
-<li>点・線・誤差棒は、印刷しても見分けやすい太さにする</li>
-<li>棒グラフは、<strong>カテゴリ比較が本当に必要な場合だけ</strong>使う</li>
+<li><code>is.na(x)</code> は「x が NA かどうか」を調べます。<code>!</code> は「ではない」の意味なので、<code>!is.na(length_m)</code> は「length_m が NA でない」。</li>
+<li>横軸に使う列が欠けている行は計算できないので、(B) で取り除きます。測定回数の一部だけ欠けているなら、(A) で「ある分だけで平均」します。</li>
 </ul>
 </section>
+<section id="ばらつきとエラーバー" class="level2">
+<h2 class="anchored" data-anchor-id="ばらつきとエラーバー">7. ばらつきとエラーバー</h2>
+<p>平均だけでなく、<strong>どれくらいばらついたか</strong>も大事です。ばらつきは <strong>標準偏差 (sd)</strong> で表し、グラフでは <strong>誤差棒（エラーバー）</strong> として描きます。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 行ごとの標準偏差を新しい列にする(これが誤差棒の長さになる)</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>period_sd_s <span class="ot">&lt;-</span> <span class="fu">apply</span>(df[period_cols], <span class="dv">1</span>, sd, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<p><code>apply(表, 1, sd)</code> は「<strong>各行 (1) に対して sd を計算する</strong>」という意味です（<code>2</code> にすると列ごと）。</p>
+<p>誤差棒は <code>arrows()</code> で、平均から上下に <code>sd</code> ぶん伸ばして描きます。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>length_m, df<span class="sc">$</span>period_mean_s, <span class="at">pch =</span> <span class="dv">19</span>,</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Length / m"</span>, <span class="at">ylab =</span> <span class="st">"Period / s"</span>)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>length_m, df<span class="sc">$</span>period_mean_s <span class="sc">-</span> df<span class="sc">$</span>period_sd_s,   <span class="co"># 下端 = 平均 - sd</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>length_m, df<span class="sc">$</span>period_mean_s <span class="sc">+</span> df<span class="sc">$</span>period_sd_s,   <span class="co"># 上端 = 平均 + sd</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">code =</span> <span class="dv">3</span>, <span class="at">length =</span> <span class="fl">0.04</span>               <span class="co"># 両端に短い横棒(矢じり)を付ける</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>エラーバーの「量」を変える
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>± sd</code>（標準偏差）が基本ですが、平均値のばらつきを示したいときは <strong>標準誤差</strong> <code>sd / sqrt(n)</code> を使うこともあります。<code>df$period_sd_s</code> の代わりに、伸ばす量の列を差し替えるだけで変えられます。</p>
+</div>
+</div>
 </section>
-<section id="よくある解析の型" class="level2">
-<h2 class="anchored" data-anchor-id="よくある解析の型">よくある解析の型</h2>
-<section id="繰り返し測定の平均とばらつき" class="level3">
-<h3 class="anchored" data-anchor-id="繰り返し測定の平均とばらつき">繰り返し測定の平均とばらつき</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">get.input</span>()</span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>period_mean_s <span class="ot">&lt;-</span> <span class="fu">rowMeans</span>(df[<span class="fu">c</span>(<span class="st">"period_1_s"</span>, <span class="st">"period_2_s"</span>, <span class="st">"period_3_s"</span>)], <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>df<span class="sc">$</span>period_sd_s <span class="ot">&lt;-</span> <span class="fu">apply</span>(df[<span class="fu">c</span>(<span class="st">"period_1_s"</span>, <span class="st">"period_2_s"</span>, <span class="st">"period_3_s"</span>)], <span class="dv">1</span>, sd, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="誤差棒付き散布図" class="level3">
-<h3 class="anchored" data-anchor-id="誤差棒付き散布図">誤差棒付き散布図</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.paper_style</span>()</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(df<span class="sc">$</span>time_s, df<span class="sc">$</span>velocity_mean_m_s,</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">pch =</span> <span class="dv">19</span>, <span class="at">cex =</span> <span class="fl">1.1</span>,</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">xlab =</span> <span class="st">"Time / s"</span>,</span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">ylab =</span> <span class="st">"Velocity / m s^-1"</span></span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">arrows</span>(</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>time_s, df<span class="sc">$</span>velocity_mean_m_s <span class="sc">-</span> df<span class="sc">$</span>velocity_sd_m_s,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  df<span class="sc">$</span>time_s, df<span class="sc">$</span>velocity_mean_m_s <span class="sc">+</span> df<span class="sc">$</span>velocity_sd_m_s,</span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">angle =</span> <span class="dv">90</span>, <span class="at">code =</span> <span class="dv">3</span>, <span class="at">length =</span> <span class="fl">0.04</span></span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-<section id="回帰直線" class="level3">
-<h3 class="anchored" data-anchor-id="回帰直線">回帰直線</h3>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(voltage_mean_V <span class="sc">~</span> <span class="dv">0</span> <span class="sc">+</span> current_A, <span class="at">data =</span> df)</span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">a =</span> <span class="dv">0</span>, <span class="at">b =</span> <span class="fu">coef</span>(fit)[<span class="dv">1</span>], <span class="at">col =</span> <span class="st">"#374151"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)</span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
-</section>
-</section>
-<section id="サンプルの見方" class="level2">
-<h2 class="anchored" data-anchor-id="サンプルの見方">サンプルの見方</h2>
-<p>アプリの「設定読込 (JSON)」には、次のような代表例を入れています。</p>
+<section id="直線曲線をあてはめる回帰" class="level2">
+<h2 class="anchored" data-anchor-id="直線曲線をあてはめる回帰">8. 直線・曲線をあてはめる（回帰）</h2>
+<p>データに直線をあてはめるには <code>lm()</code>（線形モデル）を使います。</p>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># period_mean_s を length_m で説明する直線をあてはめる</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>fit <span class="ot">&lt;-</span> <span class="fu">lm</span>(period_mean_s <span class="sc">~</span> length_m, <span class="at">data =</span> df)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(fit, <span class="at">col =</span> <span class="st">"#374151"</span>, <span class="at">lwd =</span> <span class="dv">2</span>)   <span class="co"># あてはめた直線をグラフに重ねる</span></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(fit)                            <span class="co"># 傾き・切片・あてはまり具合をコンソールで見る</span></span></code></pre></div><button title="コピー" class="code-copy-button"><i class="bi"></i></button></div>
 <ul>
-<li>等加速度直線運動の位置-時刻</li>
-<li>データロガー時系列</li>
-<li>単振り子</li>
-<li>自由落下</li>
-<li>材質ごとの抵抗比較</li>
+<li><code>y ~ x</code> は「y を x で説明する」という R の書き方です。</li>
+<li>曲線（例：2 次関数）をあてはめたいときは <code>lm(y ~ x + I(x^2), data = df)</code> のようにします。曲線は <code>abline</code> では描けないので、<code>predict()</code> で計算した値を <code>lines()</code> でつなぎます（→ スニペット集を参照）。</li>
 </ul>
-<p>まずは sample を開いて、そのまま実行し、コードを少しずつ書き換えるのが近道です。</p>
+</section>
+<section id="つのタブの使い分け" class="level2">
+<h2 class="anchored" data-anchor-id="つのタブの使い分け">9. 3 つのタブの使い分け</h2>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>タブ</th>
+<th>何が見えるか</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>コンソール</td>
+<td><code>head()</code> <code>summary()</code> <code>print()</code> の文字の結果、エラーメッセージ</td>
+</tr>
+<tr class="even">
+<td>グラフ</td>
+<td><code>plot()</code> などで描いた図。「全体表示」で拡大、PNG 保存も可能</td>
+</tr>
+<tr class="odd">
+<td>データフレーム</td>
+<td>R の中にある data.frame の一覧と先頭プレビュー（列が増えたか確認に便利）</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="保存と読込" class="level2">
+<h2 class="anchored" data-anchor-id="保存と読込">10. 保存と読込</h2>
+<ul>
+<li><strong>設定保存 (JSON)</strong> … 表・スクリプト・コンソール履歴をまとめて 1 ファイルに保存。</li>
+<li><strong>設定読込 (JSON)</strong> … 保存したファイル、または授業用サンプルを開く。</li>
+<li>読み込んだ後は、必要に応じて「コード実行」をもう一度押してください。</li>
+</ul>
+<hr>
+<p>次のステップ：</p>
+<ul>
+<li>すぐ使えるコード片と関数の早見表 → <a href="./snippets.html">スニペット集</a></li>
+<li>授業での使い方・R の背景 → <a href="./teacher.html">教師ガイド</a></li>
+</ul>
 
 
 </section>
@@ -691,6 +834,35 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   });
   </script>
 </div> <!-- /content -->
+<footer class="footer">
+  <div class="nav-footer">
+    <div class="nav-footer-left">
+<p>MIT License · © 2026 Contributors</p>
+</div>   
+    <div class="nav-footer-center">
+      <ul class="footer-items list-unstyled">
+    <li class="nav-item">
+    <a class="nav-link" href="./../">
+<p>アプリ</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://github.com/phys-ken/web_r_for_physics">
+<p>GitHub リポジトリ</p>
+</a>
+  </li>  
+    <li class="nav-item">
+    <a class="nav-link" href="https://github.com/phys-ken/web_r_for_physics/blob/master/LICENSE">
+<p>ライセンス (MIT)</p>
+</a>
+  </li>  
+</ul>
+    </div>
+    <div class="nav-footer-right">
+      &nbsp;
+    </div>
+  </div>
+</footer>
 
 
 

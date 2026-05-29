@@ -21,6 +21,26 @@
 - 初期状態は空で起動し、「設定読込 (JSON)」から授業用サンプル群を展開
 - アプリ内 manual は操作説明に絞り、詳しい学習用ガイドは `manual/` に分離
 
+## 授業用サンプル
+
+「設定読込 (JSON)」から、解説コメント入りの 4 サンプルを展開できます。いずれも意図的に欠損値とばらつきを含み、コードを読み解くこと自体が学習になるよう作っています。
+
+- **単振り子** — 繰り返し測定の平均・標準偏差、誤差棒付き散布図、回帰直線（線形回帰）
+- **自由落下** — 重い球・軽い球・ひらひらの紙を比較、複数系列の重ね描き・凡例・理論曲線
+- **データロガー時系列** — 減衰振動を点と線の時系列グラフで描画（欠測の表示も確認）
+- **材質ごとの抵抗比較** — カテゴリ比較の棒グラフ＋誤差棒
+
+サンプルは `samples/manifest.json` と個別 JSON で管理しています。
+
+## マニュアル
+
+学習用マニュアルは Quarto サイト（`manual-src/` → `manual/`）に集約しています。
+
+- [生徒ガイド](https://phys-ken.github.io/web_r_for_physics/manual/) — データフレーム・作図・欠損処理・誤差棒・回帰を順に学ぶ
+- [スニペット集 / チートシート](https://phys-ken.github.io/web_r_for_physics/manual/snippets.html)
+- [教師ガイド](https://phys-ken.github.io/web_r_for_physics/manual/teacher.html)
+- [開発者向けリファレンス](https://phys-ken.github.io/web_r_for_physics/manual/developer.html)
+
 ## ローカル起動
 
 ```bash
@@ -70,3 +90,7 @@ npx playwright install chromium
 - エクスポート JSON は作業中のプログラミング状態も復元できるよう、UI 状態と console 履歴を含む形式に拡張しています
 - 授業用サンプルは `samples/manifest.json` と個別 JSON に分けて管理しています
 - 学習用 manual は `manual-src/` の Quarto ソースから `manual/` へ静的出力します
+
+## ライセンス
+
+MIT License · © 2026 Contributors（[LICENSE](./LICENSE) を参照）

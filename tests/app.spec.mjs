@@ -77,7 +77,7 @@ test("manual navigation, webR execution, graph render, and JSON round-trip", asy
 
   await page.goto("./manual/");
   await expect(page.getByRole("heading", { name: "Physics webR Lab 学習ガイド" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "スニペット集" })).toBeVisible();
+  await expect(page.locator(".navbar").getByRole("link", { name: "スニペット集" })).toBeVisible();
 });
 
 test("editor execution prints data frames and dataframe tab previews pasted TSV data", async ({ page }) => {

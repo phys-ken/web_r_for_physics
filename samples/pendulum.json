@@ -8,31 +8,128 @@
           "id": "sheet-1",
           "name": "pendulum",
           "data": [
-            ["length_m", "period_1_s", "period_2_s", "period_3_s"],
-            ["0.20", "0.90", "0.92", "0.91"],
-            ["0.30", "1.07", "1.10", "1.09"],
-            ["0.40", "1.22", "1.26", "1.24"],
-            ["0.50", "1.37", "1.41", "1.42"],
-            ["0.60", "1.51", "1.55", "1.56"],
-            ["0.70", "1.63", "1.67", "1.68"],
-            ["", "", "", ""],
-            ["", "", "", ""],
-            ["", "", "", ""],
-            ["", "", "", ""],
-            ["", "", "", ""],
-            ["", "", "", ""]
+            [
+              "length_m",
+              "period_1_s",
+              "period_2_s",
+              "period_3_s",
+              "period_4_s",
+              "period_5_s"
+            ],
+            [
+              "0.20",
+              "0.86",
+              "0.93",
+              "0.88",
+              "0.91",
+              "0.90"
+            ],
+            [
+              "0.30",
+              "1.05",
+              "1.12",
+              "1.08",
+              "1.14",
+              "1.07"
+            ],
+            [
+              "0.40",
+              "1.22",
+              "1.31",
+              "1.25",
+              "1.28",
+              "1.23"
+            ],
+            [
+              "0.50",
+              "1.38",
+              "1.45",
+              "1.40",
+              "1.47",
+              "1.41"
+            ],
+            [
+              "0.60",
+              "1.52",
+              "1.61",
+              "1.55",
+              "1.58",
+              "1.50"
+            ],
+            [
+              "0.70",
+              "1.65",
+              "1.72",
+              "1.68",
+              "1.71",
+              "1.63"
+            ],
+            [
+              "0.80",
+              "1.78",
+              "1.85",
+              "1.80",
+              "",
+              ""
+            ],
+            [
+              "0.90",
+              "1.88",
+              "1.97",
+              "1.91",
+              "1.95",
+              ""
+            ],
+            [
+              "1.00",
+              "1.98",
+              "2.08",
+              "2.02",
+              "2.05",
+              "1.99"
+            ],
+            [
+              "1.20",
+              "2.16",
+              "2.25",
+              "2.20",
+              "2.23",
+              ""
+            ],
+            [
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ],
+            [
+              "",
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
           ]
         }
       ]
     },
-    "script": "df <- subset(get.input(), !is.na(length_m))\ndf$sqrt_length_m <- sqrt(df$length_m)\ndf$period_mean_s <- rowMeans(df[c(\"period_1_s\", \"period_2_s\", \"period_3_s\")], na.rm = TRUE)\ndf$period_sd_s <- apply(df[c(\"period_1_s\", \"period_2_s\", \"period_3_s\")], 1, sd, na.rm = TRUE)\nfit <- lm(period_mean_s ~ sqrt_length_m, data = df)\nset.paper_style(mar = c(4.2, 4.2, 2.1, 0.8))\nplot(df$sqrt_length_m, df$period_mean_s,\n  pch = 19, col = \"firebrick\", cex = 1.15,\n  xlab = \"sqrt(length) / m^0.5\", ylab = \"Mean period / s\",\n  main = \"Simple pendulum: period vs sqrt(length)\"\n)\nadd.paper_guides(show_top_axis = TRUE, show_right_axis = TRUE)\narrows(df$sqrt_length_m, df$period_mean_s - df$period_sd_s,\n  df$sqrt_length_m, df$period_mean_s + df$period_sd_s,\n  angle = 90, code = 3, length = 0.04\n)\nabline(fit, col = \"#374151\", lwd = 2)\nprint(df[c(\"length_m\", \"period_mean_s\", \"period_sd_s\")])\nsummary(fit)",
+    "script": "# === 単振り子: 周期と長さの関係を調べる ===\n# get.input() で左の表を data.frame として受け取る\ndf <- get.input()\n\n# 長さ(length_m)が空の行は計算に使えないので取り除く\ndf <- subset(df, !is.na(length_m))\n\n# 5回ぶんの測定列を、まとめて 1 つの名前で指定しておく\nperiod_cols <- c(\"period_1_s\", \"period_2_s\", \"period_3_s\", \"period_4_s\", \"period_5_s\")\n\n# 行ごとの平均周期。na.rm = TRUE で「空欄(NA)は無視して平均」する\ndf$period_mean_s <- rowMeans(df[period_cols], na.rm = TRUE)\n\n# 行ごとの標準偏差 = 測定のばらつき。これが誤差棒の長さになる\ndf$period_sd_s <- apply(df[period_cols], 1, sd, na.rm = TRUE)\n\n# 理論式 T = 2*pi*sqrt(L/g) より、横軸に sqrt(length) をとると直線になる\ndf$sqrt_length <- sqrt(df$length_m)\n\n# 直線あてはめ(線形回帰)。period_mean_s を sqrt_length で説明するモデル\nfit <- lm(period_mean_s ~ sqrt_length, data = df)\n\n# グラフの余白・軸の体裁を整えるヘルパー(このアプリ独自)\nset.paper_style()\n\n# 平均周期を点で描く。pch = 19 は塗りつぶしの丸\nplot(df$sqrt_length, df$period_mean_s,\n  pch = 19, col = \"firebrick\", cex = 1.2,\n  xlab = \"sqrt(length) / m^0.5\",\n  ylab = \"Period / s\",\n  main = \"Simple pendulum: period vs sqrt(length)\"\n)\n\n# 補助グリッドと上・右の目盛りを足して読みやすくする(このアプリ独自)\nadd.paper_guides(show_top_axis = TRUE, show_right_axis = TRUE)\n\n# 誤差棒(エラーバー)。平均 ± 標準偏差 を上下に伸ばす。length は矢じりの幅\narrows(df$sqrt_length, df$period_mean_s - df$period_sd_s,\n       df$sqrt_length, df$period_mean_s + df$period_sd_s,\n       angle = 90, code = 3, length = 0.04)\n\n# 回帰直線を重ねる\nabline(fit, col = \"#374151\", lwd = 2)\n\n# 表とあてはめ結果をコンソールで確認する\nprint(df[c(\"length_m\", \"period_mean_s\", \"period_sd_s\")])\nsummary(fit)",
     "ui": {
       "currentPage": "workspace",
       "outputTab": "graph",
-      "selectedCell": { "row": 1, "col": 0 },
+      "selectedCell": {
+        "row": 1,
+        "col": 0
+      },
       "restoreBanner": "",
       "sheetStatus": "単振り子サンプル",
-      "runtimeStatus": { "text": "サンプルを読み込みました", "tone": "warning" }
+      "runtimeStatus": {
+        "text": "サンプルを読み込みました",
+        "tone": "warning"
+      }
     },
     "console": {
       "entries": [],

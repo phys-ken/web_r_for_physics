@@ -6,33 +6,82 @@
       "sheets": [
         {
           "id": "sheet-1",
-          "name": "material_resistance",
+          "name": "resistance",
           "data": [
-            ["material", "resistance_1_ohm", "resistance_2_ohm", "resistance_3_ohm"],
-            ["copper", "1.21", "1.18", "1.20"],
-            ["constantan", "4.86", "4.91", "4.88"],
-            ["nichrome", "6.28", "6.34", "6.31"],
-            ["carbon", "8.44", "8.51", "8.47"],
-            ["", "", "", ""],
-            ["", "", "", ""],
-            ["", "", "", ""],
-            ["", "", "", ""],
-            ["", "", "", ""],
-            ["", "", "", ""],
-            ["", "", "", ""],
-            ["", "", "", ""]
+            [
+              "material",
+              "resistance_1_ohm",
+              "resistance_2_ohm",
+              "resistance_3_ohm",
+              "resistance_4_ohm"
+            ],
+            [
+              "Copper",
+              "0.48",
+              "0.52",
+              "0.50",
+              "0.49"
+            ],
+            [
+              "Aluminum",
+              "0.78",
+              "0.83",
+              "0.80",
+              ""
+            ],
+            [
+              "Iron",
+              "1.45",
+              "1.58",
+              "1.50",
+              "1.53"
+            ],
+            [
+              "Nichrome",
+              "5.90",
+              "6.20",
+              "6.00",
+              "6.10"
+            ],
+            [
+              "Carbon",
+              "3.40",
+              "3.70",
+              "3.50",
+              ""
+            ],
+            [
+              "",
+              "",
+              "",
+              "",
+              ""
+            ],
+            [
+              "",
+              "",
+              "",
+              "",
+              ""
+            ]
           ]
         }
       ]
     },
-    "script": "df <- subset(get.input(), material != \"\")\ndf$resistance_mean_ohm <- rowMeans(df[c(\"resistance_1_ohm\", \"resistance_2_ohm\", \"resistance_3_ohm\")], na.rm = TRUE)\ndf$resistance_sd_ohm <- apply(df[c(\"resistance_1_ohm\", \"resistance_2_ohm\", \"resistance_3_ohm\")], 1, sd, na.rm = TRUE)\nset.paper_style(mar = c(4.6, 4.1, 2.0, 0.8), las = 1)\nbar_x <- barplot(df$resistance_mean_ohm,\n  names.arg = df$material,\n  col = \"#cbd5e1\", border = \"#475569\",\n  ylim = c(0, max(df$resistance_mean_ohm + df$resistance_sd_ohm) * 1.15),\n  xlab = \"Material\", ylab = \"Resistance / ohm\",\n  main = \"Resistance by material\"\n)\nabline(h = pretty(c(0, df$resistance_mean_ohm + df$resistance_sd_ohm)), col = \"#e5e7eb\", lwd = 0.8)\naxis(4, at = axTicks(2), labels = FALSE, tcl = -0.15)\nbox(bty = \"l\")\narrows(bar_x, df$resistance_mean_ohm - df$resistance_sd_ohm,\n  bar_x, df$resistance_mean_ohm + df$resistance_sd_ohm,\n  angle = 90, code = 3, length = 0.04\n)\nprint(df[c(\"material\", \"resistance_mean_ohm\", \"resistance_sd_ohm\")])",
+    "script": "# === 材質ごとの抵抗をくらべる(カテゴリ比較) ===\n# 同じ形・長さの試料を材質ごとに 4 回測った data.frame\ndf <- get.input()\n\n# 材質名(material)が空の行を取り除く\ndf <- subset(df, material != \"\")\n\n# 4 回ぶんの測定列をまとめて指定\nres_cols <- c(\"resistance_1_ohm\", \"resistance_2_ohm\", \"resistance_3_ohm\", \"resistance_4_ohm\")\n\n# 材質ごとの平均抵抗と、そのばらつき(標準偏差)\ndf$resistance_mean_ohm <- rowMeans(df[res_cols], na.rm = TRUE)\ndf$resistance_sd_ohm <- apply(df[res_cols], 1, sd, na.rm = TRUE)\n\nset.paper_style(mar = c(4.6, 4.2, 2.0, 0.8))\n\n# 棒グラフはカテゴリ(材質)どうしの比較に向く。\n# barplot は棒の中心 x 座標を返すので、誤差棒の位置に使う\nbar_x <- barplot(df$resistance_mean_ohm,\n  names.arg = df$material,\n  col = \"#cbd5e1\", border = \"#475569\",\n  ylim = c(0, max(df$resistance_mean_ohm + df$resistance_sd_ohm) * 1.15),\n  xlab = \"Material\",\n  ylab = \"Resistance / ohm\",\n  main = \"Resistance by material\"\n)\n\n# 各棒の上に誤差棒(平均 ± 標準偏差)をのせる\narrows(bar_x, df$resistance_mean_ohm - df$resistance_sd_ohm,\n       bar_x, df$resistance_mean_ohm + df$resistance_sd_ohm,\n       angle = 90, code = 3, length = 0.05)\n\n# 平均とばらつきをコンソールで確認する\nprint(df[c(\"material\", \"resistance_mean_ohm\", \"resistance_sd_ohm\")])",
     "ui": {
       "currentPage": "workspace",
       "outputTab": "graph",
-      "selectedCell": { "row": 1, "col": 0 },
+      "selectedCell": {
+        "row": 1,
+        "col": 0
+      },
       "restoreBanner": "",
-      "sheetStatus": "材質比較サンプル",
-      "runtimeStatus": { "text": "サンプルを読み込みました", "tone": "warning" }
+      "sheetStatus": "材質抵抗サンプル",
+      "runtimeStatus": {
+        "text": "サンプルを読み込みました",
+        "tone": "warning"
+      }
     },
     "console": {
       "entries": [],

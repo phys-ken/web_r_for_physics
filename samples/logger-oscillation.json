@@ -6,52 +6,122 @@
       "sheets": [
         {
           "id": "sheet-1",
-          "name": "logger_oscillation",
+          "name": "logger",
           "data": [
-            ["time_s", "position_m"],
-            ["0.0", "0.290"],
-            ["0.1", "0.322"],
-            ["0.2", "0.343"],
-            ["0.3", "0.347"],
-            ["0.4", "0.332"],
-            ["0.5", "0.303"],
-            ["0.6", "0.268"],
-            ["0.7", "0.236"],
-            ["0.8", "0.219"],
-            ["0.9", "0.221"],
-            ["1.0", "0.241"],
-            ["1.1", "0.271"],
-            ["1.2", "0.301"],
-            ["1.3", "0.321"],
-            ["1.4", "0.325"],
-            ["1.5", "0.313"],
-            ["1.6", "0.289"],
-            ["1.7", "0.261"],
-            ["1.8", "0.237"],
-            ["1.9", "0.226"],
-            ["2.0", "0.230"],
-            ["2.1", "0.247"],
-            ["2.2", "0.270"],
-            ["2.3", "0.293"],
-            ["2.4", "0.308"],
-            ["2.5", "0.311"],
-            ["2.6", "0.301"],
-            ["2.7", "0.282"],
-            ["2.8", "0.259"],
-            ["2.9", "0.242"],
-            ["3.0", "0.233"]
+            [
+              "time_s",
+              "displacement_m"
+            ],
+            [
+              "0.0",
+              "0.100"
+            ],
+            [
+              "0.2",
+              "0.050"
+            ],
+            [
+              "0.4",
+              "-0.036"
+            ],
+            [
+              "0.6",
+              "-0.078"
+            ],
+            [
+              "0.8",
+              "-0.046"
+            ],
+            [
+              "1.0",
+              "0.021"
+            ],
+            [
+              "1.2",
+              "0.060"
+            ],
+            [
+              "1.4",
+              "0.042"
+            ],
+            [
+              "1.6",
+              "-0.011"
+            ],
+            [
+              "1.8",
+              "-0.046"
+            ],
+            [
+              "2.0",
+              "-0.036"
+            ],
+            [
+              "2.2",
+              ""
+            ],
+            [
+              "2.4",
+              "0.035"
+            ],
+            [
+              "2.6",
+              "0.031"
+            ],
+            [
+              "2.8",
+              "0.001"
+            ],
+            [
+              "3.0",
+              "-0.026"
+            ],
+            [
+              "3.2",
+              "-0.026"
+            ],
+            [
+              "3.4",
+              "-0.004"
+            ],
+            [
+              "3.6",
+              "0.019"
+            ],
+            [
+              "3.8",
+              "0.022"
+            ],
+            [
+              "4.0",
+              "0.006"
+            ],
+            [
+              "",
+              ""
+            ],
+            [
+              "",
+              ""
+            ]
           ]
         }
       ]
     },
-    "script": "df <- subset(get.input(), !is.na(time_s))\nset.paper_style(mar = c(4.0, 4.1, 2.0, 0.8))\nplot(df$time_s, df$position_m,\n  type = \"l\", lwd = 2, col = \"#1f77b4\",\n  xlab = \"Time / s\", ylab = \"Position / m\",\n  main = \"Damped oscillation from motion sensor\"\n)\nadd.paper_guides(show_grid = TRUE, show_top_axis = TRUE)\npoints(df$time_s[c(TRUE, FALSE, FALSE)], df$position_m[c(TRUE, FALSE, FALSE)], pch = 16, cex = 0.65, col = \"#1f77b4\")\ncat(sprintf(\"Logger rows: %d\\n\", nrow(df)))\ncat(sprintf(\"Position range: %.3f to %.3f m\\n\", min(df$position_m), max(df$position_m)))",
+    "script": "# === データロガー: 減衰振動の時系列を描く ===\n# 運動センサーで 0.2 秒ごとに測った変位(displacement)の data.frame\ndf <- get.input()\n\n# 時系列では「時刻が空の行」だけを取り除く\ndf <- subset(df, !is.na(time_s))\n\nset.paper_style(mar = c(4.0, 4.2, 2.0, 0.8))\n\n# type = \"o\" は点と線の両方を描く。時間順に変位をつなぐので時系列向き。\n# 途中に欠測(NA)があると、その区間だけ線が途切れて表示される\nplot(df$time_s, df$displacement_m,\n  type = \"o\", pch = 20, lwd = 1.6, col = \"#1f77b4\",\n  xlab = \"Time / s\",\n  ylab = \"Displacement / m\",\n  main = \"Damped oscillation (motion logger)\"\n)\nadd.paper_guides()\n\n# 振動の中心(変位 0)を示す水平の補助線\nabline(h = 0, col = \"#9ca3af\", lty = 2)",
     "ui": {
       "currentPage": "workspace",
       "outputTab": "graph",
-      "selectedCell": { "row": 1, "col": 0 },
+      "selectedCell": {
+        "row": 1,
+        "col": 0
+      },
       "restoreBanner": "",
-      "sheetStatus": "データロガー時系列サンプル",
-      "runtimeStatus": { "text": "サンプルを読み込みました", "tone": "warning" }
+      "sheetStatus": "データロガーサンプル",
+      "runtimeStatus": {
+        "text": "サンプルを読み込みました",
+        "tone": "warning"
+      }
     },
     "console": {
       "entries": [],
