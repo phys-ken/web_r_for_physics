@@ -158,9 +158,9 @@ test("set.figure lets code control the figure aspect ratio", async ({ page }) =>
   const squareDims = await viewerDims(page);
   expect(squareDims.width).toBe(squareDims.height);
 
-  // The graph-size sample combines set.figure, par(mfrow) subplots and margins.
+  // The projectile sample combines set.figure, par(mfrow) subplots and margins.
   await page.getByRole("button", { name: "入力", exact: true }).click();
-  await page.getByRole("button", { name: "作図サイズとレイアウト" }).click();
+  await page.getByRole("button", { name: /斜方投射/ }).click();
   await expect(page.locator("#scriptEditor")).toHaveValue(/set\.figure/, { timeout: 30000 });
   await page.getByRole("button", { name: "グラフ", exact: true }).click();
   await runEditor(page);

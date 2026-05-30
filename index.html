@@ -3,6 +3,10 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#2b6de4">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Physics webR Lab">
   <title>Physics webR Lab</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232b6de4'/%3E%3Cpath d='M22 14h20v6l-6 10v6l12 18H16l12-18v-6l-6-10z' fill='white'/%3E%3C/svg%3E">
   <style>
@@ -1173,6 +1177,32 @@
         grid-template-rows: minmax(120px, auto) minmax(0, 1fr);
       }
     }
+
+    /* タッチ端末向けの調整。iOS はフォーカス時に 16px 未満の入力を自動ズーム
+       するため、編集系フィールドを 16px にしてズームを防ぎ、押しやすいよう
+       タッチターゲットを大きくする。デスクトップ(細いポインタ)では不変。 */
+    @media (pointer: coarse) {
+      .cell,
+      .script-editor,
+      .console-input,
+      .field-row input[type="text"],
+      .field-row select {
+        font-size: 16px;
+      }
+
+      .cell {
+        min-height: 40px;
+      }
+
+      .toolbar-group button,
+      .nav-toggle button,
+      .output-tab,
+      .modal-card button,
+      .sample-card,
+      .export-kind {
+        min-height: 40px;
+      }
+    }
   </style>
 </head>
 <body>
@@ -1233,7 +1263,7 @@
                     <button id="runScriptButton" class="primary" type="button">コード実行</button>
                   </div>
                 </div>
-                <textarea id="scriptEditor" class="script-editor" spellcheck="false" placeholder="ここに R コードを入力します"></textarea>
+                <textarea id="scriptEditor" class="script-editor" spellcheck="false" autocapitalize="off" autocorrect="off" placeholder="ここに R コードを入力します"></textarea>
               </div>
 
               <div class="output-section">
@@ -1252,7 +1282,7 @@
                   <div class="output-panel active" data-panel="console">
                     <pre id="consoleOutput" class="console-output" aria-live="polite"></pre>
                     <div class="console-input-row">
-                      <input id="consoleInput" class="console-input" type="text" placeholder="例: summary(get.input())" autocomplete="off" spellcheck="false">
+                      <input id="consoleInput" class="console-input" type="text" placeholder="例: summary(get.input())" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false">
                       <button id="runConsoleButton" type="button">1行実行</button>
                     </div>
                   </div>
@@ -2299,6 +2329,8 @@
           cell.className = "cell";
           cell.contentEditable = "true";
           cell.spellcheck = false;
+          cell.setAttribute("autocapitalize", "off");
+          cell.setAttribute("autocorrect", "off");
           cell.dataset.row = String(rowIndex);
           cell.dataset.col = String(colIndex);
           cell.textContent = row[colIndex] ?? "";

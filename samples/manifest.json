@@ -38,8 +38,8 @@
     },
     {
       "id": "graph-size",
-      "title": "作図サイズとレイアウト",
-      "description": "set.figure() で図の縦横比(1:1 など)や余白を決め、par(mfrow) で画面を分割して複数のグラフを並べる方法を学べます。",
+      "title": "斜方投射 — 軌跡と重力加速度",
+      "description": "ストロボ撮影風の放物運動データから、水平は等速・鉛直は放物線であることを確かめ、フィットの2次係数から重力加速度 g を推定します。set.figure()・par(mfrow)・asp=1 による作図レイアウトも併せて学べます。",
       "file": "graph-size.json"
     }
   ]
