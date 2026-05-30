@@ -321,6 +321,147 @@
       line-height: 1.35;
     }
 
+    .modal-footer {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      padding: 9px 10px;
+      border-top: 1px solid var(--border);
+      background: var(--panel);
+    }
+
+    .field-row {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px 12px;
+      font-size: 0.78rem;
+    }
+
+    .field-row label {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .field-row select,
+    .field-row input[type="text"] {
+      font: inherit;
+      padding: 3px 6px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: #fbfcfe;
+    }
+
+    .export-kind-list {
+      display: grid;
+      gap: 6px;
+    }
+
+    .export-kind {
+      display: block;
+      width: 100%;
+      text-align: left;
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: #fbfcfe;
+      cursor: pointer;
+      white-space: normal;
+      word-break: break-word;
+    }
+
+    .export-kind:hover:enabled {
+      background: #eef4fd;
+    }
+
+    .export-kind strong {
+      font-size: 0.8rem;
+    }
+
+    .export-kind .ek-desc {
+      display: block;
+      color: var(--muted);
+      font-size: 0.73rem;
+      line-height: 1.35;
+      margin-top: 2px;
+    }
+
+    .preview-sheet-list {
+      display: grid;
+      gap: 8px;
+    }
+
+    .preview-sheet {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--panel);
+      padding: 8px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .preview-table-wrap {
+      overflow: auto;
+      max-height: 160px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+    }
+
+    .preview-table {
+      border-collapse: collapse;
+      font-size: 0.72rem;
+      width: 100%;
+    }
+
+    .preview-table th,
+    .preview-table td {
+      border: 1px solid var(--border);
+      padding: 2px 6px;
+      text-align: left;
+      white-space: nowrap;
+    }
+
+    .preview-table th {
+      background: #eef2f8;
+      position: sticky;
+      top: 0;
+    }
+
+    .preview-rename {
+      color: var(--muted);
+      font-size: 0.72rem;
+      line-height: 1.4;
+    }
+
+    .preview-rename code {
+      background: #eef2f8;
+      padding: 0 3px;
+      border-radius: 3px;
+    }
+
+    details.export-advanced {
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--panel);
+      padding: 6px 9px;
+    }
+
+    details.export-advanced > summary {
+      cursor: pointer;
+      font-size: 0.8rem;
+      font-weight: 600;
+    }
+
+    details.export-advanced > .field-row {
+      margin-top: 8px;
+    }
+
+    .export-warn {
+      color: var(--danger, #c0392b);
+      font-size: 0.73rem;
+    }
+
     .workspace {
       flex: 1;
       min-height: 0;
@@ -1049,8 +1190,8 @@
       </div>
       <div class="topbar-group">
         <span id="runtimeStatus" class="status-pill">webR を初期化中…</span>
-        <button id="importButton" type="button">設定読込 (JSON)</button>
-        <button id="exportButton" type="button">設定保存 (JSON)</button>
+        <button id="inputButton" type="button">入力</button>
+        <button id="outputButton" type="button">出力</button>
       </div>
     </header>
 
@@ -1178,11 +1319,12 @@
             </section>
           </div>
 
-          <h2>保存と読込</h2>
+          <h2>入力と出力</h2>
           <ul>
-            <li>「設定保存 (JSON)」でシート内容・スクリプト・履歴をまとめて保存できます。</li>
-            <li>「設定読込 (JSON)」では自分の JSON か授業用サンプルを選べます。</li>
-            <li>JSON 読込後は、必要に応じてコードを再実行してください。</li>
+            <li>「入力」では、Excel(xlsx)・CSV・TSV のデータ取込、設定(JSON)の読込、授業用サンプルの展開ができます。データ取込時は、取り込むシートや見出し行を確認できます。</li>
+            <li>「出力」では、データ領域や最新のデータフレームを CSV / xlsx で書き出せます。R スクリプトのみ、設定(JSON)、一括(zip)の出力にも対応し、ファイル名には日時が付きます。</li>
+            <li>R スクリプトのみを出力すると、<code>get.input()</code> を含む行は自動でコメントアウトされます。詳細設定で CSV の文字コードやデータフレームのまとめ方を切り替えられます。</li>
+            <li>設定(JSON)を読み込んだ後は、必要に応じてコードを再実行してください。</li>
           </ul>
 
           <h2>詳しい学習用ガイド</h2>
@@ -1219,22 +1361,30 @@
   </div>
 
   <input id="importFileInput" class="hidden" type="file" accept="application/json,.json">
+  <input id="dataFileInput" class="hidden" type="file" accept=".xlsx,.xls,.csv,.tsv,.txt,text/csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet">
 
   <div id="importModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="importModalTitle">
     <div class="modal-card">
       <div class="panel-header">
         <div class="panel-title">
-          <strong id="importModalTitle">設定読込</strong>
-          <span>ファイル読込または授業用サンプルの展開</span>
+          <strong id="importModalTitle">入力</strong>
+          <span>データ取込・設定読込・授業用サンプルの展開</span>
         </div>
         <button id="closeImportModalButton" type="button">閉じる</button>
       </div>
       <div class="modal-body">
         <section class="modal-section">
-          <strong>自分の JSON を開く</strong>
+          <strong>データを取り込む (Excel / CSV / TSV)</strong>
+          <p>xlsx・csv・tsv のデータを左のデータ領域へ展開します。読み込んだあと、取り込むシートや見出し行を確認できます。</p>
+          <div class="toolbar-group">
+            <button id="pickDataFileButton" class="primary" type="button">データファイルを選ぶ</button>
+          </div>
+        </section>
+        <section class="modal-section">
+          <strong>設定 (JSON) を開く</strong>
           <p>保存済みの <code>experiment_setup.json</code> を読み込み、表とスクリプトを復元します。</p>
           <div class="toolbar-group">
-            <button id="pickImportFileButton" class="primary" type="button">ファイルを選ぶ</button>
+            <button id="pickImportFileButton" type="button">ファイルを選ぶ</button>
           </div>
         </section>
         <section class="modal-section">
@@ -1243,6 +1393,36 @@
           <div id="sampleList" class="sample-list" aria-live="polite"></div>
         </section>
       </div>
+    </div>
+  </div>
+
+  <div id="importPreviewModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="importPreviewTitle">
+    <div class="modal-card">
+      <div class="panel-header">
+        <div class="panel-title">
+          <strong id="importPreviewTitle">取り込みの確認</strong>
+          <span>取り込むシート・見出し行・列名の自動調整を確認します</span>
+        </div>
+        <button id="closeImportPreviewButton" type="button">閉じる</button>
+      </div>
+      <div id="importPreviewBody" class="modal-body"></div>
+      <div class="modal-footer">
+        <button id="cancelImportButton" type="button">キャンセル</button>
+        <button id="confirmImportButton" class="primary" type="button">取り込む</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="exportModal" class="modal-overlay hidden" role="dialog" aria-modal="true" aria-labelledby="exportModalTitle">
+    <div class="modal-card">
+      <div class="panel-header">
+        <div class="panel-title">
+          <strong id="exportModalTitle">出力</strong>
+          <span>データ・データフレーム・R スクリプト・設定の書き出し</span>
+        </div>
+        <button id="closeExportModalButton" type="button">閉じる</button>
+      </div>
+      <div id="exportModalBody" class="modal-body"></div>
     </div>
   </div>
 
@@ -1284,6 +1464,7 @@
     const SAMPLE_BASE_URL = new URL("./samples/", window.location.href);
     const OUTPUT_TABS = ["console", "graph", "dataframe"];
     const DATAFRAME_PREVIEW_ROWS = 100;
+    const DATAFRAME_EXPORT_MAX_ROWS = 100000;
     const DATAFRAME_LIST_START = "__WEBR_DF_LIST_START__";
     const DATAFRAME_LIST_END = "__WEBR_DF_LIST_END__";
     const DATAFRAME_PREVIEW_START = "__WEBR_DF_PREVIEW_START__";
@@ -1293,6 +1474,10 @@
     const MAX_CONSOLE_ENTRIES = 300;
     const MAX_HISTORY_ENTRIES = 100;
     const SELF_TEST_MODE = new URLSearchParams(window.location.search).get("selftest") === "1";
+    const SHEETJS_URL = "https://cdn.sheetjs.com/xlsx-0.20.3/package/xlsx.mjs";
+    const EXPORT_FILE_PREFIX = "physics";
+    const IMPORT_MAX_ROWS = 5000;
+    const IMPORT_MAX_COLS = 200;
 
     const initialWorkbook = {
       activeSheetId: "sheet-1",
@@ -1353,14 +1538,24 @@
       manualPage: document.getElementById("manualPage"),
       runtimeStatus: document.getElementById("runtimeStatus"),
       restoreBanner: document.getElementById("restoreBanner"),
-      importButton: document.getElementById("importButton"),
-      exportButton: document.getElementById("exportButton"),
+      inputButton: document.getElementById("inputButton"),
+      outputButton: document.getElementById("outputButton"),
       importFileInput: document.getElementById("importFileInput"),
+      dataFileInput: document.getElementById("dataFileInput"),
+      pickDataFileButton: document.getElementById("pickDataFileButton"),
       importModal: document.getElementById("importModal"),
       closeImportModalButton: document.getElementById("closeImportModalButton"),
       pickImportFileButton: document.getElementById("pickImportFileButton"),
       sampleCatalogStatus: document.getElementById("sampleCatalogStatus"),
       sampleList: document.getElementById("sampleList"),
+      importPreviewModal: document.getElementById("importPreviewModal"),
+      closeImportPreviewButton: document.getElementById("closeImportPreviewButton"),
+      importPreviewBody: document.getElementById("importPreviewBody"),
+      confirmImportButton: document.getElementById("confirmImportButton"),
+      cancelImportButton: document.getElementById("cancelImportButton"),
+      exportModal: document.getElementById("exportModal"),
+      closeExportModalButton: document.getElementById("closeExportModalButton"),
+      exportModalBody: document.getElementById("exportModalBody"),
       addRowButton: document.getElementById("addRowButton"),
       addColumnButton: document.getElementById("addColumnButton"),
       renameSheetButton: document.getElementById("renameSheetButton"),
@@ -1415,14 +1610,30 @@
         button.addEventListener("click", () => setCurrentPage(button.dataset.page));
       });
 
-      elements.importButton.addEventListener("click", () => {
+      elements.inputButton.addEventListener("click", () => {
         openImportModal().catch((error) => appendSystemLine(`サンプル一覧の準備に失敗しました: ${error.message}`, true));
       });
-      elements.exportButton.addEventListener("click", exportSetup);
+      elements.outputButton.addEventListener("click", openExportModal);
       elements.importFileInput.addEventListener("change", handleImportFile);
+      elements.dataFileInput.addEventListener("change", handleDataFileSelected);
+      elements.pickDataFileButton.addEventListener("click", () => elements.dataFileInput.click());
       elements.closeImportModalButton.addEventListener("click", closeImportModal);
       elements.pickImportFileButton.addEventListener("click", () => elements.importFileInput.click());
       elements.sampleList.addEventListener("click", handleSampleListClick);
+      elements.closeImportPreviewButton.addEventListener("click", closeImportPreview);
+      elements.cancelImportButton.addEventListener("click", closeImportPreview);
+      elements.confirmImportButton.addEventListener("click", confirmImportPreview);
+      elements.closeExportModalButton.addEventListener("click", closeExportModal);
+      elements.importPreviewModal.addEventListener("click", (event) => {
+        if (event.target === elements.importPreviewModal) {
+          closeImportPreview();
+        }
+      });
+      elements.exportModal.addEventListener("click", (event) => {
+        if (event.target === elements.exportModal) {
+          closeExportModal();
+        }
+      });
       elements.openGraphViewerButton.addEventListener("click", openGraphViewer);
       elements.closeGraphViewerButton.addEventListener("click", closeGraphViewer);
       elements.addRowButton.addEventListener("click", addRow);
@@ -1486,11 +1697,22 @@
         }
       });
       window.addEventListener("keydown", (event) => {
-        if (event.key === "Escape" && !elements.graphViewerModal.classList.contains("hidden")) {
+        if (event.key !== "Escape") {
+          return;
+        }
+        if (!elements.graphViewerModal.classList.contains("hidden")) {
           closeGraphViewer();
           return;
         }
-        if (event.key === "Escape" && !elements.importModal.classList.contains("hidden")) {
+        if (!elements.importPreviewModal.classList.contains("hidden")) {
+          closeImportPreview();
+          return;
+        }
+        if (!elements.exportModal.classList.contains("hidden")) {
+          closeExportModal();
+          return;
+        }
+        if (!elements.importModal.classList.contains("hidden")) {
           closeImportModal();
         }
       });
@@ -2752,6 +2974,869 @@
       URL.revokeObjectURL(url);
     }
 
+    // ---------------------------------------------------------------------
+    // 入出力ユーティリティ
+    // ---------------------------------------------------------------------
+
+    let _sheetJSPromise = null;
+    async function ensureSheetJS() {
+      if (!_sheetJSPromise) {
+        _sheetJSPromise = import(SHEETJS_URL).catch((error) => {
+          _sheetJSPromise = null;
+          throw new Error(`表計算ライブラリ(SheetJS)の読み込みに失敗しました: ${error.message}`);
+        });
+      }
+      return _sheetJSPromise;
+    }
+
+    function timestampLabel(date = new Date()) {
+      const pad = (value) => String(value).padStart(2, "0");
+      return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}_${pad(date.getHours())}${pad(date.getMinutes())}`;
+    }
+
+    function downloadBlob(blob, filename) {
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = filename;
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function sanitizeFilePart(value) {
+      const cleaned = String(value ?? "")
+        .replace(/[\\/:*?"<>|]+/g, "_")
+        .replace(/\s+/g, "_")
+        .slice(0, 60);
+      return cleaned || "data";
+    }
+
+    function escapeHtml(value) {
+      return String(value).replace(/[&<>"']/g, (ch) => (
+        { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[ch]
+      ));
+    }
+
+    const CRC32_TABLE = (() => {
+      const table = new Uint32Array(256);
+      for (let i = 0; i < 256; i += 1) {
+        let c = i;
+        for (let k = 0; k < 8; k += 1) {
+          c = (c & 1) ? (0xedb88320 ^ (c >>> 1)) : (c >>> 1);
+        }
+        table[i] = c >>> 0;
+      }
+      return table;
+    })();
+
+    function crc32(bytes) {
+      let crc = 0xffffffff;
+      for (let i = 0; i < bytes.length; i += 1) {
+        crc = (crc >>> 8) ^ CRC32_TABLE[(crc ^ bytes[i]) & 0xff];
+      }
+      return (crc ^ 0xffffffff) >>> 0;
+    }
+
+    // 無圧縮(store)zip を組み立てる。entries: [{ name, data: Uint8Array }]
+    function buildZip(entries) {
+      const encoder = new TextEncoder();
+      const chunks = [];
+      const central = [];
+      let offset = 0;
+
+      entries.forEach((entry) => {
+        const nameBytes = encoder.encode(entry.name);
+        const data = entry.data;
+        const crc = crc32(data);
+        const size = data.length;
+
+        const local = new Uint8Array(30 + nameBytes.length);
+        const lv = new DataView(local.buffer);
+        lv.setUint32(0, 0x04034b50, true);
+        lv.setUint16(4, 20, true);
+        lv.setUint16(6, 0x0800, true);   // UTF-8 file name flag
+        lv.setUint16(8, 0, true);        // store (no compression)
+        lv.setUint16(10, 0, true);
+        lv.setUint16(12, 0, true);
+        lv.setUint32(14, crc, true);
+        lv.setUint32(18, size, true);
+        lv.setUint32(22, size, true);
+        lv.setUint16(26, nameBytes.length, true);
+        lv.setUint16(28, 0, true);
+        local.set(nameBytes, 30);
+        chunks.push(local, data);
+
+        const cd = new Uint8Array(46 + nameBytes.length);
+        const cv = new DataView(cd.buffer);
+        cv.setUint32(0, 0x02014b50, true);
+        cv.setUint16(4, 20, true);
+        cv.setUint16(6, 20, true);
+        cv.setUint16(8, 0x0800, true);
+        cv.setUint16(10, 0, true);
+        cv.setUint16(12, 0, true);
+        cv.setUint16(14, 0, true);
+        cv.setUint32(16, crc, true);
+        cv.setUint32(20, size, true);
+        cv.setUint32(24, size, true);
+        cv.setUint16(28, nameBytes.length, true);
+        cv.setUint16(30, 0, true);
+        cv.setUint16(32, 0, true);
+        cv.setUint16(34, 0, true);
+        cv.setUint16(36, 0, true);
+        cv.setUint32(38, 0, true);
+        cv.setUint32(42, offset, true);
+        cd.set(nameBytes, 46);
+        central.push(cd);
+
+        offset += local.length + data.length;
+      });
+
+      const centralSize = central.reduce((sum, cd) => sum + cd.length, 0);
+      const centralOffset = offset;
+      const end = new Uint8Array(22);
+      const ev = new DataView(end.buffer);
+      ev.setUint32(0, 0x06054b50, true);
+      ev.setUint16(4, 0, true);
+      ev.setUint16(6, 0, true);
+      ev.setUint16(8, entries.length, true);
+      ev.setUint16(10, entries.length, true);
+      ev.setUint32(12, centralSize, true);
+      ev.setUint32(16, centralOffset, true);
+      ev.setUint16(20, 0, true);
+
+      return new Blob([...chunks, ...central, end], { type: "application/zip" });
+    }
+
+    function csvBytes(csv, encoding) {
+      const body = new TextEncoder().encode(csv);
+      if (encoding === "bom") {
+        const out = new Uint8Array(body.length + 3);
+        out.set([0xef, 0xbb, 0xbf], 0);
+        out.set(body, 3);
+        return out;
+      }
+      return body;
+    }
+
+    function csvBlob(csv, encoding) {
+      return new Blob([csvBytes(csv, encoding)], { type: "text/csv;charset=utf-8" });
+    }
+
+    function canvasToPngBytes(canvas) {
+      return new Promise((resolve) => {
+        canvas.toBlob((blob) => {
+          if (!blob) {
+            resolve(null);
+            return;
+          }
+          blob.arrayBuffer().then((buf) => resolve(new Uint8Array(buf))).catch(() => resolve(null));
+        }, "image/png");
+      });
+    }
+
+    // ---------------------------------------------------------------------
+    // 入力: Excel / CSV / TSV の取り込み
+    // ---------------------------------------------------------------------
+
+    let pendingImport = null;
+
+    function trimGrid(grid) {
+      let rows = grid.map((row) => (Array.isArray(row) ? row.map((cell) => normaliseCell(cell)) : []));
+      while (rows.length && rows[rows.length - 1].every((cell) => String(cell ?? "").trim() === "")) {
+        rows.pop();
+      }
+      let maxCol = 0;
+      rows.forEach((row) => {
+        for (let i = row.length - 1; i >= 0; i -= 1) {
+          if (String(row[i] ?? "").trim() !== "") {
+            maxCol = Math.max(maxCol, i + 1);
+            break;
+          }
+        }
+      });
+      const colLimit = Math.min(maxCol, IMPORT_MAX_COLS);
+      rows = rows.map((row) => row.slice(0, colLimit));
+      if (rows.length > IMPORT_MAX_ROWS) {
+        rows = rows.slice(0, IMPORT_MAX_ROWS);
+      }
+      const width = Math.max(0, ...rows.map((row) => row.length));
+      return rows.map((row) => {
+        const next = row.slice();
+        while (next.length < width) {
+          next.push("");
+        }
+        return next;
+      });
+    }
+
+    async function readDataFileToWorkbookModel(file) {
+      const XLSX = await ensureSheetJS();
+      const lower = file.name.toLowerCase();
+      const isDelimited = lower.endsWith(".csv") || lower.endsWith(".tsv") || lower.endsWith(".txt");
+      let workbook;
+      if (isDelimited) {
+        const text = await file.text();
+        const readOptions = { type: "string", raw: false };
+        if (lower.endsWith(".tsv")) {
+          readOptions.FS = "\t";
+        }
+        workbook = XLSX.read(text, readOptions);
+      } else {
+        const buffer = await file.arrayBuffer();
+        workbook = XLSX.read(new Uint8Array(buffer), { type: "array" });
+      }
+      const sheets = workbook.SheetNames.map((name) => {
+        const ws = workbook.Sheets[name];
+        const aoa = XLSX.utils
+          .sheet_to_json(ws, { header: 1, raw: false, defval: "", blankrows: false })
+          .map((row) => (Array.isArray(row) ? row.map((cell) => normaliseCell(cell)) : []));
+        const data = trimGrid(aoa);
+        const truncated = data.length < aoa.length || aoa.some((row) => row.length > IMPORT_MAX_COLS);
+        return { name, data, truncated };
+      }).filter((sheet) => sheet.data.length);
+      // 単一シートの CSV/TSV は、SheetJS 既定の "Sheet1" よりファイル名の方が分かりやすい。
+      if (isDelimited && sheets.length === 1) {
+        const baseName = file.name.replace(/\.[^.]+$/, "").trim();
+        if (baseName) {
+          sheets[0].name = baseName;
+        }
+      }
+      return { fileName: file.name, sheets };
+    }
+
+    async function handleDataFileSelected(event) {
+      const file = event.target.files?.[0];
+      event.target.value = "";
+      if (!file) {
+        return;
+      }
+      try {
+        setBusy(true);
+        const model = await readDataFileToWorkbookModel(file);
+        if (!model.sheets.length) {
+          appendSystemLine("読み込めるデータが見つかりませんでした。", true);
+          return;
+        }
+        openImportPreview(model);
+      } catch (error) {
+        appendSystemLine(`データ取込に失敗しました: ${error.message}`, true);
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    function openImportPreview(model) {
+      pendingImport = model;
+      const body = elements.importPreviewBody;
+      body.replaceChildren();
+
+      const intro = document.createElement("section");
+      intro.className = "modal-section";
+      const introStrong = document.createElement("strong");
+      introStrong.textContent = `「${model.fileName}」から ${model.sheets.length} シート`;
+      const options = document.createElement("div");
+      options.className = "field-row";
+      options.innerHTML = `
+        <label><input type="checkbox" id="importHeaderToggle" checked> 1行目を見出しとして扱う</label>
+        <label><input type="radio" name="importTarget" value="replace" checked> 既存を置換</label>
+        <label><input type="radio" name="importTarget" value="append"> 新しいシートとして追加</label>
+      `;
+      intro.append(introStrong, options);
+      body.append(intro);
+
+      const list = document.createElement("div");
+      list.className = "preview-sheet-list";
+      model.sheets.forEach((sheet, index) => {
+        list.append(buildPreviewSheetSection(sheet, index));
+      });
+      body.append(list);
+
+      options.querySelector("#importHeaderToggle").addEventListener("change", (event) => {
+        const headerMode = event.target.checked;
+        model.sheets.forEach((sheet, index) => {
+          const section = body.querySelector(`[data-preview-index="${index}"]`);
+          if (section) {
+            updatePreviewRename(section, sheet, headerMode);
+          }
+        });
+      });
+
+      elements.importPreviewModal.classList.remove("hidden");
+    }
+
+    function buildPreviewSheetSection(sheet, index) {
+      const section = document.createElement("section");
+      section.className = "preview-sheet";
+      section.dataset.previewIndex = String(index);
+
+      const head = document.createElement("div");
+      head.className = "field-row";
+      const label = document.createElement("label");
+      const check = document.createElement("input");
+      check.type = "checkbox";
+      check.className = "preview-sheet-check";
+      check.checked = sheet.data.some((row) => row.some((cell) => String(cell).trim() !== ""));
+      const name = document.createElement("strong");
+      name.textContent = sheet.name;
+      label.append(check, name);
+      const meta = document.createElement("span");
+      meta.className = "preview-rename";
+      const cols = Math.max(0, ...sheet.data.map((row) => row.length));
+      meta.textContent = `${sheet.data.length} 行 × ${cols} 列`;
+      head.append(label, meta);
+      section.append(head);
+
+      if (sheet.truncated) {
+        const warn = document.createElement("div");
+        warn.className = "export-warn";
+        warn.textContent = `大きいため最大 ${IMPORT_MAX_ROWS} 行 / ${IMPORT_MAX_COLS} 列に切り詰めました。`;
+        section.append(warn);
+      }
+
+      const wrap = document.createElement("div");
+      wrap.className = "preview-table-wrap";
+      wrap.append(buildPreviewTable(sheet.data, 5));
+      section.append(wrap);
+
+      const rename = document.createElement("div");
+      rename.className = "preview-rename rename-hints";
+      section.append(rename);
+      updatePreviewRename(section, sheet, true);
+
+      return section;
+    }
+
+    function buildPreviewTable(data, maxRows) {
+      const table = document.createElement("table");
+      table.className = "preview-table";
+      const limit = Math.min(maxRows, data.length);
+      for (let r = 0; r < limit; r += 1) {
+        const tr = document.createElement("tr");
+        data[r].forEach((cell) => {
+          const td = document.createElement(r === 0 ? "th" : "td");
+          td.textContent = cell;
+          tr.append(td);
+        });
+        table.append(tr);
+      }
+      return table;
+    }
+
+    function updatePreviewRename(section, sheet, headerMode) {
+      const hints = section.querySelector(".rename-hints");
+      if (!hints) {
+        return;
+      }
+      const colCount = Math.max(0, ...sheet.data.map((row) => row.length));
+      const seed = [];
+      for (let i = 0; i < colCount; i += 1) {
+        seed.push(headerMode ? (sheet.data[0]?.[i] ?? "") : "");
+      }
+      const sanitized = sanitizeHeaderList(seed.map((value, i) => value || `column_${i + 1}`));
+      const changes = [];
+      sanitized.forEach((finalName, i) => {
+        const original = headerMode ? (sheet.data[0]?.[i] ?? "") : `column_${i + 1}`;
+        if (finalName !== original) {
+          changes.push(`${original || "(空)"} → ${finalName}`);
+        }
+      });
+      hints.innerHTML = changes.length
+        ? `列名の自動調整: ${changes.map((change) => `<code>${escapeHtml(change)}</code>`).join(" ")}`
+        : "列名はそのまま R 互換です。";
+    }
+
+    function closeImportPreview() {
+      pendingImport = null;
+      elements.importPreviewModal.classList.add("hidden");
+      elements.importPreviewBody.replaceChildren();
+    }
+
+    function confirmImportPreview() {
+      if (!pendingImport) {
+        closeImportPreview();
+        return;
+      }
+      const body = elements.importPreviewBody;
+      const headerMode = body.querySelector("#importHeaderToggle").checked;
+      const target = body.querySelector('input[name="importTarget"]:checked')?.value || "replace";
+      const selected = Array.from(body.querySelectorAll("[data-preview-index]"))
+        .filter((section) => section.querySelector(".preview-sheet-check").checked)
+        .map((section) => pendingImport.sheets[Number(section.dataset.previewIndex)]);
+      if (!selected.length) {
+        appendSystemLine("取り込むシートを 1 つ以上選んでください。", true);
+        return;
+      }
+      applyImportedSheets(selected, { headerMode, target }).catch((error) =>
+        appendSystemLine(`取り込みに失敗しました: ${error.message}`, true));
+    }
+
+    async function applyImportedSheets(sheets, { headerMode, target }) {
+      let renamedCount = 0;
+      const newSheets = sheets.map((sheet) => {
+        let grid = sheet.data.map((row) => row.slice());
+        if (!headerMode) {
+          const colCount = Math.max(0, ...grid.map((row) => row.length));
+          const header = Array.from({ length: colCount }, (_, i) => `column_${i + 1}`);
+          grid = [header, ...grid];
+        }
+        if (!grid.length) {
+          grid = [[]];
+        }
+        const before = grid[0].slice();
+        grid[0] = sanitizeHeaderList(grid[0]);
+        grid[0].forEach((finalName, i) => {
+          if (finalName !== before[i]) {
+            renamedCount += 1;
+          }
+        });
+        return { id: `sheet-${crypto.randomUUID()}`, name: sheet.name || "Sheet", data: grid };
+      });
+
+      if (target === "replace") {
+        state.app.workbook.sheets = [];
+      }
+      newSheets.forEach((sheet) => {
+        sheet.name = createUniqueSheetName(sheet.name, sheet.id);
+        state.app.workbook.sheets.push(sheet);
+      });
+      state.app.workbook.activeSheetId = newSheets[0].id;
+
+      ensureWorkbookShape();
+      applyStateToUi();
+      if (state.ready) {
+        await syncWorkbookToR();
+      }
+      closeImportPreview();
+      closeImportModal();
+      const renameNote = renamedCount ? `（列名 ${renamedCount} 件を自動調整）` : "";
+      setSheetStatus(`${newSheets.length} シートを取り込みました${renameNote}`);
+      appendSystemLine(`Imported ${newSheets.length} sheet(s) from data file.`);
+    }
+
+    // ---------------------------------------------------------------------
+    // 出力: csv / xlsx / R スクリプト / 一括(zip)
+    // ---------------------------------------------------------------------
+
+    function openExportModal() {
+      buildExportModalBody();
+      elements.exportModal.classList.remove("hidden");
+    }
+
+    function closeExportModal() {
+      elements.exportModal.classList.add("hidden");
+    }
+
+    function buildExportModalBody() {
+      const body = elements.exportModalBody;
+      body.replaceChildren();
+
+      const dfItems = state.app.dataframes.items || [];
+      const selectedDf = state.app.dataframes.selectedName || (dfItems[0]?.name ?? "");
+
+      const settings = document.createElement("section");
+      settings.className = "modal-section";
+      settings.innerHTML = `
+        <strong>設定</strong>
+        <div class="field-row">
+          <label>形式
+            <select id="exportFormat">
+              <option value="xlsx">xlsx</option>
+              <option value="csv">csv</option>
+            </select>
+          </label>
+          <label><input type="checkbox" id="exportHeader" checked> 見出し行を含める</label>
+        </div>
+        <div class="field-row">
+          <label>最新データフレーム <select id="exportDfSelect"></select></label>
+        </div>
+      `;
+      body.append(settings);
+
+      const dfSelect = settings.querySelector("#exportDfSelect");
+      if (dfItems.length) {
+        dfItems.forEach((item) => {
+          const option = document.createElement("option");
+          option.value = item.name;
+          option.textContent = `${item.name} (${item.rowCount}×${item.columnCount})`;
+          if (item.name === selectedDf) {
+            option.selected = true;
+          }
+          dfSelect.append(option);
+        });
+      } else {
+        const option = document.createElement("option");
+        option.value = "";
+        option.textContent = "（data.frame がありません）";
+        dfSelect.append(option);
+        dfSelect.disabled = true;
+      }
+
+      const advanced = document.createElement("details");
+      advanced.className = "export-advanced";
+      advanced.innerHTML = `
+        <summary>詳細設定</summary>
+        <div class="field-row">
+          <label>データ＋df のまとめ方
+            <select id="exportDfPlacement">
+              <option value="auto">形式に合わせる</option>
+              <option value="separate">常に別ファイル</option>
+              <option value="same">常に同一ファイル</option>
+            </select>
+          </label>
+        </div>
+        <div class="field-row">
+          <label>CSV 文字コード
+            <select id="exportEncoding">
+              <option value="bom">UTF-8 (BOM 付き)</option>
+              <option value="nobom">UTF-8 (BOM なし)</option>
+            </select>
+          </label>
+          <label>NA の表記 <input type="text" id="exportNa" value="" placeholder="(空欄)"></label>
+        </div>
+        <div class="field-row">
+          <label>ファイル名プレフィックス <input type="text" id="exportPrefix" value="${EXPORT_FILE_PREFIX}"></label>
+        </div>
+      `;
+      body.append(advanced);
+
+      const kinds = document.createElement("section");
+      kinds.className = "modal-section";
+      const kindsTitle = document.createElement("strong");
+      kindsTitle.textContent = "出力する内容";
+      const list = document.createElement("div");
+      list.className = "export-kind-list";
+      const defs = [
+        ["data", "データ領域", "左の全シートを csv / xlsx で書き出します。"],
+        ["dataframe", "最新データフレーム", "選択した data.frame を csv / xlsx で書き出します。"],
+        ["data-df", "データ ＋ 最新データフレーム", "両方をまとめて書き出します（まとめ方は詳細設定）。"],
+        ["script", "R スクリプトのみ", "エディタの R コードを .R で保存（get.input 行はコメントアウト）。"],
+        ["json", "設定 (JSON)", "シート・スクリプト・履歴をまとめて保存します。"],
+        ["bundle", "一括出力 (zip)", "データ・df・スクリプト・設定・グラフを 1 つの zip に同梱。"],
+      ];
+      defs.forEach(([kind, title, desc]) => {
+        const button = document.createElement("button");
+        button.type = "button";
+        button.className = "export-kind";
+        button.dataset.exportKind = kind;
+        button.innerHTML = `<strong>${title}</strong><span class="ek-desc">${desc}</span>`;
+        list.append(button);
+      });
+      kinds.append(kindsTitle, list);
+      body.append(kinds);
+
+      list.addEventListener("click", (event) => {
+        const button = event.target.closest("[data-export-kind]");
+        if (!button) {
+          return;
+        }
+        runExport(button.dataset.exportKind).catch((error) =>
+          appendSystemLine(`出力に失敗しました: ${error.message}`, true));
+      });
+    }
+
+    function readExportOptions() {
+      const body = elements.exportModalBody;
+      const pick = (id) => body.querySelector(`#${id}`);
+      return {
+        format: pick("exportFormat")?.value || "xlsx",
+        includeHeader: pick("exportHeader")?.checked ?? true,
+        dfName: pick("exportDfSelect")?.value || "",
+        placement: pick("exportDfPlacement")?.value || "auto",
+        encoding: pick("exportEncoding")?.value || "bom",
+        na: pick("exportNa")?.value ?? "",
+        prefix: sanitizeFilePart(pick("exportPrefix")?.value || EXPORT_FILE_PREFIX),
+      };
+    }
+
+    async function runExport(kind) {
+      const opts = readExportOptions();
+      try {
+        setBusy(true);
+        if (kind === "data") {
+          await exportDataSheets(opts);
+        } else if (kind === "dataframe") {
+          await exportLatestDataFrame(opts);
+        } else if (kind === "data-df") {
+          await exportDataPlusDataFrame(opts);
+        } else if (kind === "script") {
+          exportRScript(opts);
+        } else if (kind === "json") {
+          exportSetup();
+        } else if (kind === "bundle") {
+          await exportBundleZip(opts);
+        }
+        closeExportModal();
+      } finally {
+        setBusy(false);
+      }
+    }
+
+    function exportCell(value, type, na) {
+      const text = String(value ?? "").trim();
+      if (text === "") {
+        return na;
+      }
+      if (type === "numeric") {
+        const number = Number(text);
+        return Number.isFinite(number) ? number : text;
+      }
+      if (type === "logical") {
+        if (/^true$/i.test(text)) return true;
+        if (/^false$/i.test(text)) return false;
+      }
+      return text;
+    }
+
+    function sheetToExportAoa(sheet, { includeHeader, na }) {
+      const grid = sheet.data.map((row) => row.map((cell) => normaliseCell(cell)));
+      let cols = 0;
+      grid.forEach((row) => {
+        for (let i = row.length - 1; i >= 0; i -= 1) {
+          if (String(row[i]).trim() !== "") {
+            cols = Math.max(cols, i + 1);
+            break;
+          }
+        }
+      });
+      if (cols === 0) {
+        cols = grid[0] ? grid[0].length : 0;
+      }
+      const headerRow = sanitizeHeaderList((grid[0] || []).slice(0, cols).map((value, i) => value || `column_${i + 1}`));
+      const body = grid.slice(1).filter((row) => row.slice(0, cols).some((cell) => String(cell).trim() !== ""));
+      const types = [];
+      for (let c = 0; c < cols; c += 1) {
+        types.push(inferColumnType(body.map((row) => String(row[c] ?? "").trim())));
+      }
+      const rows = [];
+      if (includeHeader) {
+        rows.push(headerRow);
+      }
+      body.forEach((row) => {
+        rows.push(headerRow.map((_, c) => exportCell(row[c] ?? "", types[c], na)));
+      });
+      return rows;
+    }
+
+    function safeSheetName(name, workbook) {
+      const base = (String(name || "Sheet").replace(/[\[\]:*?\/\\]/g, "_").slice(0, 31)) || "Sheet";
+      const existing = new Set(workbook.SheetNames || []);
+      if (!existing.has(base)) {
+        return base;
+      }
+      let counter = 2;
+      while (existing.has(`${base.slice(0, 28)}_${counter}`)) {
+        counter += 1;
+      }
+      return `${base.slice(0, 28)}_${counter}`;
+    }
+
+    function aoaToCsv(XLSX, aoa) {
+      return XLSX.utils.sheet_to_csv(XLSX.utils.aoa_to_sheet(aoa));
+    }
+
+    function workbookXlsxBytes(XLSX, namedAoas) {
+      const wb = XLSX.utils.book_new();
+      namedAoas.forEach(({ name, aoa }) => {
+        XLSX.utils.book_append_sheet(wb, XLSX.utils.aoa_to_sheet(aoa), safeSheetName(name, wb));
+      });
+      return new Uint8Array(XLSX.write(wb, { bookType: "xlsx", type: "array" }));
+    }
+
+    const XLSX_MIME = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+
+    async function exportDataSheets(opts) {
+      const XLSX = await ensureSheetJS();
+      const ts = timestampLabel();
+      const sheets = state.app.workbook.sheets;
+      if (opts.format === "xlsx") {
+        const bytes = workbookXlsxBytes(XLSX, sheets.map((sheet) => ({ name: sheet.name, aoa: sheetToExportAoa(sheet, opts) })));
+        downloadBlob(new Blob([bytes], { type: XLSX_MIME }), `${opts.prefix}-data_${ts}.xlsx`);
+        return;
+      }
+      if (sheets.length === 1) {
+        const csv = aoaToCsv(XLSX, sheetToExportAoa(sheets[0], opts));
+        downloadBlob(csvBlob(csv, opts.encoding), `${opts.prefix}-data_${ts}.csv`);
+        return;
+      }
+      const entries = sheets.map((sheet) => ({
+        name: `${sanitizeFilePart(sheet.name)}.csv`,
+        data: csvBytes(aoaToCsv(XLSX, sheetToExportAoa(sheet, opts)), opts.encoding),
+      }));
+      downloadBlob(buildZip(entries), `${opts.prefix}-data_${ts}.zip`);
+    }
+
+    function dataFramePreviewToAoa(preview, { includeHeader, na }) {
+      const rows = [];
+      if (includeHeader) {
+        rows.push(preview.columns.map((column) => column.name));
+      }
+      preview.rows.forEach((cells) => {
+        rows.push(preview.columns.map((column, i) => {
+          const value = cells[i] ?? "";
+          if (value === "" || value === "NA") {
+            return na;
+          }
+          const className = column.className || "";
+          if (/numeric|integer|double/.test(className)) {
+            const number = Number(value);
+            return Number.isFinite(number) ? number : value;
+          }
+          if (/logical/.test(className)) {
+            if (/^true$/i.test(value)) return true;
+            if (/^false$/i.test(value)) return false;
+          }
+          return value;
+        }));
+      });
+      return rows;
+    }
+
+    async function exportLatestDataFrame(opts) {
+      if (!opts.dfName) {
+        appendSystemLine("出力する data.frame がありません。先にコードを実行してください。", true);
+        return;
+      }
+      const XLSX = await ensureSheetJS();
+      const preview = await readDataFrameForExport(opts.dfName);
+      if (preview.rowCount > DATAFRAME_EXPORT_MAX_ROWS) {
+        appendSystemLine(`data.frame が大きいため先頭 ${DATAFRAME_EXPORT_MAX_ROWS} 行のみ出力します。`, true);
+      }
+      const aoa = dataFramePreviewToAoa(preview, opts);
+      const ts = timestampLabel();
+      const base = `${opts.prefix}-df-${sanitizeFilePart(opts.dfName)}_${ts}`;
+      if (opts.format === "xlsx") {
+        const bytes = workbookXlsxBytes(XLSX, [{ name: opts.dfName, aoa }]);
+        downloadBlob(new Blob([bytes], { type: XLSX_MIME }), `${base}.xlsx`);
+      } else {
+        downloadBlob(csvBlob(aoaToCsv(XLSX, aoa), opts.encoding), `${base}.csv`);
+      }
+    }
+
+    async function exportDataPlusDataFrame(opts) {
+      const XLSX = await ensureSheetJS();
+      const ts = timestampLabel();
+      const placement = opts.placement === "auto"
+        ? (opts.format === "xlsx" ? "same" : "separate")
+        : opts.placement;
+      let dfPreview = null;
+      if (opts.dfName) {
+        dfPreview = await readDataFrameForExport(opts.dfName);
+      }
+      const sheets = state.app.workbook.sheets;
+
+      if (opts.format === "xlsx" && placement === "same") {
+        const named = sheets.map((sheet) => ({ name: sheet.name, aoa: sheetToExportAoa(sheet, opts) }));
+        if (dfPreview) {
+          named.push({ name: `df_${opts.dfName}`, aoa: dataFramePreviewToAoa(dfPreview, opts) });
+        }
+        downloadBlob(new Blob([workbookXlsxBytes(XLSX, named)], { type: XLSX_MIME }), `${opts.prefix}-data-df_${ts}.xlsx`);
+        return;
+      }
+
+      if (opts.format === "csv" && placement === "same") {
+        const parts = [];
+        sheets.forEach((sheet) => {
+          parts.push(`# ${sheet.name}`);
+          parts.push(aoaToCsv(XLSX, sheetToExportAoa(sheet, opts)));
+        });
+        if (dfPreview) {
+          parts.push(`# data.frame: ${opts.dfName}`);
+          parts.push(aoaToCsv(XLSX, dataFramePreviewToAoa(dfPreview, opts)));
+        }
+        downloadBlob(csvBlob(parts.join("\n"), opts.encoding), `${opts.prefix}-data-df_${ts}.csv`);
+        return;
+      }
+
+      const entries = [];
+      if (opts.format === "xlsx") {
+        entries.push({
+          name: `${opts.prefix}-data.xlsx`,
+          data: workbookXlsxBytes(XLSX, sheets.map((sheet) => ({ name: sheet.name, aoa: sheetToExportAoa(sheet, opts) }))),
+        });
+        if (dfPreview) {
+          entries.push({
+            name: `${opts.prefix}-df-${sanitizeFilePart(opts.dfName)}.xlsx`,
+            data: workbookXlsxBytes(XLSX, [{ name: opts.dfName, aoa: dataFramePreviewToAoa(dfPreview, opts) }]),
+          });
+        }
+      } else {
+        sheets.forEach((sheet) => {
+          entries.push({
+            name: `${sanitizeFilePart(sheet.name)}.csv`,
+            data: csvBytes(aoaToCsv(XLSX, sheetToExportAoa(sheet, opts)), opts.encoding),
+          });
+        });
+        if (dfPreview) {
+          entries.push({
+            name: `df-${sanitizeFilePart(opts.dfName)}.csv`,
+            data: csvBytes(aoaToCsv(XLSX, dataFramePreviewToAoa(dfPreview, opts)), opts.encoding),
+          });
+        }
+      }
+      downloadBlob(buildZip(entries), `${opts.prefix}-data-df_${ts}.zip`);
+    }
+
+    function buildExportScriptText() {
+      const lines = (state.app.script || "").split(/\r\n|\r|\n/);
+      const transformed = lines.map((line) => (
+        (/\bget\.input\s*\(/.test(line) && !/^\s*#/.test(line))
+          ? `# ${line}  # webR Lab: データはツールから供給されます（このツール外では無効）`
+          : line
+      ));
+      const header = [
+        "# physics webR Lab で生成した R スクリプト",
+        `# 生成日時: ${new Date().toISOString()}`,
+        "# 注意: get.input() を含む行はコメントアウトしています。",
+        "#       スタンドアロンの R では、データを read.csv 等で読み込んで変数を用意してください。",
+        "",
+      ];
+      return header.concat(transformed).join("\n");
+    }
+
+    function exportRScript(opts) {
+      const ts = timestampLabel();
+      downloadBlob(new Blob([buildExportScriptText()], { type: "text/plain;charset=utf-8" }), `${opts.prefix}-script_${ts}.R`);
+    }
+
+    async function exportBundleZip(opts) {
+      const XLSX = await ensureSheetJS();
+      const ts = timestampLabel();
+      const encoder = new TextEncoder();
+      const entries = [];
+
+      entries.push({
+        name: "data.xlsx",
+        data: workbookXlsxBytes(XLSX, state.app.workbook.sheets.map((sheet) => ({ name: sheet.name, aoa: sheetToExportAoa(sheet, opts) }))),
+      });
+
+      if (opts.dfName) {
+        try {
+          const preview = await readDataFrameForExport(opts.dfName);
+          entries.push({
+            name: `dataframe-${sanitizeFilePart(opts.dfName)}.csv`,
+            data: csvBytes(aoaToCsv(XLSX, dataFramePreviewToAoa(preview, opts)), opts.encoding),
+          });
+        } catch (error) {
+          appendSystemLine(`data.frame の取得に失敗（zip からは除外）: ${error.message}`, true);
+        }
+      }
+
+      entries.push({ name: "script.R", data: encoder.encode(buildExportScriptText()) });
+      entries.push({ name: "setup.json", data: encoder.encode(JSON.stringify(buildExportPayload(), null, 2)) });
+
+      const canvas = selectedGraphCanvas();
+      if (canvas) {
+        const pngBytes = await canvasToPngBytes(canvas);
+        if (pngBytes) {
+          entries.push({ name: "plot.png", data: pngBytes });
+        }
+      }
+
+      downloadBlob(buildZip(entries), `${opts.prefix}-export_${ts}.zip`);
+    }
+
     async function handleImportFile(event) {
       const file = event.target.files?.[0];
       if (!file) {
@@ -3070,8 +4155,8 @@
       return parseDataFrameListOutput(output);
     }
 
-    async function readDataFramePreviewFromR(name) {
-      const output = await captureRText(`
+    function buildDataFramePreviewRCode(name, maxRows) {
+      return `
         local({
           encode_field <- function(value) {
             paste(sprintf("%02x", as.integer(charToRaw(enc2utf8(as.character(value))))), collapse = "")
@@ -3091,7 +4176,7 @@
             as.character(value[[1]])
           }
           df <- get(${escapeRString(name)}, envir = .GlobalEnv, inherits = FALSE)
-          preview <- utils::head(df, ${DATAFRAME_PREVIEW_ROWS}L)
+          preview <- utils::head(df, ${maxRows}L)
           row_labels <- rownames(preview)
           if (is.null(row_labels)) {
             row_labels <- as.character(seq_len(nrow(preview)))
@@ -3131,7 +4216,16 @@
           }
           cat(${escapeRString(DATAFRAME_PREVIEW_END)})
         })
-      `);
+      `;
+    }
+
+    async function readDataFramePreviewFromR(name) {
+      const output = await captureRText(buildDataFramePreviewRCode(name, DATAFRAME_PREVIEW_ROWS));
+      return parseDataFramePreviewOutput(output, name);
+    }
+
+    async function readDataFrameForExport(name) {
+      const output = await captureRText(buildDataFramePreviewRCode(name, DATAFRAME_EXPORT_MAX_ROWS));
       return parseDataFramePreviewOutput(output, name);
     }
 
@@ -3294,8 +4388,8 @@
     function setBusy(busy) {
       state.busy = busy;
       [
-        elements.importButton,
-        elements.exportButton,
+        elements.inputButton,
+        elements.outputButton,
         elements.addRowButton,
         elements.addColumnButton,
         elements.renameSheetButton,

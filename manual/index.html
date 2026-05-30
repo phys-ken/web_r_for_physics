@@ -180,7 +180,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#ばらつきとエラーバー" id="toc-ばらつきとエラーバー" class="nav-link" data-scroll-target="#ばらつきとエラーバー">7. ばらつきとエラーバー</a></li>
   <li><a href="#直線曲線をあてはめる回帰" id="toc-直線曲線をあてはめる回帰" class="nav-link" data-scroll-target="#直線曲線をあてはめる回帰">8. 直線・曲線をあてはめる（回帰）</a></li>
   <li><a href="#つのタブの使い分け" id="toc-つのタブの使い分け" class="nav-link" data-scroll-target="#つのタブの使い分け">9. 3 つのタブの使い分け</a></li>
-  <li><a href="#保存と読込" id="toc-保存と読込" class="nav-link" data-scroll-target="#保存と読込">10. 保存と読込</a></li>
+  <li><a href="#入力と出力取込書き出し" id="toc-入力と出力取込書き出し" class="nav-link" data-scroll-target="#入力と出力取込書き出し">10. 入力と出力（取込・書き出し）</a>
+  <ul class="collapse">
+  <li><a href="#入力-データを取り込む" id="toc-入力-データを取り込む" class="nav-link" data-scroll-target="#入力-データを取り込む">入力 — データを取り込む</a></li>
+  <li><a href="#出力-書き出す" id="toc-出力-書き出す" class="nav-link" data-scroll-target="#出力-書き出す">出力 — 書き出す</a></li>
+  </ul></li>
   <li><a href="#グラフのサイズ縦横比画面分割" id="toc-グラフのサイズ縦横比画面分割" class="nav-link" data-scroll-target="#グラフのサイズ縦横比画面分割">11. グラフのサイズ・縦横比・画面分割</a>
   <ul class="collapse">
   <li><a href="#縦横比をそろえるデータの単位を-11-に" id="toc-縦横比をそろえるデータの単位を-11-に" class="nav-link" data-scroll-target="#縦横比をそろえるデータの単位を-11-に">縦横比をそろえる（データの単位を 1:1 に）</a></li>
@@ -237,7 +241,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li><strong>右上のエディタ</strong>に R のコードを書いて「コード実行」を押す。</li>
 <li>計算結果は右下の <strong>コンソール</strong>、グラフは <strong>グラフ</strong> タブに出る。</li>
 </ol>
-<p>データはブラウザの中だけで処理され、どこにも送信されません。まずは「設定読込 (JSON)」からサンプルを開いて、実物を見るのが近道です。</p>
+<p>データはブラウザの中だけで処理され、どこにも送信されません。まずは右上の「入力」からサンプルを開いて、実物を見るのが近道です。</p>
 </section>
 <section id="データフレームって何" class="level2">
 <h2 class="anchored" data-anchor-id="データフレームって何">1. 「データフレーム」って何？</h2>
@@ -438,13 +442,98 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </tbody>
 </table>
 </section>
-<section id="保存と読込" class="level2">
-<h2 class="anchored" data-anchor-id="保存と読込">10. 保存と読込</h2>
+<section id="入力と出力取込書き出し" class="level2">
+<h2 class="anchored" data-anchor-id="入力と出力取込書き出し">10. 入力と出力（取込・書き出し）</h2>
+<p>右上の <strong>「入力」「出力」</strong> から、データやスクリプトをいろいろな形式でやり取りできます。</p>
+<section id="入力-データを取り込む" class="level3">
+<h3 class="anchored" data-anchor-id="入力-データを取り込む">入力 — データを取り込む</h3>
+<p>「入力」ボタンを押すと、次の 3 つができます。</p>
 <ul>
-<li><strong>設定保存 (JSON)</strong> … 表・スクリプト・コンソール履歴をまとめて 1 ファイルに保存。</li>
-<li><strong>設定読込 (JSON)</strong> … 保存したファイル、または授業用サンプルを開く。</li>
-<li>読み込んだ後は、必要に応じて「コード実行」をもう一度押してください。</li>
+<li><strong>データを取り込む (Excel / CSV / TSV)</strong> … 表計算ソフトで作った <code>xlsx</code>・<code>csv</code>・<code>tsv</code> を選ぶと、<strong>左のデータ領域に展開</strong>されます。ファイルに複数シートがあっても大丈夫です。</li>
+<li><strong>設定 (JSON) を開く</strong> … このツールで保存した <code>experiment_setup.json</code> を読み込み、表・スクリプト・履歴を復元します。</li>
+<li><strong>物理実験サンプルを開く</strong> … 授業用サンプルを展開します。</li>
 </ul>
+<div class="callout callout-style-default callout-note callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ノート</span>取り込みの確認ダイアログ
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Excel / CSV を選ぶと、取り込む前に確認ダイアログが出ます。</p>
+<ul>
+<li><strong>どのシートを取り込むか</strong>（複数シートはチェックで選択）</li>
+<li><strong>1 行目を見出し（列名）として扱うか</strong></li>
+<li><strong>列名の自動調整</strong>（R で使いやすい名前に直した結果をプレビュー表示。例：<code>時間 [s]</code> → <code>時間_.s.</code>）</li>
+<li>取り込み先を <strong>「既存を置換」/「新しいシートとして追加」</strong> から選ぶ</li>
+</ul>
+<p>R で扱いやすいように列名は自動で整えられます。意図しない改名がないか、プレビューで確認してから取り込みましょう。</p>
+</div>
+</div>
+</section>
+<section id="出力-書き出す" class="level3">
+<h3 class="anchored" data-anchor-id="出力-書き出す">出力 — 書き出す</h3>
+<p>「出力」ボタンを押すと、<strong>設定（基本）</strong> と <strong>詳細設定</strong> を選んでから、書き出す内容を選べます。ファイル名には自動で日時が付きます（例：<code>physics-data_2026-05-30_1430.xlsx</code>）。</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>出力する内容</th>
+<th>中身</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>データ領域</td>
+<td>左の全シートを <code>csv</code> / <code>xlsx</code> で保存</td>
+</tr>
+<tr class="even">
+<td>最新データフレーム</td>
+<td>選んだ <code>data.frame</code> を <code>csv</code> / <code>xlsx</code> で保存</td>
+</tr>
+<tr class="odd">
+<td>データ ＋ 最新データフレーム</td>
+<td>両方をまとめて保存</td>
+</tr>
+<tr class="even">
+<td>R スクリプトのみ</td>
+<td>エディタの R コードを <code>.R</code> で保存（後述）</td>
+</tr>
+<tr class="odd">
+<td>設定 (JSON)</td>
+<td>表・スクリプト・コンソール履歴を 1 ファイルに保存</td>
+</tr>
+<tr class="even">
+<td>一括出力 (zip)</td>
+<td>データ・データフレーム・スクリプト・設定・最後のグラフを 1 つの zip に同梱</td>
+</tr>
+</tbody>
+</table>
+<ul>
+<li><strong>設定</strong>：形式（csv / xlsx）と「見出し行を含める」、出力する最新データフレームを選びます。</li>
+<li><strong>詳細設定</strong>：データとデータフレームのまとめ方（xlsx は同じファイルの別シート、csv は別ファイル…など）、<strong>CSV の文字コード</strong>（Excel で開くなら <code>UTF-8 (BOM 付き)</code> が安全）、NA の表記、ファイル名のプレフィックスを変えられます。</li>
+</ul>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+<span class="screen-reader-only">ヒント</span>R スクリプトだけを書き出すと
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p><code>get.input()</code> を含む行は、このツールの外（RStudio など）では動かないため、<strong>自動でコメントアウト</strong>されて保存されます。先頭に注意書きも入るので、データを <code>read.csv()</code> などで読み込めば、ほかの環境でも続きを書けます。</p>
+</div>
+</div>
+<p>設定 (JSON) を読み込んだ後は、必要に応じて「コード実行」をもう一度押してください。</p>
+</section>
 </section>
 <section id="グラフのサイズ縦横比画面分割" class="level2">
 <h2 class="anchored" data-anchor-id="グラフのサイズ縦横比画面分割">11. グラフのサイズ・縦横比・画面分割</h2>
@@ -498,7 +587,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
-<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-9-contents" aria-controls="callout-9" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center collapsed" data-bs-toggle="collapse" data-bs-target=".callout-11-contents" aria-controls="callout-11" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -507,7 +596,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-9" class="callout-9-contents callout-collapse collapse">
+<div id="callout-11" class="callout-11-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>「作図サイズとレイアウト」サンプルを開いて実行し、<code>set.figure()</code> の数値や <code>par(mfrow)</code> の行・列を変えて、図の形がどう変わるか試してみましょう。</p>
 <p>PNG 保存や「全体表示」も、指定した縦横比のまま書き出されます。</p>

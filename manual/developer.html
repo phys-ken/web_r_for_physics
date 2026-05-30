@@ -177,6 +177,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#図サイズ制御とレンダリング" id="toc-図サイズ制御とレンダリング" class="nav-link" data-scroll-target="#図サイズ制御とレンダリング">図サイズ制御とレンダリング</a></li>
   <li><a href="#複数画像ギャラリー" id="toc-複数画像ギャラリー" class="nav-link" data-scroll-target="#複数画像ギャラリー">複数画像ギャラリー</a></li>
   <li><a href="#json-保存復元フォーマット" id="toc-json-保存復元フォーマット" class="nav-link" data-scroll-target="#json-保存復元フォーマット">JSON 保存・復元フォーマット</a></li>
+  <li><a href="#入出力excel-csv-xlsx-r-zip" id="toc-入出力excel-csv-xlsx-r-zip" class="nav-link" data-scroll-target="#入出力excel-csv-xlsx-r-zip">入出力（Excel / CSV / xlsx / R / zip）</a></li>
   <li><a href="#サンプル" id="toc-サンプル" class="nav-link" data-scroll-target="#サンプル">サンプル</a></li>
   <li><a href="#マニュアル" id="toc-マニュアル" class="nav-link" data-scroll-target="#マニュアル">マニュアル</a></li>
   <li><a href="#コマンド" id="toc-コマンド" class="nav-link" data-scroll-target="#コマンド">コマンド</a></li>
@@ -211,7 +212,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="全体像" class="level2">
 <h2 class="anchored" data-anchor-id="全体像">全体像</h2>
 <ul>
-<li><strong>単一ファイルアプリ</strong>。アプリ本体のロジックは <code>index.html</code>（約 3100 行）に集約。末尾の単一 <code>&lt;script type="module"&gt;</code> ブロックが全 JS。</li>
+<li><strong>単一ファイルアプリ</strong>。アプリ本体のロジックは <code>index.html</code>（約 4400 行）に集約。末尾の単一 <code>&lt;script type="module"&gt;</code> ブロックが全 JS。</li>
 <li><strong>ビルド不要</strong>。GitHub Pages が <code>index.html</code> をそのまま配信（<code>.nojekyll</code> あり）。バンドラ・トランスパイルなし。</li>
 <li>webR は CDN から ESM import: <code>https://webr.r-wasm.org/v0.6.0/webr.mjs</code>。<strong>v0.6.0 固定</strong>（<code>latest</code> の破壊的変更回避）。</li>
 </ul>
@@ -278,6 +279,23 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <li>UI 状態・コンソール履歴・ワークブック・スクリプトを丸ごと含む。サンプル（<code>samples/*.json</code>）も同一フォーマット。</li>
 </ul>
 </section>
+<section id="入出力excel-csv-xlsx-r-zip" class="level2">
+<h2 class="anchored" data-anchor-id="入出力excel-csv-xlsx-r-zip">入出力（Excel / CSV / xlsx / R / zip）</h2>
+<p>右上の <strong>「入力」「出力」</strong> ボタン（<code>#inputButton</code> / <code>#outputButton</code>）が入口。</p>
+<ul>
+<li><strong>遅延依存</strong>: <code>ensureSheetJS()</code> が SheetJS を CDN から <strong>動的 import</strong>（<code>SHEETJS_URL</code>、1 回だけ解決してキャッシュ）。初回 boot には影響させず、入出力操作の直前にのみ読み込む。WebR と同様 CDN 依存のためオフライン完全動作は不可。</li>
+<li><strong>取り込み</strong>: <code>handleDataFileSelected()</code> → <code>readDataFileToWorkbookModel()</code>（csv/tsv は <code>XLSX.read(text)</code>、xlsx は array）。各シートを <code>sheet_to_json(header:1)</code> で二次元配列化し <code>trimGrid()</code>（末尾空行・空列の除去、<code>IMPORT_MAX_ROWS</code>/<code>IMPORT_MAX_COLS</code> で上限）。確認ダイアログ <code>#importPreviewModal</code>（<code>openImportPreview</code> / <code>buildPreviewSheetSection</code> / <code>updatePreviewRename</code>）でシート選択・見出し行・列名サニタイズ（<code>sanitizeHeaderList</code> 再利用）・置換/追加を提示し、<code>confirmImportPreview()</code> → <code>applyImportedSheets()</code> が <code>state.app.workbook</code> を更新して <code>syncWorkbookToR()</code>。単一シートの csv/tsv はファイル名をシート名に採用。</li>
+<li><strong>書き出し</strong>: <code>#exportModal</code> を <code>buildExportModalBody()</code> が動的構築。<code>runExport(kind)</code> が種別ごとに分岐：<code>exportDataSheets</code> / <code>exportLatestDataFrame</code> / <code>exportDataPlusDataFrame</code> / <code>exportRScript</code> / <code>exportSetup</code>(JSON) / <code>exportBundleZip</code>。
+<ul>
+<li>データ→aoa は <code>sheetToExportAoa()</code>（末尾空列をトリムし <code>inferColumnType</code> で型付け、numeric/logical を実値化）。</li>
+<li>data.frame は <code>readDataFrameForExport()</code> が <code>buildDataFramePreviewRCode(name, DATAFRAME_EXPORT_MAX_ROWS)</code>（プレビューと共通の hex プロトコル、行上限のみ拡大）で全行取得→ <code>dataFramePreviewToAoa()</code>。</li>
+<li>xlsx は <code>XLSX.write({type:"array"})</code>、csv は <code>csvBytes()</code>（詳細設定で UTF-8 BOM 付与可）。</li>
+<li><strong>R スクリプト出力</strong>は <code>buildExportScriptText()</code>：<code>/\bget\.input\s*\(/</code> を含む行を <code>#</code> でコメントアウトし、先頭に注意書きを付ける。</li>
+<li><strong>一括出力</strong>は依存ゼロの <strong>store-only zip</strong>（<code>buildZip()</code> + <code>crc32()</code>、UTF-8 ファイル名フラグ）に <code>data.xlsx</code> / <code>dataframe-*.csv</code> / <code>script.R</code> / <code>setup.json</code> / <code>plot.png</code>（<code>selectedGraphCanvas</code> を PNG 化）を同梱。</li>
+<li>ファイル名は <code>timestampLabel()</code> で日時付与、<code>downloadBlob()</code> で保存。</li>
+</ul></li>
+</ul>
+</section>
 <section id="サンプル" class="level2">
 <h2 class="anchored" data-anchor-id="サンプル">サンプル</h2>
 <ul>
@@ -307,10 +325,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <section id="テスト" class="level2">
 <h2 class="anchored" data-anchor-id="テスト">テスト</h2>
 <ul>
-<li><code>tests/app.spec.mjs</code> に Playwright 2 件（<code>fullyParallel: false</code> で逐次）。
+<li><code>tests/app.spec.mjs</code> に Playwright 7 件（<code>fullyParallel: false</code> で逐次）。
 <ol type="1">
-<li>ナビ → webR 起動 → サンプル読込 → スクリプト実行 → グラフ描画 → 全体表示 → JSON エクスポート/インポート往復 → manual ページ。</li>
+<li>ナビ → webR 起動 → サンプル読込 → スクリプト実行 → グラフ描画 → 全体表示 → 「出力」→ 設定 (JSON) エクスポート/インポート往復 → manual ページ。</li>
 <li>表への TSV ペースト → エディタ実行で複数 data.frame → DataFrame タブのプレビュー。</li>
+<li><code>set.figure</code> による図のアスペクト比制御。</li>
+<li>ニュートンサンプルの複数シート → 図ギャラリー切替。</li>
+<li><strong>R スクリプト出力</strong>で <code>get.input()</code> 行がコメントアウトされること。</li>
+<li><strong>データ領域の CSV 出力</strong>（SheetJS 遅延読込を経由）。</li>
+<li><strong>CSV 取り込み</strong>で確認ダイアログ → シート展開 → <code>get.input()</code> に反映。</li>
 </ol></li>
 <li><code>PLAYWRIGHT_BASE_URL</code> で対象 URL を上書き可（既定 <code>http://127.0.0.1:4173</code>）。</li>
 </ul>

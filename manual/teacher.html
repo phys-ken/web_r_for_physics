@@ -170,10 +170,10 @@ ul.task-list li input[type="checkbox"] {
 <h2 class="anchored" data-anchor-id="分ダイジェスト-授業ですぐ使う流れ">5 分ダイジェスト — 授業ですぐ使う流れ</h2>
 <ol type="1">
 <li>公開アプリ（<a href="../">こちら</a>）を iPad / PC の Safari・Chrome で開く。インストール不要、サーバーにデータは送られません。</li>
-<li>上部の <strong>「設定読込 (JSON)」→ 授業用サンプル</strong> から、扱いたいテーマ（単振り子・自由落下・データロガー・材質抵抗）を開く。</li>
+<li>上部の <strong>「入力」→ 物理実験サンプル</strong> から、扱いたいテーマ（単振り子・自由落下・データロガー・材質抵抗）を開く。手持ちの <strong>Excel / CSV データ</strong>も「入力」から取り込めます。</li>
 <li>右上に解説コメント入りの R コードが入るので、<strong>「コード実行」</strong> を押す。グラフが描かれます。</li>
 <li>生徒には、まず <strong>コードを読み解かせ</strong>、数値や色・誤差棒などを少しずつ書き換えて、変化を観察させます。</li>
-<li>仕上がった表・コード・履歴は <strong>「設定保存 (JSON)」</strong> で 1 ファイルに保存・提出できます。</li>
+<li>仕上がった成果は <strong>「出力」</strong> から保存・提出できます。再開用には <strong>設定 (JSON)</strong>、レポート用には <strong>データ／データフレームの csv・xlsx</strong>、まとめてなら <strong>一括出力 (zip)</strong> が便利です。</li>
 </ol>
 <div class="callout callout-style-default callout-tip callout-titled">
 <div class="callout-header d-flex align-content-center">
@@ -195,10 +195,11 @@ ul.task-list li input[type="checkbox"] {
 <li><strong>ブラウザの中で R が動く（webR）</strong>。インストール・アカウント・サーバー不要。</li>
 <li><strong>データは外部送信なし</strong>。生徒の測定値は端末内だけで処理されます。</li>
 <li><strong>iPad で動く</strong>。RStudio 風の 2 ペイン（左=表入力、右=コード/結果）を 1 画面に収めています。</li>
-<li><strong>表計算からの貼り付け</strong>に対応（TSV をセルへペースト）。</li>
+<li><strong>表計算からの貼り付け</strong>に対応（TSV をセルへペースト）。さらに <strong>Excel(xlsx) / CSV / TSV ファイルの取り込み</strong>にも対応（複数シート可、取り込み前に確認ダイアログ）。</li>
 <li><strong>グラフを PNG 保存</strong>、レポートに貼れます。</li>
 <li><strong>図の縦横比・余白・画面分割をコードで指定可能</strong>（<code>set.figure()</code> / <code>asp = 1</code> / <code>par(mfrow)</code>）。指定しなければ描画エリアに自動フィット。</li>
 <li><strong>複数シート・複数データフレーム</strong>を扱え（<code>get.input("シート名")</code>）、<strong>1 回の実行で複数の図</strong>を描くとサムネイルで切り替えられる（「ニュートンの第2法則」サンプルが好例）。</li>
+<li><strong>データ／データフレームを csv・xlsx で書き出し</strong>。R スクリプトだけの書き出しや、すべてを束ねた <strong>一括出力 (zip)</strong> も可能（ファイル名に日時付き）。</li>
 <li><strong>JSON で保存・復元</strong>。配布・提出・再現がしやすい。</li>
 <li><strong>GitHub Pages で配信</strong>。自分のクラス用に複製・改変も可能です。</li>
 </ul>

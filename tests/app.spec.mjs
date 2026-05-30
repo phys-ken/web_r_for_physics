@@ -17,8 +17,8 @@ test("manual navigation, webR execution, graph render, and JSON round-trip", asy
   await page.getByRole("button", { name: "1行実行" }).click();
   await expect(page.locator("#consoleOutput")).toContainText("column_1", { timeout: 30000 });
 
-  await page.getByRole("button", { name: "設定読込 (JSON)" }).click();
-  await expect(page.getByRole("dialog", { name: "設定読込" })).toBeVisible();
+  await page.getByRole("button", { name: "入力", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "入力" })).toBeVisible();
   await page.getByRole("button", { name: /誤差棒付き散布図/ }).click();
   await expect(page.locator("#scriptEditor")).toHaveValue(/set\.paper_style/, { timeout: 30000 });
   await expect(page.locator("#sheetTabs")).toContainText("pendulum");
@@ -58,7 +58,9 @@ test("manual navigation, webR execution, graph render, and JSON round-trip", asy
   await page.getByRole("button", { name: "閉じる" }).click();
 
   const downloadPromise = page.waitForEvent("download");
-  await page.getByRole("button", { name: "設定保存 (JSON)" }).click();
+  await page.getByRole("button", { name: "出力", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "出力" })).toBeVisible();
+  await page.getByRole("button", { name: /設定 \(JSON\)/ }).click();
   const download = await downloadPromise;
   const downloadPath = await download.path();
   const jsonText = await readFile(downloadPath, "utf8");
@@ -157,7 +159,7 @@ test("set.figure lets code control the figure aspect ratio", async ({ page }) =>
   expect(squareDims.width).toBe(squareDims.height);
 
   // The graph-size sample combines set.figure, par(mfrow) subplots and margins.
-  await page.getByRole("button", { name: "設定読込 (JSON)" }).click();
+  await page.getByRole("button", { name: "入力", exact: true }).click();
   await page.getByRole("button", { name: "作図サイズとレイアウト" }).click();
   await expect(page.locator("#scriptEditor")).toHaveValue(/set\.figure/, { timeout: 30000 });
   await page.getByRole("button", { name: "グラフ", exact: true }).click();
@@ -170,7 +172,7 @@ test("the Newton sample is multi-sheet and yields a switchable figure gallery", 
   await page.goto("./");
   await expect(page.locator("#runtimeStatus")).toHaveText(/webR 準備完了/, { timeout: 180000 });
 
-  await page.getByRole("button", { name: "設定読込 (JSON)" }).click();
+  await page.getByRole("button", { name: "入力", exact: true }).click();
   await page.getByRole("button", { name: "ニュートンの第2法則" }).click();
   await expect(page.locator("#scriptEditor")).toHaveValue(/get\.input\("vt_m2"\)/, { timeout: 30000 });
   await expect(page.locator("#sheetTabs")).toContainText("vt_F4");
@@ -199,4 +201,77 @@ test("the Newton sample is multi-sheet and yields a switchable figure gallery", 
   // Switching to the console tab hides the graph-only actions.
   await page.getByRole("button", { name: "コンソール", exact: true }).click();
   await expect(page.locator("#graphActions")).toBeHidden();
+});
+
+test("output: R script export comments out get.input lines", async ({ page }) => {
+  await page.goto("./");
+  await expect(page.locator("#runtimeStatus")).toHaveText(/webR 準備完了/, { timeout: 180000 });
+
+  await page.locator("#scriptEditor").fill(
+    "df <- get.input()\nsummary(df)\nmean(df$column_1)",
+  );
+
+  await page.getByRole("button", { name: "出力", exact: true }).click();
+  await expect(page.getByRole("dialog", { name: "出力" })).toBeVisible();
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: /R スクリプトのみ/ }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toMatch(/-script_.*\.R$/);
+
+  const text = await readFile(await download.path(), "utf8");
+  expect(text).toMatch(/^# df <- get\.input\(\)/m);
+  expect(text).toContain("summary(df)");
+  expect(text).toMatch(/get\.input\(\) を含む行はコメントアウト/);
+});
+
+test("output: data area exports to CSV", async ({ page }) => {
+  await page.goto("./");
+  await expect(page.locator("#runtimeStatus")).toHaveText(/webR 準備完了/, { timeout: 180000 });
+
+  await page.locator('.cell[data-row="0"][data-col="0"]').fill("x");
+  await page.locator('.cell[data-row="0"][data-col="1"]').fill("y");
+  const firstDataCell = page.locator('.cell[data-row="1"][data-col="0"]').first();
+  await firstDataCell.evaluate((cell) => {
+    const dataTransfer = new DataTransfer();
+    dataTransfer.setData("text/plain", "1\t2\n3\t4");
+    cell.dispatchEvent(new ClipboardEvent("paste", {
+      bubbles: true,
+      cancelable: true,
+      clipboardData: dataTransfer,
+    }));
+  });
+  await expect(page.locator('.cell[data-row="2"][data-col="1"]')).toHaveText("4");
+
+  await page.getByRole("button", { name: "出力", exact: true }).click();
+  await page.locator("#exportFormat").selectOption("csv");
+  const downloadPromise = page.waitForEvent("download");
+  await page.getByRole("button", { name: /データ領域/ }).click();
+  const download = await downloadPromise;
+  expect(download.suggestedFilename()).toMatch(/-data_.*\.csv$/);
+
+  const text = await readFile(await download.path(), "utf8");
+  expect(text).toContain("x,y");
+  expect(text).toContain("1,2");
+  expect(text).toContain("3,4");
+});
+
+test("input: CSV import opens the preview dialog and loads sheets into R", async ({ page }) => {
+  await page.goto("./");
+  await expect(page.locator("#runtimeStatus")).toHaveText(/webR 準備完了/, { timeout: 180000 });
+
+  await page.getByRole("button", { name: "入力", exact: true }).click();
+  await page.locator("#dataFileInput").setInputFiles({
+    name: "measure.csv",
+    mimeType: "text/csv",
+    buffer: Buffer.from("time,velocity\n0,0\n1,9.8\n2,19.6\n"),
+  });
+
+  await expect(page.getByRole("dialog", { name: "取り込みの確認" })).toBeVisible();
+  await expect(page.locator("#importPreviewBody")).toContainText("velocity");
+  await page.getByRole("button", { name: "取り込む", exact: true }).click();
+
+  await expect(page.locator("#sheetTabs")).toContainText("measure");
+  await page.locator("#consoleInput").fill("print(names(get.input()))");
+  await page.getByRole("button", { name: "1行実行" }).click();
+  await expect(page.locator("#consoleOutput")).toContainText("velocity", { timeout: 30000 });
 });
